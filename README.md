@@ -216,7 +216,7 @@ Il peut être possible de travailler à plusieurs sur une même branche mais il 
 - Cependant si la personne qui s'occupe de cette branche a terminé, n'a plus de modification/de commit non publié et ne va pas continuer sur cette branche avant la fin de vos modifications, alors vous pouvez continuer le travail sur cette branche sans en créer une nouvelle. (⚠️ en vous assurant bien d'être sur la bonne branche et de [`git pull`](#pull) avant)
 
 
-[--> [Revenir aux règles du développement du projet]](#r%C3%A9sum%C3%A9-des-r%C3%A8gles-du-repository)
+[--> [Revenir aux règles du développement du projet]](##r%C3%A9sum%C3%A9-des-r%C3%A8gles-du-d%C3%A9veloppement-du-projet)
 
 ### Autre
 
