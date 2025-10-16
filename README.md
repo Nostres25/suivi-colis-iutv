@@ -12,14 +12,14 @@ Le demandeur du projet est l'enseignant chercheur et responsable du département
 
 # Développement
 ## Git
-Tout d'abord le repository GitHub est là pour héberger le code en ligne afin d'éviter les pertes de progression et de faciliter le travail en équipe. 
-GitHub s'utilise avec **le logiciel [Git](https://git-scm.com/) qu'il vous faut installer** pour travailler sur le développement. C'est ce logiciel qui vous permettra de récupérer le code du projet mais aussi de publier vos modifications.
-La plupart des IDE (ou éditeurs de code) comme Visual Studio Code embarquent des menus pour interagir avec git via l'interface, afin d'appuyer sur des boutons plutôt que de rédiger des commandes git. Mais ce document s'appuie sur les commandes git.  
+Tout d'abord le repository GitHub est là pour héberger le code en ligne afin d'éviter les pertes de progression et de faciliter le travail en équipe.  
+GitHub s'utilise avec **le logiciel [Git](https://git-scm.com/) qu'il vous faut installer** pour travailler sur le développement. C'est ce logiciel qui vous permettra de récupérer le code du projet mais aussi de publier vos modifications.  
+La plupart des IDE (ou éditeurs de code) comme Visual Studio Code embarquent des menus pour interagir avec git via l'interface, afin d'appuyer sur des boutons plutôt que de rédiger des commandes git. Mais ce document s'appuie sur les commandes git.   
 ###### [GitHub Desktop](https://desktop.github.com/download/) existe pour interagir avec git avec une interface mais c'est aussi plutôt limité et inutile si l'IDE comprend des menus git.
 
 ## Environnement
-Technologies: PHP, **MariaDB**, Apache2, Linux (le serveur de production sera sur Ubunutu)
-Framework: (Laravel ?)
+Technologies: PHP, **MariaDB**, Apache2, Linux (le serveur de production sera sur Ubunutu)  
+Framework: (Laravel ?)  
 Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur. Ainsi, vous devez installer php, mariadb et apache2 sur votre système et le configurer de sorte à ce que php fonctionne sur le serveur apache2 et puisse utiliser une base de données mariaDB.
 
 ## Code
