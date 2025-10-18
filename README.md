@@ -18,7 +18,7 @@ La plupart des IDE (ou éditeurs de code) comme Visual Studio Code embarquent de
 ###### [GitHub Desktop](https://desktop.github.com/download/) existe pour interagir avec git avec une interface mais c'est aussi plutôt limité et inutile si l'IDE comprend des menus git.
 
 ## Environnement
-Technologies: PHP, **MariaDB**, Apache2, Linux (le serveur de production sera sur Ubunutu)  
+Technologies: PHP, **MariaDB**, Apache2, Linux (le serveur de production sera sur Ubunutu) --> [XAMP](https://www.apachefriends.org/fr/index.html) pour permettre un développement sur linux et sur windows.
 Framework: (Laravel ?)  
 Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur. Ainsi, vous devez installer php, mariadb et apache2 sur votre système et le configurer de sorte à ce que php fonctionne sur le serveur apache2 et puisse utiliser une base de données mariaDB.
 
