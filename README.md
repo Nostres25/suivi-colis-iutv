@@ -18,8 +18,10 @@ La plupart des IDE (ou éditeurs de code) comme Visual Studio Code embarquent de
 ###### [GitHub Desktop](https://desktop.github.com/download/) existe pour interagir avec git avec une interface mais c'est aussi plutôt limité et inutile si l'IDE comprend des menus git.
 
 ## Environnement
-Technologies: PHP, **MariaDB**, Apache2, Linux (le serveur de production sera sur Ubunutu) --> [XAMP](https://www.apachefriends.org/fr/index.html) pour permettre un développement sur linux et sur windows.  
-Framework: (Laravel ?)  
+Technologies: PHP (8.2 pour être compatible XAMP), **MariaDB**, Apache2, Linux (le serveur de production sera sur Ubunutu) --> [XAMP](https://www.apachefriends.org/fr/index.html) pour permettre un développement sur linux et sur windows.  
+Framework: [Laravel](https://laravel.com) [(installation initiale)](https://laravel.com/docs/12.x/installation#creating-a-laravel-project) (nécéssite l'installation de PHP, [Composer](https://getcomposer.org/) et [Laravel installer](https://github.com/laravel/installer))  
+###### Je suis bloqué à la troisième étape de l'installation à cause de mon système nixos. Donc soit: passer par docker (mais chiant pour dev), soit essayer codeigniteur (autre framework), soit je règle le problème sur mon système de galérien (avec les flakes notamment mais flemme)
+
 Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur. Ainsi, vous devez installer php, mariadb et apache2 sur votre système et le configurer de sorte à ce que php fonctionne sur le serveur apache2 et puisse utiliser une base de données mariaDB.  
 
 ### Avec Docker
