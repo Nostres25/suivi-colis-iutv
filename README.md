@@ -18,9 +18,20 @@ La plupart des IDE (ou éditeurs de code) comme Visual Studio Code embarquent de
 ###### [GitHub Desktop](https://desktop.github.com/download/) existe pour interagir avec git avec une interface mais c'est aussi plutôt limité et inutile si l'IDE comprend des menus git.
 
 ## Environnement
-Technologies: PHP, **MariaDB**, Apache2, Linux (le serveur de production sera sur Ubunutu) --> [XAMP](https://www.apachefriends.org/fr/index.html) pour permettre un développement sur linux et sur windows.
+Technologies: PHP, **MariaDB**, Apache2, Linux (le serveur de production sera sur Ubunutu) --> [XAMP](https://www.apachefriends.org/fr/index.html) pour permettre un développement sur linux et sur windows.  
 Framework: (Laravel ?)  
-Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur. Ainsi, vous devez installer php, mariadb et apache2 sur votre système et le configurer de sorte à ce que php fonctionne sur le serveur apache2 et puisse utiliser une base de données mariaDB.
+Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur. Ainsi, vous devez installer php, mariadb et apache2 sur votre système et le configurer de sorte à ce que php fonctionne sur le serveur apache2 et puisse utiliser une base de données mariaDB.  
+
+### Avec Docker
+Actuellement, j'ai utilisé docker pour faire fonctionner le projet par souci de praticité. Ce choix n'est pas définitif et je trouverais une solution pour que le code soit exécutable sur windows avec ou sans docker selon le meilleur choix.
+Pour un maximum de stabilité, on considère que l'application devrait être testée sur une machine Ubuntu (qui est dérivé de débian) dans un environnement le plus semblable possible à l'environnement de production. Actuellement, l'image Docker est une image Debian par souci de praticité mais cela pourrait changer pour du Ubuntu à terme. Aussi, il est probablement préférable que l'application tourne sur un repertoire personnalisé comme `/var/www/suivi-colis-iutv`. Mais j'ai passé une après-midi à essayer de faire cela en vain, apache2 fait donc tourner l'application web sur `/var/www/html` pour le moment.
+###### J'ai envie de me tirer une balle, cordialmenent
+
+Commandes docker:
+- build & run : `docker compose up --build`
+- build : `docker compose -f ./docker-compose.yml build`
+- run : `docker compose up`
+
 
 ## Code
 Formatteur: <inconnu> (permet de respecter un style de programmation commun)

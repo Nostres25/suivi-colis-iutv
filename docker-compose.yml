@@ -1,0 +1,10 @@
+services:
+  suivi-colis-iutv:
+    build:
+      context: .
+      dockerfile: config/docker/Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app/index.php:${APP_DIRECTORY}/index.php
+    container_name: suivi-colis-container

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+            <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Hello World</title>
+    </head>
+    <body>
+            <h1>Hello, World!</h1>
+                <p>This is a simple PHP server running with Nix. edited</p>
+                    <?php
+                        echo "Hello, World!";
+                        phpinfo();
+                    ?>
+    </body>
+</html>
