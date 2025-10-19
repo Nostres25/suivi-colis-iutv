@@ -23,9 +23,12 @@ Framework: (Laravel ?)
 Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur. Ainsi, vous devez installer php, mariadb et apache2 sur votre système et le configurer de sorte à ce que php fonctionne sur le serveur apache2 et puisse utiliser une base de données mariaDB.  
 
 ### Avec Docker
-Actuellement, j'ai utilisé docker pour faire fonctionner le projet par souci de praticité. Ce choix n'est pas définitif et je trouverais une solution pour que le code soit exécutable sur windows avec ou sans docker selon le meilleur choix.
+Actuellement, j'ai utilisé docker pour faire fonctionner le projet par souci de praticité. Ce choix n'est pas définitif et je trouverais une solution pour que le code soit exécutable sur windows avec ou sans docker selon le meilleur choix.  
 Pour un maximum de stabilité, on considère que l'application devrait être testée sur une machine Ubuntu (qui est dérivé de débian) dans un environnement le plus semblable possible à l'environnement de production. Actuellement, l'image Docker est une image Debian par souci de praticité mais cela pourrait changer pour du Ubuntu à terme. Aussi, il est probablement préférable que l'application tourne sur un repertoire personnalisé comme `/var/www/suivi-colis-iutv`. Mais j'ai passé une après-midi à essayer de faire cela en vain, apache2 fait donc tourner l'application web sur `/var/www/html` pour le moment.
 ###### J'ai envie de me tirer une balle, cordialmenent
+
+Toute fois ce qui est intéressant c'est que grâce au Dockerfile, vous savez ce qu'il faut faire pour faire fonctionner l'environnement. Et sur une distribution debian, vous savez quoi faire.
+###### Toutefois, il y a tellement de mauvaises choses que ça pourrait ne pas ressembler à ça à l'avenir
 
 Commandes docker:
 - build & run : `docker compose up --build`

@@ -1,5 +1,6 @@
 # Base
 
+# maybe Need php 8.2 because xamp is with php 8.2 
 FROM php:8.3-apache AS base
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -9,6 +10,7 @@ ENV DOCUMENT_ROOT="/var/www/html"
 ENV APP_DIRECTORY="${DOCUMENT_ROOT}"
 
 EXPOSE 80
+EXPOSE 443
 WORKDIR ${APP_DIRECTORY}
 
 # git, unzip & zip are for composer
@@ -40,7 +42,10 @@ RUN a2enmod rewrite remoteip && \
 
 # Laravel tuto:
 # RUN a2dissite 000-default.conf 
-# RUN a2ensite ${APP_NAME} && systemctl restart apache2
+# RUN a2ensite ${APP_NAME} 
+
+# To be sure apache2 configuration modifications is applied and to see apache config errors - on ubuntu : systemctl restart apach2 but on debian service apache2 restart
+RUN service apache2 restart
 
 
 # Production
