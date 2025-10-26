@@ -2,7 +2,7 @@ services:
   suivi-colis-iutv:
     build:
       context: .
-      dockerfile: config/docker/Dockerfile
+      dockerfile: configDocker/docker/Dockerfile
     ports:
       - "8080:80"
     volumes:
