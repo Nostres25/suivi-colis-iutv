@@ -12,15 +12,21 @@ Le demandeur du projet est l'enseignant chercheur et responsable du département
 
 # Développement
 ## Git
-Tout d'abord le repository GitHub est là pour héberger le code en ligne afin d'éviter les pertes de progression et de faciliter le travail en équipe.  
+Tout d'abord le repository/dépôt GitHub est là pour héberger le code en ligne afin d'éviter les pertes de progression et de faciliter le travail en équipe.  
 GitHub s'utilise avec **le logiciel [Git](https://git-scm.com/) qu'il vous faut installer** pour travailler sur le développement. C'est ce logiciel qui vous permettra de récupérer le code du projet mais aussi de publier vos modifications.  
 La plupart des IDE (ou éditeurs de code) comme Visual Studio Code embarquent des menus pour interagir avec git via l'interface, afin d'appuyer sur des boutons plutôt que de rédiger des commandes git. Mais ce document s'appuie sur les commandes git.   
 ###### [GitHub Desktop](https://desktop.github.com/download/) existe pour interagir avec git avec une interface mais c'est aussi plutôt limité et inutile si l'IDE comprend des menus git.
 
 ## Environnement
-Technologies: PHP (Actuellement 8.4), **MariaDB**, Apache2, Linux (le serveur de production sera sur Ubunutu)  
-Framework: [Laravel](https://laravel.com) [(documentation)](https://laravel.com/docs/12.x) --> nécéssite l'installation de PHP, [Composer](https://getcomposer.org/) et [Laravel installer](https://github.com/laravel/installer) (des détails arrivent sur la manière dont vous devriez installer tout ça)  
-(NodeJs est aussi intégré principalement pour l'utilisation de l'outil "vite" et autres outils liés au javascript et au css)
+- Langage: **PHP** (Actuellement 8.2),
+- Framework: [**Laravel 12**](https://laravel.com) [(documentation)](https://laravel.com/docs/12.x) 
+- Gestionnaire de paquets PHP: [**Composer**](https://getcomposer.org/)
+- Base de données (SGBDR) : **MariaDB**
+- Serveur de développement (Intégré à Laravel) : `php artisan serve`
+- Serveur de production (probable): **Apache2**  (autre possibilité: Nginx)
+- Système de production : **Ubuntu** (linux)
+
+(NodeJs est aussi intégré principalement pour l'utilisation de l'outil "vite", "tailwind" et autres outils liés au javascript et au css)
 
 Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur.  
 ### Installation des paquets nécéssaires pour le développement
@@ -41,7 +47,7 @@ Puis en exécutant le fichier installé avec la commande :
 ```bash  
 sudo dpkg -i ~/Téléchargements/code_<version>.deb
 ```  
-###### Si votre système est en anglais, le dossier de téléchargements peut être "Downloads" plutôt que "Téléchargements" et le nom du fichier "code_<version>.deb" est à modifier en fonction du nom du fichier installé via la page d'installation  
+###### Si votre système est en anglais, le dossier de téléchargements peut être "Downloads" plutôt que "Téléchargements" et le nom du fichier `code_<version>.deb` est à modifier en fonction du nom du fichier installé via la page d'installation  
 
 #### 3. Installer git, curl, mariadb, php et ses extensions 
 curl sert à l'installation de certains paquets, mariadb c'est la base de données et les extensions php servent au bon fonctionnement de notre application, notamment avec la base de données.
@@ -65,11 +71,11 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash 
 Vous avez maintenant (en principe) tous les paquets nécéssaires au développement 
 (À priori il n'y a pas besoin d'installer Laravel, ses fonctionnalités sont sous la forme de modules qui s'installent avec composer)
 
-Détails sur la suite pour la [configuration de l'environnement et la mise en place de la base de données]() plus bas.
+Détails sur la suite pour la [configuration de l'environnement et la mise en place de la base de données](#mise-en-place-de-lenvironnement) plus bas.
 
 ## Code
-Formatteur: <inconnu> (permet de respecter un style de programmation commun)
-IDE: Visual Studio Code
+Formatteur: inconnu (permet de respecter un style de programmation commun)   
+IDE: Visual Studio Code  
 
 > [!NOTE]
 > Vous pouvez mettre le dossier du projet où vous souhaitez sur votre ordinateur
@@ -108,7 +114,7 @@ Maintenant vous pouvez ouvrir **le dossier su projet**, crée sous le nom de "su
 
 ## Mise en place de l'environnement
 ###### Spécifiquement pour cette catégorie, il n'est pas nécéssaire de changer de branche. Il n'y a aucun risque de conflit.
-Assurez-vous de bien avoir installé php, composer et laravel [comme indiqué plus haut]()
+Assurez-vous de bien avoir installé php, composer, mariadb et auree [comme indiqué plus haut](#installation-des-paquets-n%C3%A9c%C3%A9ssaires-pour-le-d%C3%A9veloppement)
 
 ### I. Installer les modules du projet
 Cela se fait à l'aide de composer avec la commande suivante:
