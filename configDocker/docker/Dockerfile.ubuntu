@@ -1,0 +1,113 @@
+# for debug: docker compose build --progress=plain --no-cache 
+# Production
+FROM ubuntu:24.04 AS production
+
+# Some system settings
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV TZ Europe/Paris
+
+# Paths
+ENV APP_NAME="suivi-colis-iutv"
+ENV PARENT_ROOT="/var/www/"
+ENV DOCUMENT_ROOT="/var/www/suivi-colis-iutv"
+ENV APP_DIRECTORY="${DOCUMENT_ROOT}"
+WORKDIR ${DOCUMENT_ROOT}
+
+# Ports the application is listening on
+EXPOSE 80
+EXPOSE 443
+# Expose port 3306 to allow connections to the database
+EXPOSE 3306
+
+# Updates & installs (what is -qq & -qy ? should use --no-install-recommends ?)
+# RUN add-apt-repository ppa:ondrej/php not working
+RUN apt-get update -qq && \
+    apt-get install -qy \
+    git \
+    # gnupg \
+    curl \
+    unzip \
+    zip \
+    apache2 \
+    libapache2-mod-php \
+    mariadb-server \
+    php \
+    php-curl \
+    php-dom \
+    php-mbstring \
+    php-xml \
+    php-mysql && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+
+RUN \. "$HOME/.nvm/nvm.sh" && nvm install 24 && sleep 10
+
+# PHP Extensions - not in tuto for laravel
+# RUN docker-php-ext-install -j$(nproc) opcache pdo_mysql
+
+# Set PHP settings - prefer to use default settings
+COPY configDocker/php.ini /usr/local/etc/php/conf.d/app.ini
+
+# Ensable URL rewriting apache2
+RUN a2enmod rewrite
+# RUN a2enconf ${APP_NAME} # - not in laravel tuto
+
+# Copy project from git - not recommended
+# WORKDIR "/var/www"
+# RUN git clone https://github.com/Nostres25/suivi-colis-iutv.git
+# WORKDIR "/var/www/suivi-colis-iutv"
+# COPY .env ${APP_DIRECTORY}/.env
+
+# Copy project files - maybe find a better solution to not copy everything (no copy .env.example, vscode settings etc...)
+COPY . .
+# COPY .env ${APP_DIRECTORY}/.env
+
+# Install dependencies - only if project is cloned from git
+# RUN composer install --optimize-autoloader --no-dev
+
+# Generate a new security key - not working
+RUN php artisan key:generate
+
+# Permissions
+WORKDIR ${DOCUMENT_ROOT}
+RUN chown -R www-data storage
+RUN chown -R www-data bootstrap/cache
+
+# COPY errors /errors
+# RUN chown -R www-data:www-data ${APP_DIRECTORY}
+
+# Replace the /etc/apache2/envvars job because it not working else
+ENV APACHE_RUN_DIR="/var/run/apache2"
+ENV APACHE_PID_FILE="/var/run/apache2/apache2.pid"
+ENV APACHE_RUN_GROUP="www-data"
+ENV APACHE_RUN_USER="www-data"
+ENV APACHE_LOG_DIR="/var/lock/apache2"
+
+# Host configurations
+COPY configDocker/vhost.conf /etc/apache2/sites-available/${APP_NAME}.conf
+# COPY configDocker/apache.conf /etc/apache2/apache2.conf
+# COPY configDocker/httpd.conf /usr/local/apache2.conf/httpd.conf
+
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+# RUN chmod 777 /etc/apache2/envvars # was an attempt to operate envvars :/
+
+# Activate the site config
+RUN a2ensite ${APP_NAME}.conf
+RUN cat /etc/apache2/apache2.conf
+
+# Set the custom document root
+RUN sed -ri -e 's!/var/www/html!${DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Set up database
+RUN service mariadb start && \
+  mariadb -u root -e "CREATE DATABASE suivi_colis_iutv; CREATE USER admin_colis; CREATE USER 'admin_colis'@'localhost' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON suivi_colis_iutv.* TO 'admin_colis'@'localhost'; FLUSH PRIVILEGES;" && \
+  php artisan migrate
+
+# To be sure apache2 configuration modifications is applied and to see apache config errors - on ubuntu : systemctl restart apache2 but on debian service apache2 restart
+
+RUN service apache2 restart
+
+CMD "/usr/sbin/apache2"

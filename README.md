@@ -23,9 +23,49 @@ Framework: [Laravel](https://laravel.com) [(documentation)](https://laravel.com/
 (NodeJs est aussi intégré principalement pour l'utilisation de l'outil "vite" et autres outils liés au javascript et au css)
 
 Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur.  
-#### Laravel + composer + MariaDB : à suivre
+### Installation des paquets nécéssaires pour le développement
+> [!NOTE]
+> Lorsqu'il sera demandé d'exécuter des commandes, il faudra les entrer dans un terminal linux.
 
-Voir la suite pour la configuration de l'environnement et la mise en place de la base de données
+> sur ubuntu:
+#### 1. Mise à jour du système :
+(à faire avant toute installation de paquets)
+```bash
+sudo apt update && sudo apt upgrade
+```
+
+#### 2. Installer l'IDE (Visual Studio Code) :
+(si vous utilisez WSL, vous pourrez vous contenter d'installer Vscode sur votre Windows)
+Téléchargez vscode depuis la [page d'installation](https://code.visualstudio.com/download) (.deb)  
+Puis en exécutant le fichier installé avec la commande :  
+```bash  
+sudo dpkg -i ~/Téléchargements/code_<version>.deb
+```  
+###### Si votre système est en anglais, le dossier de téléchargements peut être "Downloads" plutôt que "Téléchargements" et le nom du fichier "code_<version>.deb" est à modifier en fonction du nom du fichier installé via la page d'installation  
+
+#### 3. Installer git, curl, mariadb, php et ses extensions 
+curl sert à l'installation de certains paquets, mariadb c'est la base de données et les extensions php servent au bon fonctionnement de notre application, notamment avec la base de données.
+```bash  
+sudo apt-get install git curl mariadb-server php php-curl php-mbstring php-xml php-mysql
+```  
+#### 4. Installer Composer : 
+Composer est le gestionnaire de modules qui nous permet d'installer et d'utiliser des modules tiers.
+Vous pouvez le faire via cette commande:
+```bash
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+```
+
+#### 5. Installez NodeJs:  
+NodeJs permet de faire tourner du javascript sur le serveur. C'est utilisé pour certains modules du framework qui sont des outils pour simplifier le développement css et javascript. Leur utilisation n'est pas nécéssaire (et à éviter peut-être si possible pour ne pas avoir à installer NodeJs sur le serveur de production)
+Installez NodeJs à l'aide de cette commande : 
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \. "$HOME/.nvm/nvm.sh" && nvm install 24`
+```
+
+Vous avez maintenant (en principe) tous les paquets nécéssaires au développement 
+(À priori il n'y a pas besoin d'installer Laravel, ses fonctionnalités sont sous la forme de modules qui s'installent avec composer)
+
+Détails sur la suite pour la [configuration de l'environnement et la mise en place de la base de données]() plus bas.
 
 ## Code
 Formatteur: <inconnu> (permet de respecter un style de programmation commun)
@@ -66,28 +106,52 @@ Maintenant vous pouvez ouvrir **le dossier su projet**, crée sous le nom de "su
 > [!WARNING]
 > Toutefois, attention à ne rien modifier à cette étape. Car vous êtes sur la branche `main` du projet et que si vous modifiez quoi que ce soit, vous pouvez créer des conflits sur cette branche. **Prenez connaissance de la suite de cette documentation avant de faire quoi que ce soit**.
 
-## Configuration de l'environnement
+## Mise en place de l'environnement
 ###### Spécifiquement pour cette catégorie, il n'est pas nécéssaire de changer de branche. Il n'y a aucun risque de conflit.
 Assurez-vous de bien avoir installé php, composer et laravel [comme indiqué plus haut]()
 
 ### I. Installer les modules du projet
-1. Exécutez `composer update`
+Cela se fait à l'aide de composer avec la commande suivante:
+```bash
+composer update
+```
 
 ### II. Définition des variables d'environnement
-Ouvrez le dossier du projet (suivi-colis-iutv) avec visual studio code et vous verrez un fichier `.env.example`.
-1. Renommez le fichier `.env.example` en `.env` (ce fichier est ignoré par git et ne sera jamais commit sur le dépôt distant grâce au fichier `.gitignore`)
-2. Dans `.env`, changez la valeur de `DB_PASSWORD` si vous le souhaitez pour y mettre votre propre mot de passe. Il s'agit du mot de passe pour l'utilisateur de base de données présente sur votre pc. (Si vous avez déjà une base de données et un utilisateur MariaDB, vous pouvez modifier les valeurs du `.env` selon votre système).
+Ouvrez le dossier du projet (suivi-colis-iutv) avec visual studio code et vous verrez un fichier `.env.example`.  
+1. Renommez le fichier `.env.example` en `.env` (ce fichier est ignoré par git et ne sera jamais commit sur le dépôt distant grâce au fichier `.gitignore`)  
+2. Dans `.env`, changez la valeur de `DB_PASSWORD` si vous le souhaitez pour y mettre votre propre mot de passe. 
+  Il s'agit du mot de passe pour l'utilisateur de base de données présente sur votre pc.
+  (Si vous avez déjà une base de données et un utilisateur MariaDB, vous pouvez modifier les valeurs du `.env` selon votre système).
 
-### III. Configuration de la base de données 
-1. Dans le cas où vous n'avez pas encore de base de données et d'utilisateur MariaDB: 
-  a. Lancez MariaDB en tant que root (sur linux: `sudo mariadb -u root -p`). Si vous n'avez jamais configuré de mot de passe pour root, il n'y a pas de mot de passe par défaut donc vous pouvez ne rien écrire et appuyer sur "Entrer".
-  b. Une fois connecté en tant que root, créez la base de donnée `suivi_colis_iutv` qui sera utilisée par notre logiciel web, avec `CREATE DATABASE suivi_colis_iutv;`
-  c. Ensuite créez l'utilisateur "admin_colis" (même nom que la valeur `DB_USERNAME` dans `.env`) :`CREATE USER 'admin_colis'@'localhost' IDENTIFIED BY password;` (remplacez "password" par votre mot de passe. Le même que dans la valeur `DB_PASSWORD` du `.env`).
-  d. Maintenant, vous devez donner les permissions nécéssaires à l'utilisateur `admin_colis` : `GRANT ALL PRIVILEGES ON suivi_colis_iutv.* TO 'admin_colis'@'localhost';` 
-  e. Et pour finir, vous devez appliquer les nouvelles permissions : `FLUSH PRIVILEGES;`
-2. Pour tester si votre base de données fonctionne correctement, vous pouvez exécuter `php artisan db` dans le dossier du projet, ce qui devrait vous connecter à la base de données selon les informations présentes dans le `.env`
-3. Si vous réussissez à créer une table (ex: `CREATE TABLE TABLE_NAME (a INT);`), c'est que les permissions ont bien été configurées
-4. Enfin, il ne reste plus qu'à préparer la base de données `suivi_colis_iutv` de sorte à ce que l'application puisse se lancer. Pour cela, rendez-vous dans le dossier du projet et exécutez `php artisan migrate` (cela pour le moment, ne fait que créer les tables par défaut pour le fonctionnement de laravel)
+### III. Mise en place de la base de données 
+1. Lancez la base de données MariaDB:  
+  ```bash  
+  sudo mariadb -u root -p
+  ```
+  > [!NOTE]
+  > Si vous n'avez jamais configuré de mot de passe pour root, il n'y a pas de mot de passe par défaut donc vous pouvez ne rien écrire et appuyer sur "Entrer".   
+  
+2. Une fois connecté en tant que root, créez la base de donnée `suivi_colis_iutv`, créez l'utilisateur `app_colis` et donnez les permissions nécéssaires en entrant les instructions suivantes:  
+  ```sql
+  CREATE DATABASE IF NOT EXISTS suivi_colis_iutv;
+  CREATE USER 'app_colis'@'localhost' IDENTIFIED BY "password"; -- REMPLACEZ password PAR LE MOT DE PASSE QUE VOUS AVEZ MIS DANS LE .env
+  GRANT ALL PRIVILEGES ON suivi_colis_iutv.* TO 'app_colis'@'localhost';
+  FLUSH PRIVILEGES;
+  ```
+  Si tout à fonctionné, vous pouvez sortir de la base de données en entrant `EXIT` ou `\q`
+
+3. Pour tester si votre base de données fonctionne correctement, vous pouvez exécuter `php artisan db` dans le dossier du projet, ce qui devrait vous connecter à la base de données selon les informations présentes dans le `.env`
+4. Si vous réussissez à créer une table (ex: `CREATE TABLE TABLE_NAME (a INT);`), c'est que les permissions ont bien été configurées
+  (pensez à sortir avec `EXIT` ou `\q` pour continuer)
+5. Enfin, il ne reste plus qu'à préparer la base de données `suivi_colis_iutv` de sorte à ce que l'application puisse se lancer. Pour cela, rendez-vous dans le dossier du projet et exécutez:
+  ```bash
+  php artisan migrate
+  ```
+  (cela pour le moment, ne fait que créer les tables par défaut pour le fonctionnement de laravel)
+
+### IV Lancement du serveur local de développement
+Tout est en principe, correctement configuré. Utilisez la commande `php artisan serv` pour lancer l'application sur votre machine.
+Pour arrêter le serveur local de développement, appuyez sur CTRL + C
 
 ## Travailler avec git
 Étant donné que nous sommes plusieurs à travailler sur ce projet et qu'il n'y a pas de synchronisation automatique entre le dépôt local[^1] et le dépôt distant[^2], l'un d'entre nous pourrait avoir des modifications en cours pendant que vous travaillez sur le projet. Et ces modifications peuvent porter sur le même fichier voir le même bout de code. Ce qui peut causer des conflits car vous avanceriez sur un projet non à jour et lorsque vous souhaiterez publier vos modifications, git ne saura pas choisir quelle modification est bonne à garder car les deux modifications sont incompatibles.
