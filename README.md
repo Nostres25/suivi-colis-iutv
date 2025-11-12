@@ -1,12 +1,12 @@
 Bienvenue sur le projet de création de logiciel de suivi de colis pour l'IUT de Villetaneuse, Sorbonne Paris-Nord !  
 
 # Équipe
-- **@weame959**
-- **@D4CJ**
-- **@ysmn-a**
-- **@Myriam**
-- **@Mégane**
-- **@Nostres25** (**auteur de ce document**)
+- **@weame959** Weame EL MOUTTAQUI
+- **@D4CJ** - Dimitar DIMITROV
+- **@ysmn-a** - Yasmine AIT SALAH
+- **@Myriam** - Myriam ABDELLAOUI
+- **@MeganeMaz** - Mégane Mazekem
+- **@Nostres25** - Soan MOREAU (**auteur de ce document**)
 
 Le demandeur du projet est l'enseignant chercheur et responsable du département CRIT à l'IUTV, **Franck Butelle**.
 
@@ -22,11 +22,15 @@ La plupart des IDE (ou éditeurs de code) comme Visual Studio Code embarquent de
 - Framework: [**Laravel 12**](https://laravel.com) [(documentation)](https://laravel.com/docs/12.x) 
 - Gestionnaire de paquets PHP: [**Composer**](https://getcomposer.org/)
 - Base de données (SGBDR) : **MariaDB**
-- Serveur de développement (Intégré à Laravel) : `php artisan serve`
-- Serveur de production (probable): **Apache2**  (autre possibilité: Nginx)
-- Système de production : **Ubuntu** (linux)
+- Serveur de développement (Intégré à Laravel) : `php artisan serv`
+- Serveur de production (probable): **Apache2** 
+- Système de production : **Ubuntu 24.04** (linux)
 
-(NodeJs est aussi intégré principalement pour l'utilisation de l'outil "vite", "tailwind" et autres outils liés au javascript et au css)
+### Autres outils:
+- Blade 
+- 
+
+(NodeJs ne pourra pas être utilisé pour ne pas faire tourner de JavaScript sur serveur. Ce qui signifie que les outils comme "Vite", "tailwind" et d'autres outils css ne sont pas disponibles)
 
 Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur.  
 ### Installation des paquets nécéssaires pour le développement
@@ -61,21 +65,18 @@ Vous pouvez le faire via cette commande:
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 ```
 
-#### 5. Installez NodeJs:  
-NodeJs permet de faire tourner du javascript sur le serveur. C'est utilisé pour certains modules du framework qui sont des outils pour simplifier le développement css et javascript. Leur utilisation n'est pas nécéssaire (et à éviter peut-être si possible pour ne pas avoir à installer NodeJs sur le serveur de production)
-Installez NodeJs à l'aide de cette commande : 
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \. "$HOME/.nvm/nvm.sh" && nvm install 24`
-```
-
-Vous avez maintenant (en principe) tous les paquets nécéssaires au développement 
-(À priori il n'y a pas besoin d'installer Laravel, ses fonctionnalités sont sous la forme de modules qui s'installent avec composer)
-
 Détails sur la suite pour la [configuration de l'environnement et la mise en place de la base de données](#mise-en-place-de-lenvironnement) plus bas.
 
 ## Code
 Formatteur: inconnu (permet de respecter un style de programmation commun)   
-IDE: Visual Studio Code  
+IDE:
+- Visual Studio Code avec les extensions suivantes: (pas sûr encore)
+  - Conventional commits (pour des commits à la norme)
+  - Laravel
+  - Laravel Pint (le formatteur)
+  - Live Server (pour s'entre aider à distance sur le même code)
+- PHPStorm (pas encore testé mais sans doute plus adapté)
+
 
 > [!NOTE]
 > Vous pouvez mettre le dossier du projet où vous souhaitez sur votre ordinateur
