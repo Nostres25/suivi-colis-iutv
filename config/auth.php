@@ -20,6 +20,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | INSA CAS properties
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the INSA CAS authentification system used
+    | to log in a different way the users.
+    |
+    */
+    'cas' => [
+    'debug'  => env('INSA_CAS_DEBUG', false),
+    'server' => [
+        'hostname' => env('INSA_CAS_HOSTNAME', ''),
+        'port'     => (int) env('INSA_CAS_PORT', 443),
+        'uri'      => env('INSA_CAS_URI', ''),
+    ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Authentication Guards
     |--------------------------------------------------------------------------
     |
