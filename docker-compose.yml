@@ -1,8 +1,13 @@
 services:
   suivi-colis-iutv:
+    environment:
+      - MYSQL_ROOT_PASSWORD=""
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
     build:
       context: .
-      dockerfile: config/docker/Dockerfile
+      dockerfile: configDocker/docker/Dockerfile.ubuntu
     ports:
       - "8080:80"
     volumes:

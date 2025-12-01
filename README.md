@@ -1,43 +1,82 @@
 Bienvenue sur le projet de création de logiciel de suivi de colis pour l'IUT de Villetaneuse, Sorbonne Paris-Nord !  
 
 # Équipe
-- **@weame959**
-- **@D4CJ**
-- **@ysmn-a**
-- **@Myriam**
-- **@Mégane**
-- **@Nostres25** (**auteur de ce document**)
+- **@weame959** Weame EL MOUTTAQUI
+- **@D4CJ** - Dimitar DIMITROV
+- **@ysmn-a** - Yasmine AIT SALAH
+- **@Myriam** - Myriam ABDELLAOUI
+- **@MeganeMaz** - Mégane Mazekem
+- **@Nostres25** - Soan MOREAU (**auteur de ce document**)
 
 Le demandeur du projet est l'enseignant chercheur et responsable du département CRIT à l'IUTV, **Franck Butelle**.
 
 # Développement
 ## Git
-Tout d'abord le repository GitHub est là pour héberger le code en ligne afin d'éviter les pertes de progression et de faciliter le travail en équipe.  
+Tout d'abord le repository/dépôt GitHub est là pour héberger le code en ligne afin d'éviter les pertes de progression et de faciliter le travail en équipe.  
 GitHub s'utilise avec **le logiciel [Git](https://git-scm.com/) qu'il vous faut installer** pour travailler sur le développement. C'est ce logiciel qui vous permettra de récupérer le code du projet mais aussi de publier vos modifications.  
 La plupart des IDE (ou éditeurs de code) comme Visual Studio Code embarquent des menus pour interagir avec git via l'interface, afin d'appuyer sur des boutons plutôt que de rédiger des commandes git. Mais ce document s'appuie sur les commandes git.   
 ###### [GitHub Desktop](https://desktop.github.com/download/) existe pour interagir avec git avec une interface mais c'est aussi plutôt limité et inutile si l'IDE comprend des menus git.
 
 ## Environnement
-Technologies: PHP, **MariaDB**, Apache2, Linux (le serveur de production sera sur Ubunutu) --> [XAMP](https://www.apachefriends.org/fr/index.html) pour permettre un développement sur linux et sur windows.  
-Framework: (Laravel ?)  
-Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur. Ainsi, vous devez installer php, mariadb et apache2 sur votre système et le configurer de sorte à ce que php fonctionne sur le serveur apache2 et puisse utiliser une base de données mariaDB.  
+- Langage: **PHP** (Actuellement 8.2),
+- Framework: [**Laravel 12**](https://laravel.com) [(documentation)](https://laravel.com/docs/12.x) 
+- Gestionnaire de paquets PHP: [**Composer**](https://getcomposer.org/)
+- Base de données (SGBDR) : **MariaDB**
+- Serveur de développement (Intégré à Laravel) : `php artisan serv`
+- Serveur de production (probable): **Apache2** 
+- Système de production : **Ubuntu 24.04** (linux)
 
-### Avec Docker
-Actuellement, j'ai utilisé docker pour faire fonctionner le projet par souci de praticité. Ce choix n'est pas définitif et je trouverais une solution pour que le code soit exécutable sur windows avec ou sans docker selon le meilleur choix.  
-Pour un maximum de stabilité, on considère que l'application devrait être testée sur une machine Ubuntu (qui est dérivé de débian) dans un environnement le plus semblable possible à l'environnement de production. Actuellement, l'image Docker est une image Debian par souci de praticité mais cela pourrait changer pour du Ubuntu à terme. Aussi, il est probablement préférable que l'application tourne sur un repertoire personnalisé comme `/var/www/suivi-colis-iutv`. Mais j'ai passé une après-midi à essayer de faire cela en vain, apache2 fait donc tourner l'application web sur `/var/www/html` pour le moment.
-###### J'ai envie de me tirer une balle, cordialmenent
+### Autres outils:
+- Blade 
+- 
 
-Toute fois ce qui est intéressant c'est que grâce au Dockerfile, vous savez ce qu'il faut faire pour faire fonctionner l'environnement. Et sur une distribution debian, vous savez quoi faire.
-###### Toutefois, il y a tellement de mauvaises choses que ça pourrait ne pas ressembler à ça à l'avenir
+(NodeJs ne pourra pas être utilisé pour ne pas faire tourner de JavaScript sur serveur. Ce qui signifie que les outils comme "Vite", "tailwind" et d'autres outils css ne sont pas disponibles)
 
-Commandes docker:
-- build & run : `docker compose up --build`
-- build : `docker compose -f ./docker-compose.yml build`
-- run : `docker compose up`
+Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur.  
+### Installation des paquets nécéssaires pour le développement
+> [!NOTE]
+> Lorsqu'il sera demandé d'exécuter des commandes, il faudra les entrer dans un terminal linux.
 
+> sur ubuntu:
+#### 1. Mise à jour du système :
+(à faire avant toute installation de paquets)
+```bash
+sudo apt update && sudo apt upgrade
+```
+
+#### 2. Installer l'IDE (Visual Studio Code) :
+(si vous utilisez WSL, vous pourrez vous contenter d'installer Vscode sur votre Windows)
+Téléchargez vscode depuis la [page d'installation](https://code.visualstudio.com/download) (.deb)  
+Puis en exécutant le fichier installé avec la commande :  
+```bash  
+sudo dpkg -i ~/Téléchargements/code_<version>.deb
+```  
+###### Si votre système est en anglais, le dossier de téléchargements peut être "Downloads" plutôt que "Téléchargements" et le nom du fichier `code_<version>.deb` est à modifier en fonction du nom du fichier installé via la page d'installation  
+
+#### 3. Installer git, curl, mariadb, php et ses extensions 
+curl sert à l'installation de certains paquets, mariadb c'est la base de données et les extensions php servent au bon fonctionnement de notre application, notamment avec la base de données.
+```bash  
+sudo apt-get install git curl mariadb-server php php-curl php-mbstring php-xml php-mysql
+```  
+#### 4. Installer Composer : 
+Composer est le gestionnaire de modules qui nous permet d'installer et d'utiliser des modules tiers.
+Vous pouvez le faire via cette commande:
+```bash
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+```
+
+Détails sur la suite pour la [configuration de l'environnement et la mise en place de la base de données](#mise-en-place-de-lenvironnement) plus bas.
 
 ## Code
-Formatteur: <inconnu> (permet de respecter un style de programmation commun)
+Formatteur: inconnu (permet de respecter un style de programmation commun)   
+IDE:
+- Visual Studio Code avec les extensions suivantes: (pas sûr encore)
+  - Conventional commits (pour des commits à la norme)
+  - Laravel
+  - Laravel Pint (le formatteur)
+  - Live Server (pour s'entre aider à distance sur le même code)
+- PHPStorm (pas encore testé mais sans doute plus adapté)
+
 
 > [!NOTE]
 > Vous pouvez mettre le dossier du projet où vous souhaitez sur votre ordinateur
@@ -49,8 +88,6 @@ Pour en savoir plus sur le fonctionnement de git et de github, et notamment comp
 
 #### Utiliser git sur Windows:
 Je vous conseil d'utiliser l'invite de commandes git, disponible avec un clique droit sur un dossier, en appuyant sur "Plus d'options" si vous êtes sur windows 11 et en cliquant sur "**Git Bash Here**". Cet invite de commandes permet d'utiliser [la commande `git`](https://git-scm.com/docs/git) pour interagir avec git et github. Mais il apporte aussi d'autres commandes comme `cd` pour changer de dossier et [`nano`](https://nano-editor.org/dist/v2.2/nano.html) pour modifier un fichier directement dans le terminal et autre (un peu comme sur linux).
-> [!WARNING]
->  **Il est toutefois très conseillé de développer sur linux directement ou avec un WSL** car le serveur de production sera un serveur linux (Ubuntu, plus précisément) et il y a des différences, notamment avec les chemins de fichiers entre Windows et Linux  
 
 Pour exécuter des commandes git vous devrez tout le temps passer par cet invite de commande git (Git bash) **et dans le bon dossier**.
 
@@ -59,7 +96,6 @@ Vous pouvez utiliser la commande `git` dans le terminal classique
 
 #### Utiliser git sur Mac
 Aucune idée. Bon courage ! :) *ça doit être proche de linux je suppose ?*
-
 ## Importer le projet
 Avant tout, le dossier du projet n'a pas été crée. Il vous faut d'abord importer le projet. 
 1. Pour cela, placez-vous dans le dossier dans lequel vous souhaitez placer le projet, et ouvrez l'invite de commandes. (l'invite de commandes git ou "Git bash" sur windows)
@@ -68,14 +104,61 @@ Avant tout, le dossier du projet n'a pas été crée. Il vous faut d'abord impor
 
 2. Ensuite clonez le code du projet à l'aide de la commande :
 ```
-git clone https://github.com/Nostres25/suivis-colis-iutv.git
+git clone https://github.com/Nostres25/suivi-colis-iutv.git
 ```
 > [!NOTE]
 > la première fois, il vous sera demandé de vous connecter. Si vous n'êtes pas redirigé vers une interface pour entrer vos identifiants github, vous devrez [créer un token d'accès personnel](https://docs.github.com/fr/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) pour l'entrer à la place du mot de passe.
 
-Maintenant vous pouvez ouvrir **le dossier su projet**, crée sous le nom de "suivis-colis-iutv", dans votre IDE favori  ! ✅
+Maintenant vous pouvez ouvrir **le dossier su projet**, crée sous le nom de "suivi-colis-iutv", dans votre IDE favori  ! ✅
 > [!WARNING]
 > Toutefois, attention à ne rien modifier à cette étape. Car vous êtes sur la branche `main` du projet et que si vous modifiez quoi que ce soit, vous pouvez créer des conflits sur cette branche. **Prenez connaissance de la suite de cette documentation avant de faire quoi que ce soit**.
+
+## Mise en place de l'environnement
+###### Spécifiquement pour cette catégorie, il n'est pas nécéssaire de changer de branche. Il n'y a aucun risque de conflit.
+Assurez-vous de bien avoir installé php, composer, mariadb et auree [comme indiqué plus haut](#installation-des-paquets-n%C3%A9c%C3%A9ssaires-pour-le-d%C3%A9veloppement)
+
+### I. Installer les modules du projet
+Cela se fait à l'aide de composer avec la commande suivante:
+```bash
+composer update
+```
+
+### II. Définition des variables d'environnement
+Ouvrez le dossier du projet (suivi-colis-iutv) avec visual studio code et vous verrez un fichier `.env.example`.  
+1. Renommez le fichier `.env.example` en `.env` (ce fichier est ignoré par git et ne sera jamais commit sur le dépôt distant grâce au fichier `.gitignore`)  
+2. Dans `.env`, changez la valeur de `DB_PASSWORD` si vous le souhaitez pour y mettre votre propre mot de passe. 
+  Il s'agit du mot de passe pour l'utilisateur de base de données présente sur votre pc.
+  (Si vous avez déjà une base de données et un utilisateur MariaDB, vous pouvez modifier les valeurs du `.env` selon votre système).
+
+### III. Mise en place de la base de données 
+1. Lancez la base de données MariaDB:  
+  ```bash  
+  sudo mariadb -u root -p
+  ```
+  > [!NOTE]
+  > Si vous n'avez jamais configuré de mot de passe pour root, il n'y a pas de mot de passe par défaut donc vous pouvez ne rien écrire et appuyer sur "Entrer".   
+  
+2. Une fois connecté en tant que root, créez la base de donnée `suivi_colis_iutv`, créez l'utilisateur `app_colis` et donnez les permissions nécéssaires en entrant les instructions suivantes:  
+  ```sql
+  CREATE DATABASE IF NOT EXISTS suivi_colis_iutv;
+  CREATE USER 'app_colis'@'localhost' IDENTIFIED BY "password"; -- REMPLACEZ password PAR LE MOT DE PASSE QUE VOUS AVEZ MIS DANS LE .env
+  GRANT ALL PRIVILEGES ON suivi_colis_iutv.* TO 'app_colis'@'localhost';
+  FLUSH PRIVILEGES;
+  ```
+  Si tout à fonctionné, vous pouvez sortir de la base de données en entrant `EXIT` ou `\q`
+
+3. Pour tester si votre base de données fonctionne correctement, vous pouvez exécuter `php artisan db` dans le dossier du projet, ce qui devrait vous connecter à la base de données selon les informations présentes dans le `.env`
+4. Si vous réussissez à créer une table (ex: `CREATE TABLE TABLE_NAME (a INT);`), c'est que les permissions ont bien été configurées
+  (pensez à sortir avec `EXIT` ou `\q` pour continuer)
+5. Enfin, il ne reste plus qu'à préparer la base de données `suivi_colis_iutv` de sorte à ce que l'application puisse se lancer. Pour cela, rendez-vous dans le dossier du projet et exécutez:
+  ```bash
+  php artisan migrate
+  ```
+  (cela pour le moment, ne fait que créer les tables par défaut pour le fonctionnement de laravel)
+
+### IV Lancement du serveur local de développement
+Tout est en principe, correctement configuré. Utilisez la commande `php artisan serv` pour lancer l'application sur votre machine.
+Pour arrêter le serveur local de développement, appuyez sur CTRL + C
 
 ## Travailler avec git
 Étant donné que nous sommes plusieurs à travailler sur ce projet et qu'il n'y a pas de synchronisation automatique entre le dépôt local[^1] et le dépôt distant[^2], l'un d'entre nous pourrait avoir des modifications en cours pendant que vous travaillez sur le projet. Et ces modifications peuvent porter sur le même fichier voir le même bout de code. Ce qui peut causer des conflits car vous avanceriez sur un projet non à jour et lorsque vous souhaiterez publier vos modifications, git ne saura pas choisir quelle modification est bonne à garder car les deux modifications sont incompatibles.
@@ -250,6 +333,20 @@ Il peut être possible de travailler à plusieurs sur une même branche mais il 
 Malheureusement cette partie n'a pas encore été rédigée. Passer par la commande, surtout en suivant cette documentation vous permettra de beaucoup mieux comprendre le fonctionnement de git et de GitHub.
 Mais si vous avez compris le fonctionnement de git avec les commandes, Github desktop sera facile à comprendre car chaque action correspond en réalité à une commande git.
 Il est vrai que Github desktop offre un meilleur confort avec une interface. Surtout pour l'affichage des différences (équivalent à `git diff`). 
+
+## Avec Docker
+On pourra utiliser docker pour tester le déploiement sur un système Ubuntu avec Apache2. Actuellement, la question du déploiement n'a pas été travaillée, mais c'est à faire en parallèle du développement. (pas trop à la fin, sinon on risque d'avoir beaucoup de problèmes à corriger)
+Pour un maximum de stabilité, on considère que l'application devrait être testée sur une machine Ubuntu (qui est dérivé de débian) dans un environnement le plus semblable possible à l'environnement de production. Actuellement, l'image Docker est une image Debian par souci de praticité mais cela pourrait changer pour du Ubuntu à terme. Aussi, il est probablement préférable que l'application tourne sur un repertoire personnalisé comme `/var/www/suivi-colis-iutv`. Mais j'ai passé une après-midi à essayer de faire cela en vain, apache2 fait donc tourner l'application web sur `/var/www/html` pour le moment.
+###### Triste histoire
+
+Toute fois ce qui est intéressant c'est que grâce au Dockerfile, vous savez ce qu'il faut faire pour faire fonctionner l'environnement. Et sur une distribution debian, vous savez quoi faire.
+###### Toutefois, il y a tellement de mauvaises choses que ça pourrait ne pas ressembler à ça à l'avenir
+
+Commandes docker:
+- build & run : `docker compose up --build`
+- build : `docker compose -f ./docker-compose.yml build`
+- run : `docker compose up`
+
 
 # Programmation
 ### Habitudes de programmation & conseils

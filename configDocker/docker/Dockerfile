@@ -25,15 +25,15 @@ RUN apt-get update -qq && \
 
 # PHP Extensions
 RUN docker-php-ext-install -j$(nproc) opcache pdo_mysql
-COPY config/php.ini /usr/local/etc/php/conf.d/app.ini
+COPY configDocker/php.ini /usr/local/etc/php/conf.d/app.ini
 
 # Apache
 # COPY errors /errors
 # Install laravel
 # composer create-project --prefer-dist laravel/laravel nom_de_votre_projet
 RUN chown -R www-data:www-data ${APP_DIRECTORY}
-COPY config/vhost.conf /etc/apache2/sites-available/000-default.conf
-COPY config/apache.conf /etc/apache2/conf-available/${APP_NAME}.conf
+COPY configDocker/vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY configDocker/apache.conf /etc/apache2/conf-available/${APP_NAME}.conf
 COPY --chown=www-data:www-data app/index.php ${APP_DIRECTORY}/index.php
 COPY --chown=www-data:www-data .env ${APP_DIRECTORY}/.env
 
