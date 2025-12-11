@@ -230,7 +230,15 @@ php artisan migrate
 
 (cela pour le moment, ne fait que créer les tables par défaut pour le fonctionnement de laravel)
 
-### IV Lancement du serveur local de développement
+### IV Création de la clé de chiffrement
+
+Laravel impose la création d'une clé de chiffrement. Sûrement pour des raisons de sécurité avec certaines fonctionnalités. Je ne sais pas si c'est utile pour nous mais c'est obligatoire pour faire fonctionner l'application:
+
+```bash
+php artisan key:generate
+```
+
+### V Lancement du serveur local de développement
 
 Tout est en principe, correctement configuré. Utilisez la commande `php artisan serv` pour lancer l'application sur votre machine.
 Pour arrêter le serveur local de développement, appuyez sur CTRL + C
