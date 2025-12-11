@@ -71,7 +71,7 @@ sudo dpkg -i ~/Téléchargements/code_<version>.deb
 curl sert à l'installation de certains paquets, mariadb c'est la base de données et les extensions php servent au bon fonctionnement de notre application, notamment avec la base de données.
 
 ```bash
-sudo apt-get install git curl mariadb-server php php-curl php-mbstring php-xml php-mysql
+sudo apt-get install git curl mariadb-server php php-curl php-mbstring php-xml php-mysql php-zip
 ```
 
 #### 4. Installer Composer :
@@ -181,7 +181,8 @@ Assurez-vous de bien avoir installé php, composer, mariadb et auree [comme indi
 
 ### I. Installer les modules du projet
 
-Cela se fait à l'aide de composer avec la commande suivante:
+Pour installer les modules du projet, il vous faut d'abord vous rendre dans le répertoire du projet (le dossier `suivi-colis-iutv` créé suite à `git clone...`)
+Ensuite exécutez la commande suivante:
 
 ```bash
 composer update
