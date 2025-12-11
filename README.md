@@ -135,6 +135,9 @@ Pour en savoir plus sur le fonctionnement de git et de github, et notamment comp
 
 #### Utiliser git sur Windows:
 
+> [!WARNING]
+> Si vous utilisez WSL, cela ne vous concerne pas. Vous utiliserez git comme sur Linux avec le terminal WSL
+
 Je vous conseil d'utiliser l'invite de commandes git, disponible avec un clique droit sur un dossier, en appuyant sur "Plus d'options" si vous êtes sur windows 11 et en cliquant sur "**Git Bash Here**". Cet invite de commandes permet d'utiliser [la commande `git`](https://git-scm.com/docs/git) pour interagir avec git et github. Mais il apporte aussi d'autres commandes comme `cd` pour changer de dossier et [`nano`](https://nano-editor.org/dist/v2.2/nano.html) pour modifier un fichier directement dans le terminal et autre (un peu comme sur linux).
 
 Pour exécuter des commandes git vous devrez tout le temps passer par cet invite de commande git (Git bash) **et dans le bon dossier**.
