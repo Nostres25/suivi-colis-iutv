@@ -112,6 +112,9 @@ Détails sur la suite pour la [configuration de l'environnement et la mise en pl
     -   **Conventional commits** (pour des commits à la norme)
 -   **PHPStorm** (pas encore testé mais sans doute plus adapté)
 
+> [!NOTE]
+> Certaines extensions vscode affichent une erreur en bas à droite de l'écran. Ne faites pas attention, cliquez sur "Ne plus afficher", l'extension fonctionne quand même.
+
 > [!WARNING]
 > Concernant les extensions Vscode surtout, il se peut que **si votre ordinateur est lent**, que ce soit encore pire avec les extensions. Je vous conseil donc de tester les extensions mais si ça ralenti votre ordinateur, vous pouvez désinstaller certaines extensions :
 >
