@@ -122,6 +122,8 @@ Détails sur la suite pour la [configuration de l'environnement et la mise en pl
 > 2.  **GitLens**: C'est très pratique sur certains points mais pas nécéssaire pour le code. Surtout que vu à quel point c'est complet, ça doit plus ralentir que les autres
 > 3.  **PHP Debug**: On peut se débrouiller à debug sans les outils que ça propose
 > 4.  **Prettier**: C'est pas obligatoire pour un code fonctionnel, c'est juste pour la lisibilité, surtout que c'est seulement pour du Javascript et CSS, ce qu'on ne va sans doute pas beaucoup utiliser. De plus, il suffit de soit bien formatter à la main, soit que quelqu'un passe derrière vous avec l'extension pour appliquer le formatage automatique
+>     Certaines extensions vscode affichent une erreur en bas à droite de l'écran. Ne faites pas attention, cliquez sur "Ne plus afficher", l'extension fonctionne quand même.
+
 > 5.  **Laravel Pint**: La même chose que Prettier même si là c'est plus utile car ça concerne le PHP
 > 6.  **Live Share**: ça risque d'être très utile, notamment pour demander de l'aide à quelqu'un mais au pire vous l'installez uniquement lorsque vous en avez besoin et lorsque vous ne l'utilisez plus vous le désinstallez.
 >
