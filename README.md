@@ -197,7 +197,7 @@ composer update
 
 Ouvrez le dossier du projet (suivi-colis-iutv) avec visual studio code et vous verrez un fichier `.env.example`.
 
-1. Renommez le fichier `.env.example` en `.env` (ce fichier est ignoré par git et ne sera jamais commit sur le dépôt distant grâce au fichier `.gitignore`)
+1. **Copiez** le fichier `.env.example` **et appelez sa copie `.env`** (ce fichier est ignoré par git et ne sera jamais commit sur le dépôt distant grâce à sa définition dans le fichier `.gitignore`)
 2. Dans `.env`, changez la valeur de `DB_PASSWORD` si vous le souhaitez pour y mettre votre propre mot de passe.
    Il s'agit du mot de passe pour l'utilisateur de base de données présente sur votre pc.
    (Si vous avez déjà une base de données et un utilisateur MariaDB, vous pouvez modifier les valeurs du `.env` selon votre système).
@@ -232,6 +232,23 @@ Si tout à fonctionné, vous pouvez sortir de la base de données en entrant `EX
 ```bash
 php artisan migrate
 ```
+
+> [!NOTE]
+> Les migrations dans Laravel sont des fichiers de classe qui contiennent des instructions pour créer, modifier ou supprimer des tables, des colonnes, des index et d'autres éléments de la base de données. Chaque migration correspond à une étape spécifique dans l'évolution de la structure de la base de données. La commande `php artisan migrate` va créer, modifier ou supprimer les tables en fonctions des migrations présentes.
+>
+> -   À chaque changement aux niveau des migrations, il faut exécuter la commande suivante:
+>
+> ```bash
+> php artisan migrate:fresh
+> ```
+>
+> -   Si vous supprimez une migration ou que vous modifiez une migration existante, veuillez exécuter:
+>
+> ```bash
+> composer dump-autoload
+> ```
+>
+> -   Une fois l'application en production, ne modifiez jamais une migrations ! Préférez en créer une nouvelle migration avec la nouvelle structure des tables concernées. Ceci permet de garder une rétrocompatibilité des données suite aux changements structuraux.
 
 (cela pour le moment, ne fait que créer les tables par défaut pour le fonctionnement de laravel)
 
