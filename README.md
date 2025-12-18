@@ -122,6 +122,8 @@ Détails sur la suite pour la [configuration de l'environnement et la mise en pl
 > 2.  **GitLens**: C'est très pratique sur certains points mais pas nécéssaire pour le code. Surtout que vu à quel point c'est complet, ça doit plus ralentir que les autres
 > 3.  **PHP Debug**: On peut se débrouiller à debug sans les outils que ça propose
 > 4.  **Prettier**: C'est pas obligatoire pour un code fonctionnel, c'est juste pour la lisibilité, surtout que c'est seulement pour du Javascript et CSS, ce qu'on ne va sans doute pas beaucoup utiliser. De plus, il suffit de soit bien formatter à la main, soit que quelqu'un passe derrière vous avec l'extension pour appliquer le formatage automatique
+>     Certaines extensions vscode affichent une erreur en bas à droite de l'écran. Ne faites pas attention, cliquez sur "Ne plus afficher", l'extension fonctionne quand même.
+
 > 5.  **Laravel Pint**: La même chose que Prettier même si là c'est plus utile car ça concerne le PHP
 > 6.  **Live Share**: ça risque d'être très utile, notamment pour demander de l'aide à quelqu'un mais au pire vous l'installez uniquement lorsque vous en avez besoin et lorsque vous ne l'utilisez plus vous le désinstallez.
 >
@@ -195,7 +197,7 @@ composer update
 
 Ouvrez le dossier du projet (suivi-colis-iutv) avec visual studio code et vous verrez un fichier `.env.example`.
 
-1. Renommez le fichier `.env.example` en `.env` (ce fichier est ignoré par git et ne sera jamais commit sur le dépôt distant grâce au fichier `.gitignore`)
+1. **Copiez** le fichier `.env.example` **et appelez sa copie `.env`** (ce fichier est ignoré par git et ne sera jamais commit sur le dépôt distant grâce à sa définition dans le fichier `.gitignore`)
 2. Dans `.env`, changez la valeur de `DB_PASSWORD` si vous le souhaitez pour y mettre votre propre mot de passe.
    Il s'agit du mot de passe pour l'utilisateur de base de données présente sur votre pc.
    (Si vous avez déjà une base de données et un utilisateur MariaDB, vous pouvez modifier les valeurs du `.env` selon votre système).
@@ -230,6 +232,23 @@ Si tout à fonctionné, vous pouvez sortir de la base de données en entrant `EX
 ```bash
 php artisan migrate
 ```
+
+> [!NOTE]
+> Les migrations dans Laravel sont des fichiers de classe qui contiennent des instructions pour créer, modifier ou supprimer des tables, des colonnes, des index et d'autres éléments de la base de données. Chaque migration correspond à une étape spécifique dans l'évolution de la structure de la base de données. La commande `php artisan migrate` va créer, modifier ou supprimer les tables en fonctions des migrations présentes.
+>
+> -   À chaque changement aux niveau des migrations, il faut exécuter la commande suivante:
+>
+> ```bash
+> php artisan migrate:fresh
+> ```
+>
+> -   Si vous supprimez une migration ou que vous modifiez une migration existante, veuillez exécuter:
+>
+> ```bash
+> composer dump-autoload
+> ```
+>
+> -   Une fois l'application en production, ne modifiez jamais une migrations ! Préférez en créer une nouvelle migration avec la nouvelle structure des tables concernées. Ceci permet de garder une rétrocompatibilité des données suite aux changements structuraux.
 
 (cela pour le moment, ne fait que créer les tables par défaut pour le fonctionnement de laravel)
 
