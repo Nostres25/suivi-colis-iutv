@@ -99,8 +99,6 @@ puis ceci:
 sudo mv composer.phar /usr/local/bin/composer
 ```
 
-Détails sur la suite pour la [configuration de l'environnement et la mise en place de la base de données](#mise-en-place-de-lenvironnement) plus bas.
-
 > ✅ Vous disposez désormais de tous les paquets système nécéssaires pour le développement du projet. Désormais, lisez la suite du document pour les configurations.
 
 ### II. Éditeur de code / IDE:
@@ -113,14 +111,13 @@ _Nous aurions pu utiliser PHPStorm qui est moderne et plus adapté pour du php m
 Avec les extensions suivantes:
 
 -   **Laravel** (Autocomplétion, couleurs et autre)
--   **Laravel Pint** (le formatteur laravel/php)
+-   **Laravel Pint** (Autoformatteur Laravel/PHP pour que les indentations soient réctifiées automatiquement afin d'avoir un code bien lisible)
 -   **Live Share** (pour fluidifier le travail en collaboration)
 -   **Laravel Extra Intellisense** (Pour une meilleure autocomplétion comprenant les routes, les vues, les valeurs de config etc...)
 -   **Laravel Goto View** (Pour aller rapidement sur des vues ou des controlleurs grâce à un CTRL + Clique gauche sur le nom de la vue ou du controlleur dans le code)
 -   **PHP Intelephense** (Autocomplétion pour du pure PHP)
--   **Laravel Pint** (Autoformatteur pour que les indentations soient réctifiées automatiquement afin d'avoir un code bien lisible)
 -   **PHP Debug** (Outil permettant de debug le code php ligne par ligne)
--   **Pretier** (Autoformatteur pour du Javascript, JSON et CSS)
+-   **Prettier** (Autoformatteur pour du Javascript, JSON et CSS)
 -   **GitLens** (Outil Git très complet permettant notamment de voir rapidement dans quel commit a été modifié une ligne de code)
 -   **Conventional commits** (pour des commits à la norme)
 
@@ -172,8 +169,8 @@ Aucune idée. Bon courage ! :) _ça doit être proche de linux je suppose ?_
 
 1. Pour cela, placez-vous dans le dossier dans lequel vous souhaitez placer le projet, et ouvrez l'invite de commandes. (l'invite de commandes git ou "Git bash" sur windows)
 
-    > [!NOTE]
-    > Vous pouvez utiliser la commande `cd` dans l'invite de commande pour vous déplacer de dossier
+> [!NOTE]
+> Vous pouvez utiliser la commande `cd` dans l'invite de commande pour vous déplacer de dossier
 
 2. Ensuite clonez le code du projet à l'aide de la commande :
 
@@ -190,9 +187,9 @@ git clone https://github.com/Nostres25/suivi-colis-iutv.git
 > Toutefois, attention à ne rien modifier dans le code à cette étape. Car vous êtes sur la branche `main` du projet et que si vous modifiez quoi que ce soit, vous pouvez créer des conflits sur cette branche. **Prenez connaissance de la suite de cette documentation, dont [les règles d'organisation du développement](#r%C3%A9sum%C3%A9-des-r%C3%A8gles-du-d%C3%A9veloppement-du-projet) avant de faire quoi que ce soit**.
 > _Spécifiquement pour la suite de la mise en place de l'environnement, il n'est pas nécéssaire de changer de branche._
 
-### IV. Installer les modules du projet
+### IV. Installation des modules du projet
 
-D'abord, assurez-vous de bien avoir installé php, composer, mariadb, vscode avec ses extensions et autres [comme indiqué plus haut](#installation-des-paquets-sur-ubuntu)
+D'abord, assurez-vous de bien avoir installé php, composer, mariadb, vscode avec ses extensions et autres [comme indiqué plus haut](#i-installation-des-paquets-sur-ubuntu)
 
 Pour installer les modules composer du projet, il vous faut d'abord vous rendre dans le répertoire du projet (le dossier `suivi-colis-iutv` créé suite à `git clone...`)
 Ensuite exécutez la commande suivante:
@@ -365,7 +362,7 @@ Cette commande affiche l'état du dépôt local, c'est-à-dire :
 
 ### Au sujet des branches[^4]
 
-Si vous avez suivi [le tuto pour importer le projet](#importer-le-projet) sur votre ordinateur, vous avez cloné la branche principale (main) du repository.
+Si vous avez suivi [le tuto pour importer le projet](#importation-du-projet) sur votre ordinateur, vous avez cloné la branche principale (main) du repository.
 
 > [!CAUTION]
 >
