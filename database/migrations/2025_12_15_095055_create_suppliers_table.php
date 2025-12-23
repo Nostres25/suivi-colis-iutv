@@ -17,8 +17,13 @@ return new class extends Migration
             $table->bigInteger('siret', false, true)->unique();
             $table->string('email')->nullable();
             $table->string('numero_tel')->nullable();
-            $table->string('nom_contact')->nullable();
+            $table->string('nom_contact')
+                ->nullable()
+                ->comment('Nom du contact dans l\'entreprise fournisseur');
             $table->text('note')->nullable();
+            $table->boolean('valide')
+                ->default(false)
+                ->comment('Indique s\'il est possible de passer commande à ce fournisseur');
         });
     }
 
