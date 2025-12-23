@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('fournisseur', function (Blueprint $table) {
             $table->id('id_fournisseur');
             $table->string('nom_entreprise')->unique();
-            $table->text('note')->nullable();
+            $table->bigInteger('siret', false, true)->unique();
             $table->string('email')->nullable();
             $table->string('numero_tel')->nullable();
             $table->string('nom_contact')->nullable();
-
+            $table->text('note')->nullable();
         });
     }
 
