@@ -15,6 +15,7 @@ return new class extends Migration
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('login')->unique();
             $table->string('last_name');
             $table->string('first_name');
             $table->string('email')->nullable();
@@ -35,7 +36,6 @@ return new class extends Migration
         // Nécéssaire, sinon l'application ne se lance pas
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            // $table->foreignId('user_id')->nullable()->index();
             $table->foreignId('user_id')->nullable()->constrained('users', 'id')->nullOnDelete()->cascadeOnUpdate();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();

@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
-            $table->string('company_name')->unique();
-            $table->bigInteger('siret', false, true)->unique();
+            $table->string('company_name')
+                ->unique()
+                ->comment("Nom de l'entreprise fournisseur. Ne doit pas contenir d'espace et commence par une majuscule.");
+            $table->string('siret', 14)->unique();
             $table->string('email')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('contact_name')
