@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "suivi-colis-iutv/laravel-app",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Application de suivi des colis à l'IUT de Villetaneuse.",
     "keywords": [
         "laravel",
         "framework"

@@ -2,13 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class OrderController extends Controller
 {
     // TODO Annotation pour utiliser la fonction auth() de AuthController pour chaque page
-    public function viewOrders(): View
+    public function viewOrders(Request $request): View
     {
+
+        if ($request->method() === 'POST') {
+            session()->put('user', User::find($request->input('user')));
+        }
+
+        $order = new \App\Models\Commande;
+        $order->num_commande = '4500161828';
+        $order->label = 'Cablage salle blanche';
+        $order->description = 'Cablage electrique de la salle blanche du CRIT';
+        $order->id_fournisseur = 1;
+        $order->num_devis = 'd2509123';
+        $order->etat = 'BROUILLON';
+
+        $order->save();
+
+        return $order;
+
         $orders = [
             [
                 'id' => '1',

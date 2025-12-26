@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('modification', function (Blueprint $table) {
-            $table->unsignedBigInteger('id_modif')->autoIncrement();
-            $table->foreignId('id_commande')->constrained('commande', 'id_commande')->cascadeOnDelete();
-            $table->text('texte');
-            $table->dateTime('date_action');
-            $table->foreignId('id_auteur')->nullable()->constrained('utilisateur', 'id_utilisateur')->nullOnDelete()->cascadeOnUpdate();
-            $table->primary(['id_modif', 'id_commande']);
+        Schema::create('logs', function (Blueprint $table) {
+            $table->unsignedBigInteger('id')->autoIncrement();
+            $table->foreignId('order_id')->constrained('orders', 'id')->cascadeOnDelete();
+            $table->text('text');
+            $table->dateTime('created_at');
+            $table->foreignId('author_id')->nullable()->constrained('users', 'id')->nullOnDelete()->cascadeOnUpdate();
+            $table->primary(['id', 'order_id']);
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('modification');
+        Schema::dropIfExists('logs');
     }
 };

@@ -25,18 +25,18 @@ return new class extends Migration
         // WHERE TABLE_SCHEMA = 'nom_de_votre_base'
         //     AND TABLE_NAME = 'nom_de_votre_table'
         //     AND COLUMN_NAME = 'nom_de_votre_colonne';
-        Schema::create('commande', function (Blueprint $table) {
-            $table->id('id_commande');
-            $table->string('num_commande')->unique();
+        Schema::create('orders', function (Blueprint $table) {
+            $table->id();
+            $table->string('order_num')->unique();
             $table->string('label');
             $table->text('description')->nullable();
-            $table->foreignId('id_fournisseur')->nullable()->constrained('fournisseur', 'id_fournisseur')->nullOnDelete();
-            $table->decimal('cout', 12, 2)->nullable();
-            $table->string('num_devis')->unique();
-            $table->string('chemin_devis')->nullable();
-            $table->string('chemin_bon_de_commande')->nullable();
-            $table->string('chemin_de_livraison')->nullable();
-            $table->enum('etat', [ // états possibles de la commande (triés dans l'ordre) :
+            $table->foreignId('supplier_id')->nullable()->constrained('suppliers', 'id')->nullOnDelete();
+            $table->decimal('cost', 12, 2)->nullable();
+            $table->string('quote_num')->unique();
+            $table->string('path_quote')->nullable(); // chemin vers le fichier du devis
+            $table->string('path_purchase_order')->nullable(); // chemin vers le fichier du bon de commande signé ou non signé
+            $table->string('path_delivery_note')->nullable(); // chemin vers le fichier du bon de livraison
+            $table->enum('states', [ // états possibles de la commande (triés dans l'ordre) :
 
                 'BROUILLON', // enregistré à l'état de brouillon. Affiché seulement pour le demandeur
 
@@ -66,15 +66,15 @@ return new class extends Migration
             ])->default('BROUILLON');
         });
 
-        Schema::create('colis', function (Blueprint $table) {
-            $table->unsignedBigInteger('id_colis')->autoIncrement();
-            $table->foreignId('id_commande')->constrained('commande', 'id_commande')->cascadeOnDelete()->cascadeOnUpdate();
+        Schema::create('packages', function (Blueprint $table) {
+            $table->unsignedBigInteger('id')->autoIncrement();
+            $table->foreignId('order_id')->constrained('orders', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('label');
-            $table->decimal('cout', 12, 2)->nullable();
-            $table->date('date_prevue_livraison')->nullable();
+            $table->decimal('cost', 12, 2)->nullable();
+            $table->date('date_expected_delivery')->nullable();
             $table->dateTime('date_reception')->nullable();
 
-            $table->primary(['id_colis', 'id_commande']);
+            $table->primary(['id', 'order_id']);
         });
 
     }
@@ -84,7 +84,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('colis');
-        Schema::dropIfExists('commande');
+        Schema::dropIfExists('package');
+        Schema::dropIfExists('orders');
     }
 };

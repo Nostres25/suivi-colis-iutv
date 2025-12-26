@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fournisseur', function (Blueprint $table) {
-            $table->id('id_fournisseur');
-            $table->string('nom_entreprise')->unique();
+        Schema::create('suppliers', function (Blueprint $table) {
+            $table->id();
+            $table->string('company_name')->unique();
             $table->bigInteger('siret', false, true)->unique();
             $table->string('email')->nullable();
-            $table->string('numero_tel')->nullable();
-            $table->string('nom_contact')
+            $table->string('phone_number')->nullable();
+            $table->string('contact_name')
                 ->nullable()
                 ->comment('Nom du contact dans l\'entreprise fournisseur');
             $table->text('note')->nullable();
-            $table->boolean('valide')
+            $table->boolean('is_valid')
                 ->default(false)
                 ->comment('Indique s\'il est possible de passer commande à ce fournisseur');
         });
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fournisseur');
+        Schema::dropIfExists('suppliers');
     }
 };
