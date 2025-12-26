@@ -72,7 +72,7 @@ return new class extends Migration
             $table->string('label');
             $table->decimal('cost', 12, 2)->nullable();
             $table->date('date_expected_delivery')->nullable();
-            $table->dateTime('date_reception')->nullable();
+            $table->dateTime('shipping_date')->nullable();
 
             $table->primary(['id', 'order_id']);
         });

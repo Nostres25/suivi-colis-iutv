@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('text');
             $table->dateTime('created_at');
-            $table->dateTime('edited_at')->nullable();
+            $table->dateTime('updated_at')->nullable();
             $table->foreignId('author_id')->nullable()->constrained('users', 'id')->nullOnDelete();
         });
 
