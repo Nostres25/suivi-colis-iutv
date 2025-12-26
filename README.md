@@ -104,7 +104,6 @@ sudo mv composer.phar /usr/local/bin/composer
 ### II. Éditeur de code / IDE:
 
 Si vous avez suivi les étapes précédentes, vous avez installer Visual Studio Code qui est l'IDE choisi pour le projet. Cependant il n'est pas directement adapté à php et au développement avec Laravel. C'est pour cela que nous installons des extensions pour bénéficier de certaines fonctionnalités pratiques qui nous feront gagner du temps dans le développement
-_Nous aurions pu utiliser PHPStorm qui est moderne et plus adapté pour du php mais par habitude nous préférons utiliser Vscode avec des extensions._
 
 #### **Visual Studio Code**
 
