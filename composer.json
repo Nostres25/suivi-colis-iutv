@@ -10,7 +10,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "components/jquery": "^3.7",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "twbs/bootstrap": "5.3.8"
@@ -62,9 +61,7 @@
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
             "rm -rf public/bootstrap",
-            "cp -R vendor/twbs/bootstrap/dist public/bootstrap",
-            "rm -rf public/jquery/jquery.min.js",
-            "cp -R vendor/components/jquery/jquery.min.js public/jquery/jquery.min.js"
+            "cp -R vendor/twbs/bootstrap/dist public/bootstrap"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
