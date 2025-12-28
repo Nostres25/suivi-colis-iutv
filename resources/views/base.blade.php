@@ -26,14 +26,14 @@
     {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
     
 
-    {{-- Pour charger les scripts jquery, nécéssaire à boostrap --}}
-    <script type="text/javascript" src="jquery/jquery.min.js"></script>
+    {{-- Pour charger les scripts jquery, nécéssaire à boostrap - c'était nécéssaire avec bootstrap 4 mais plus avec boostrap 5--}}
+    {{-- <script type="text/javascript" src="jquery/jquery.min.js"></script> --}}
 
-    {{-- Pour charger popper, nécéssaire à boostrap --}}
+    {{-- Pour charger jquery popper et bootstrap en même temps, tout est nécéssaire à boostrap --}}
     <script type="text/javascript" src="bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    {{--  Pour charger les scripts boostrap--}}
-    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    {{--  Pour charger les scripts boostrap - c'était nécéssaire avec bootstrap 4 mais plus avec boostrap 5--}}
+    {{-- <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script> --}}
     
 </head>
 <body>
