@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('commentaire', function (Blueprint $table) {
-            $table->id('id_commentaire');
-            $table->text('texte');
-            $table->dateTime('date_envoi');
-            $table->dateTime('date_modification')->nullable();
-            $table->foreignId('id_auteur')->nullable()->constrained('utilisateur', 'id_utilisateur')->nullOnDelete();
+        Schema::create('comments', function (Blueprint $table) {
+            $table->id();
+            $table->text('text');
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at')->nullable();
+            $table->foreignId('author_id')->nullable()->constrained('users', 'id')->nullOnDelete();
         });
 
-        Schema::create('commentaire_commande', function (Blueprint $table) {
-            $table->foreignId('id_commande')->constrained('commande', 'id_commande')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('id_role')->constrained('role', 'id_role')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->primary(['id_commande', 'id_role']);
+        Schema::create('comment_order', function (Blueprint $table) {
+            $table->foreignId('order_id')->constrained('orders', 'id')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('role_id')->constrained('roles', 'id')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->primary(['order_id', 'role_id']);
         });
     }
 
@@ -31,8 +31,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('commentaire_commande');
-        Schema::dropIfExists('commentaire');
+        Schema::dropIfExists('comment_order');
+        Schema::dropIfExists('comments');
 
     }
 };

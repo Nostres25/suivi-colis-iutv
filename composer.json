@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "suivi-colis-iutv/laravel-app",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Application de suivi des colis à l'IUT de Villetaneuse.",
     "keywords": [
         "laravel",
         "framework"
@@ -11,7 +11,8 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "twbs/bootstrap": "5.3.8"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.16",
@@ -58,7 +59,9 @@
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "rm -rf public/bootstrap",
+            "cp -R vendor/twbs/bootstrap/dist public/bootstrap"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
