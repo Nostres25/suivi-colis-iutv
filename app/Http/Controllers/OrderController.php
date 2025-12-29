@@ -82,10 +82,6 @@ class OrderController extends Controller
             ],
         ];
 
-        if (session()->get('user')->getRole() === 'Administrateur BD') {
-            //trie d'une certaine manière
-        }
-
         return view('orders', [
             'orders' => $orders,
             'orderStates' => [
