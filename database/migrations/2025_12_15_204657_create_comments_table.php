@@ -21,8 +21,8 @@ return new class extends Migration
 
         Schema::create('comment_order', function (Blueprint $table) {
             $table->foreignId('order_id')->constrained('orders', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('role_id')->constrained('roles', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->primary(['order_id', 'role_id']);
+            $table->foreignId('comment_id')->constrained('comment', 'id')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->primary(['order_id', 'comment_id']);
         });
     }
 
