@@ -33,7 +33,7 @@ return new class extends Migration
             ['name' => 'SD', 'description' => 'Membre du département sciences des données.'],
         ]);
 
-        Schema::create('role_utilisateur', function (Blueprint $table) {
+        Schema::create('role_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('role_id')->constrained('roles', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->primary(['user_id', 'role_id']);
