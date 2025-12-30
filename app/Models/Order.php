@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class Order extends Model
 {
@@ -143,4 +144,83 @@ class Order extends Model
 
         return false;
     }
+
+
+    /**
+     * Retourne le coût formaté avec la devise en euro en chaîne de caractères.
+     * @return string le coût formaté en euro ou 'Non communiqué' si le coût n'est pas encore indiqué.
+     */
+
+    public function getCostFormatted(): string
+    {
+        if (is_null($this->cost)) {
+            return 'Non communiqué';
+        }
+        return number_format($this->cost, 2, ',', ' ').' €';
+    }
+
+    /**
+     * Retourne l'url du devis. 
+     * @return string|null l'url du devis ou null si le devis n'est pas encore enregistré.
+     */
+
+    public function getUrlQuote(): ?string
+    {
+        if (is_null($this->path_quote)) {
+            return null;
+        }
+        return Storage::url($this->path_quote);
+    }
+
+    /**
+     * Retourne l'url du bon de commande. 
+     * @return string|null l'url du bon de commande ou null si le bon de commande n'est pas encore enregistré.
+     */
+
+    public function getUrlPurchaseOrder(): ?string
+    {
+        if (is_null($this->path_purchase_order)) {
+            return null;
+        }
+        return Storage::url($this->path_purchase_order);
+    }
+    /**
+     * Retourne l'url du bon de livraison. 
+     * @return string|null l'url du bon de livraison ou null si le bon de livraison n'est pas encore enregistré.
+     */
+
+    public function getUrlDeliveryNote(): ?string
+    {
+        if (is_null($this->path_delivery_note)) {
+            return null;
+        }
+        return Storage::url($this->path_delivery_note);
+    }
+
+    // TODO : Autre moyen de récupérer l'url d'un fichier (à tester)
+    public function getUrlQuoteAlt(): ?string
+    {
+        if (is_null($this->path_quote)) {
+            return null;
+        }
+        return asset('storage/'.$this->path_quote);
+    }
+    public function getUrlPurchaseOrderAlt(): ?string
+    {
+        if (is_null($this->path_purchase_order)) {
+            return null;
+        }
+        return asset('storage/'.$this->path_purchase_order);
+    }
+
+    public function getUrlDeliveryNoteAlt(): ?string
+    {
+        if (is_null($this->path_delivery_note)) {
+            return null;
+        }
+        return asset('storage/'.$this->path_delivery_note);
+    }
+
+
+    
 }

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends Model
+class Package extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
