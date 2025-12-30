@@ -12,17 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('comments', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedBigInteger('id')->autoIncrement();
+            $table->foreignId('order_id')->constrained('orders', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->text('text');
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();
             $table->foreignId('author_id')->nullable()->constrained('users', 'id')->nullOnDelete();
-        });
 
-        Schema::create('comment_order', function (Blueprint $table) {
-            $table->foreignId('order_id')->constrained('orders', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('role_id')->constrained('roles', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->primary(['order_id', 'role_id']);
+            $table->primary(['id', 'order_id']);
         });
     }
 
@@ -31,8 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comment_order');
         Schema::dropIfExists('comments');
-
     }
 };

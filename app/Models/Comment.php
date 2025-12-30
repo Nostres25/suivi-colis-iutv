@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Package extends Model
+class Comment extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -15,17 +15,20 @@ class Package extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
-        'label',
-        'cost',
-        'date_expected_delivery',
-        'shipping_date',
-    ];
+    /**
+     * Retourne l'utilisateur, auteur de la commande
+     *
+     * @return BelongsTo // Utilisateur, auteur de la commande
+     */
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
 
     /**
-     * Retourne la commande dont appartient le colis
+     * Retourne la commande concernée par le commentaire
      *
-     * @return BelongsTo // Commande associée au colis
+     * @return BelongsTo // Commande associée au commentaire
      */
     public function order(): BelongsTo
     {

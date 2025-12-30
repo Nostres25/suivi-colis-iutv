@@ -25,6 +25,7 @@ class OrderController extends Controller
             // session()->put('user', User::where('role', 'Administrateur BD')->first());
 
         }
+
         $supplier = Supplier::all()->first();
 
         if (is_null($supplier)) {
@@ -38,12 +39,13 @@ class OrderController extends Controller
                     'note' => 'Fournisseur sérieux, respectant les délais annoncés. À ne pas facher avec des délais de paiement trop élevés',
                     'is_valid' => true,
                 ]);
+
         }
 
         $supplier->save();
 
         // $order = new \App\Models\Order;
-        // $order->order_num = '4500161828'; // présent dans le nom du fichier du bon de commande et devis, et dans le bon de commande lui-même
+        // $order->order_num = '450016182d8'; // présent dans le nom du fichier du bon de commande et devis, et dans le bon de commande lui-même
         // $order->label = 'Cablage salle blanche'; // désignation de la commande dans bon de commande et nom du projet dans devis (différents)
         // $order->description = 'Cablage electrique de la salle blanche du CRIT';
         // $order->supplier_id = 1;
@@ -87,19 +89,21 @@ class OrderController extends Controller
             'orderStates' => [
                 'BROUILLON', // enregistré à l'état de brouillon. Affiché seulement pour le demandeur
 
-                'DEVIS', // à l'état de devis ; en attente d'un bon de commande (première étape)
+                'ANNULE', // La commande a été annulée par le demandeur à n'importe quelle étape
 
                 'DEVIS_REFUSE', // à l'état de devis ; l'éditeur de bon de commande a refusé de faire un bon de commande
 
-                'BON_DE_COMMANDE_NON_SIGNE', // à l'état de bon de commande ; doit être signé par le directeur
+                'DEVIS', // à l'état de devis ; en attente d'un bon de commande (première étape)
 
                 'BON_DE_COMMANDE_REFUSE', // à l'état de bon de commande ; le directeur a refusé de signer
 
+                'BON_DE_COMMANDE_NON_SIGNE', // à l'état de bon de commande ; doit être signé par le directeur
+
                 'BON_DE_COMMANDE_SIGNE', // à l'état de bon de commande signé ; en attente d'envoi du bon signé de commande au fournisseur
 
-                'COMMANDE', // à l'état de bon de commande signé ; commmandé sans réponse, en attente de réponse du fournisseur
-
                 'COMMANDE_REFUSEE', // à l'état de bon de commande signé ; commande refusée par le fournisseur
+
+                'COMMANDE', // à l'état de bon de commande signé ; commmandé sans réponse, en attente de réponse du fournisseur
 
                 'COMMANDE_AVEC_REPONSE', // à l'état de bon de commande signé ; le fournisseur a répondu favorablement à la commande. (Peut fournir le délai de livraison)
 
@@ -108,8 +112,6 @@ class OrderController extends Controller
                 'SERVICE_FAIT', // = terme utilisé par le demandeur pour signaler que la commande a été totalement livrée ; en attente de paiment par le service financier
 
                 'LIVRE_ET_PAYE', // commande payée par le service financié (dernière étape)
-
-                'ANNULE', // La commande a été annulée par le demandeur à n'importe quelle étape
             ],
             'defaultOrderState' => 'BROUILLON',
         ]);

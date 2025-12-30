@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -223,4 +224,95 @@ class Order extends Model
 
 
     
+    /**
+     * Retourne la liste des colis de la commmande
+     *
+     * @return Package // Liste des colis de la commande
+     */
+    public function packages(): HasMany
+    {
+        return $this->hasMany(Package::class);
+    }
+
+    /**
+     * Retourne la liste des commentaires de la commmande
+     *
+     * @return HasMany // Liste des commentaires de la commande
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    // TODO
+    // /**
+    //  * Retourne le nom du service/département à l'origine de la commande
+    //  *
+    //  * @return string // Nom du service/département
+    //  */
+    // public function getService(): string {}
+    //
+    // /**
+    //  * Retourne l'utilisateur à l'origine de la commande
+    //  *
+    //  * @return User // Nom du service/département
+    //  */
+    // public function getUser(): User {}
+    //
+    // /**
+    //  * Retourne la date de la dernière modification de la commande
+    //  *
+    //  * @return int // date
+    //  */
+    // public function getLastUpdateDate(): int {}
+    //
+    // /**
+    //  * Retourne la date de création de la commande
+    //  *
+    //  * @return int // date
+    //  */
+    // public function getCreationDate(): int {}
+
+    // Pas prioritaire - TODO
+    // j'ai mis pleins d'options de recherche mais pas obliger de toutes les coder si on manque de temps
+    //
+    // /**
+    //  * Récupérer le log d'une commande à partir d'un indice
+    //  *
+    //  * @param  int  $indexToSearch  Indice dans la liste des logs de la commande
+    //  * @return array // ligne de log
+    //  */
+    // public function getLog(int $indexToSearch): string {}
+    //
+    // /**
+    //  * Récupérer les logs d'une commande
+    //  *
+    //  * @return array // tableau de lignes de logs
+    //  */
+    // public function getLogs(): array {}
+    //
+    // // /**
+    // //  * Récupérer les logs d'une commande contenant un certain texte
+    // //  *
+    // //  * @param  string  $valueToSearch  récupérer tous les logs contenant une chaîne de caractère en particulier
+    // //  * @return array // tableau de lignes de logs
+    // //  */
+    // // public function getLogsWithText(string $valueToSearch) {}
+    //
+    // /**
+    //  * Ajouter un log
+    //  *
+    //  * @param  User  $author  Auteur de l'action à l'origine du log
+    //  * @param  string  $text  Contenu du log
+    //  * @return void
+    //  */
+    // public function addLog(User $author, string $text) {}
+    //
+    // /**
+    //  * Retirer un log
+    //  *
+    //  * @param  int  $index  Indice du log
+    //  * @return void
+    //  */
+    // public function removeLog(int $index) {}
 }
