@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Package extends Model
+class Log extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -15,17 +15,10 @@ class Package extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
-        'label',
-        'cost',
-        'date_expected_delivery',
-        'shipping_date',
-    ];
-
     /**
-     * Retourne la commande dont appartient le colis
+     * Retourne la commande dont appartient le log
      *
-     * @return BelongsTo // Commande associée au colis
+     * @return BelongsTo // Commande du log
      */
     public function order(): BelongsTo
     {
