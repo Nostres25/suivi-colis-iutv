@@ -4,18 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class Order extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-
-    // Source - https://stackoverflow.com/a
-    // Posted by Sameer Shaikh, modified by community. See post 'Timeline' for change history
-    // Retrieved 2025-12-26, License - CC BY-SA 4.0
-
-    public $timestamps = false;
 
     protected $fillable = [
         'label',
@@ -28,9 +23,14 @@ class Order extends Model
         'states',
     ];
 
-    public function getSupplier()
+    /**
+     * Retourne la liste le fournisseur de la commande
+     *
+     * @return HasOne // Fournisseur de la commande
+     */
+    public function supplier(): HasOne
     {
-        return $this->belongsTo(Supplier::class);
+        return $this->hasOne(Supplier::class);
     }
 
     // TODO peut-être un peut factoriser l'upload des fichiers mais... plus tard
@@ -225,9 +225,9 @@ class Order extends Model
 
     
     /**
-     * Retourne la liste des colis de la commmande
+     * Retourne la liste des colis de la commande
      *
-     * @return Package // Liste des colis de la commande
+     * @return HasMany // Liste des colis de la commande
      */
     public function packages(): HasMany
     {
@@ -235,7 +235,7 @@ class Order extends Model
     }
 
     /**
-     * Retourne la liste des commentaires de la commmande
+     * Retourne la liste des commentaires de la commande
      *
      * @return HasMany // Liste des commentaires de la commande
      */
@@ -243,6 +243,17 @@ class Order extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    /**
+     * Retourne la liste des actions associées à la commande
+     *
+     * @return HasMany // Liste des actions de la commande
+     */
+    public function logs(): HasMany
+    {
+        return $this->hasMany(Log::class);
+    }
+
 
     // TODO
     // /**

@@ -26,6 +26,7 @@ return new class extends Migration
             $table->boolean('is_valid')
                 ->default(false)
                 ->comment('Indique s\'il est possible de passer commande à ce fournisseur');
+            $table->timestamps();
         });
     }
 

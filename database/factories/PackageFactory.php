@@ -25,7 +25,7 @@ class PackageFactory extends Factory
             'label' => fake()->title(),
             'cost' => fake()->randomFloat(2, 0, 12), // TODO S'il y a une erreur à propos du coût c'est que les 12 chiffres sont à prendre dans les négatifs et les positifs
             'date_expected_delivery' => fake()->dateTimeBetween(now(), '+3 years'),
-            'shipping_date' => fake()->random,
+            'shipping_date' => $shipping_date,
         ];
     }
 }
