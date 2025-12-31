@@ -37,7 +37,7 @@
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/suppliers">Fournisseurs</a>
+          <a class="nav-link" href="/Supplier">Fournisseurs</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/about">À propos</a>

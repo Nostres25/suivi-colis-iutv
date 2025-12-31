@@ -12,3 +12,4 @@ Route::post('orders/new', [\App\Http\Controllers\OrderController::class, 'submit
 Route::get('/about', [\App\Http\Controllers\AboutController::class, 'about']);
 // Only for tests:
 // Route::get('/', [\App\Http\Controllers\HomeController::class, 'home']);
+Route::get('/Supplier', [\App\Http\Controllers\SupplierController::class, 'Supplier']);
