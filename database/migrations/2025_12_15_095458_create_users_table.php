@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('email')->nullable();
             $table->string('phone_number')->nullable();
+            $table->timestamps();
 
             // Pas utile, l'application ne gère pas les mots de passes
             // $table->string('password');
