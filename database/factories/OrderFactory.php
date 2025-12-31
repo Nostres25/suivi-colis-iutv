@@ -47,11 +47,12 @@ class OrderFactory extends Factory
         $state = fake()->randomElement($orderStats);
 
         return [
-            'num_commande' => fake()->unique()->randomNumber(11), // Not only digits
+            'order_num' => fake()->unique()->randomNumber(5).fake()->unique()->randomNumber(6), // Not only digits
             'label' => fake()->title(),
             'description' => fake()->sentences(6, true),
             'state' => $state,
             'cost' => array_search($state, $orderStats) > array_search('BON_DE_COMMANDE_SIGNE', $orderStats) ? fake()->randomFloat(2, 0, 12) : null, // TODO S'il y a une erreur à propos du coût c'est que les 12 chiffres sont à prendre dans les négatifs et les positifs
+            'quote_num' => fake()->randomLetter().fake()->unique()->randomNumber(7),
         ];
     }
 }
