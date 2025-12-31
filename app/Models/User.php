@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -18,31 +19,24 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'login',
+        'last_name',
+        'first_name',
         'email',
-        'password',
+        'phone_number',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Retourne la liste des rôles de l'utilisateur (table association)
      *
-     * @var list<string>
+     * @return BelongsToMany // Liste des rôles de l'utilisateur
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function roles(): BelongsToMany
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->belongsToMany(Role::class, 'role_user');
     }
+    // TODO
+    // public function hasPermission(): bool {} // TODO si a la permission admin -> il a toutes les permissions
+    // public function getRoles(): array {}
+    // public function hasRole(): bool {}
 }

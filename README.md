@@ -30,25 +30,29 @@ La plupart des IDE (ou éditeurs de code) comme Visual Studio Code embarquent de
 -   Serveur de développement (Intégré à Laravel) : `php artisan serv`
 -   Serveur de production (probable): **Apache2**
 -   Système de production : **Ubuntu 24.04** (linux)
+-   IDE: **Visual Studio Code** (avec des extensions)
 
 ### Autres outils:
 
--   Blade
+Blade
 
 (NodeJs ne pourra pas être utilisé pour ne pas faire tourner de JavaScript sur serveur. Ce qui signifie que les outils comme "Vite", "tailwind" et d'autres outils css ne sont pas disponibles)
 
 Un site web PHP implique un serveur web supportant le PHP. Car le PHP n'est pas exécuté par le navigateur comme le HTML/CSS/Javascript, il s'exécute sur le serveur.
 
-### Installation des paquets nécéssaires pour le développement
+## Mise en place de l'environnement
+
+Cette partie concerne la mise en place de l'environnement **pour le développement** du projet mais sert aussi pour connaître les paquets à installer pour la production.  
+Autrement dit, si vous commencez le développement sur ce projet suivez les instructions suivantes. Si vous souhaitez installer l'application en production, vous pouvez suivre les étapes en adaptant certaines parties.
+
+### I. Installation des paquets (sur Ubuntu)
 
 > [!NOTE]
-> Lorsqu'il sera demandé d'exécuter des commandes, il faudra les entrer dans un terminal linux.
-
-> sur ubuntu:
+> Les commandes sont à entrer dans un terminal linux.
 
 #### 1. Mise à jour du système :
 
-(à faire avant toute installation de paquets)
+###### à faire avant toute installation de paquets
 
 ```bash
 sudo apt update && sudo apt upgrade
@@ -56,7 +60,10 @@ sudo apt update && sudo apt upgrade
 
 #### 2. Installer l'IDE (Visual Studio Code) :
 
-(si vous utilisez WSL, vous pourrez vous contenter d'installer Vscode sur votre Windows)
+> [!WARNING]
+> si vous utilisez WSL, vous pourrez vous contenter d'[installer Vscode sur votre Windows](https://code.visualstudio.com/Download). Une fois cela fait vous pourrez sauter cette étape.
+> _Vscodium pourrait fonctionner mais certaines extensions comme LiveShare ne seront pas installable_
+
 Téléchargez vscode depuis la [page d'installation](https://code.visualstudio.com/download) (.deb)  
 Puis en exécutant le fichier installé avec la commande :
 
@@ -92,53 +99,55 @@ puis ceci:
 sudo mv composer.phar /usr/local/bin/composer
 ```
 
-Détails sur la suite pour la [configuration de l'environnement et la mise en place de la base de données](#mise-en-place-de-lenvironnement) plus bas.
+> ✅ Vous disposez désormais de tous les paquets système nécéssaires pour le développement du projet. Désormais, lisez la suite du document pour les configurations.
 
-## Code
+### II. Éditeur de code / IDE:
 
-### Éditeur de code / IDE:
+Si vous avez suivi les étapes précédentes, vous avez installer Visual Studio Code qui est l'IDE choisi pour le projet. Cependant il n'est pas directement adapté à php et au développement avec Laravel. C'est pour cela que nous installons des extensions pour bénéficier de certaines fonctionnalités pratiques qui nous feront gagner du temps dans le développement
 
--   **Visual Studio Code** avec les extensions suivantes:
-    -   **Laravel** (Autocomplétion, couleurs et autre)
-    -   **Laravel Pint** (le formatteur laravel/php)
-    -   **Live Share** (pour fluidifier le travail en collaboration)
-    -   **Laravel Extra Intellisense** (Pour une meilleure autocomplétion comprenant les routes, les vues, les valeurs de config etc...)
-    -   **Laravel Goto View** (Pour aller rapidement sur des vues ou des controlleurs grâce à un CTRL + Clique gauche sur le nom de la vue ou du controlleur dans le code)
-    -   **PHP Intelephense** (Autocomplétion pour du pure PHP)
-    -   **Laravel Pint** (Autoformatteur pour que les indentations soient réctifiées automatiquement afin d'avoir un code bien lisible)
-    -   **PHP Debug** (Outil permettant de debug le code php ligne par ligne)
-    -   **Pretier** (Autoformatteur pour du Javascript, JSON et CSS)
-    -   **GitLens** (Outil Git très complet permettant notamment de voir rapidement dans quel commit a été modifié une ligne de code)
-    -   **Conventional commits** (pour des commits à la norme)
--   **PHPStorm** (pas encore testé mais sans doute plus adapté)
+#### **Visual Studio Code**
+
+Avec les extensions suivantes:
+
+-   **Laravel** (Autocomplétion, couleurs et autre)
+-   **Laravel Pint** (Autoformatteur Laravel/PHP pour que les indentations soient réctifiées automatiquement afin d'avoir un code bien lisible)
+-   **Live Share** (pour fluidifier le travail en collaboration)
+-   **Laravel Extra Intellisense** (Pour une meilleure autocomplétion comprenant les routes, les vues, les valeurs de config etc...)
+-   **Laravel Goto View** (Pour aller rapidement sur des vues ou des controlleurs grâce à un CTRL + Clique gauche sur le nom de la vue ou du controlleur dans le code)
+-   **PHP Intelephense** (Autocomplétion pour du pure PHP)
+-   **PHP Debug** (Outil permettant de debug le code php ligne par ligne)
+-   **Prettier** (Autoformatteur pour du Javascript, JSON et CSS)
+-   **GitLens** (Outil Git très complet permettant notamment de voir rapidement dans quel commit a été modifié une ligne de code)
+-   **Conventional commits** (pour des commits à la norme)
 
 > [!NOTE]
 > Certaines extensions vscode affichent une erreur en bas à droite de l'écran. Ne faites pas attention, cliquez sur "Ne plus afficher", l'extension fonctionne quand même.
 
 > [!WARNING]
-> Concernant les extensions Vscode surtout, il se peut que **si votre ordinateur est lent**, que ce soit encore pire avec les extensions. Je vous conseil donc de tester les extensions mais si ça ralenti votre ordinateur, vous pouvez désinstaller certaines extensions :
+> Concernant les extensions Vscode surtout, il se peut que **si votre ordinateur est lent**, ce soit encore pire avec les extensions. Je vous conseil donc de tester les extensions mais si ça ralenti votre ordinateur, vous pouvez désinstaller les extensions suivantes progressivement, dans l'ordre ci-dessous :
 >
 > 1.  **Conventional commits**: Vous pouvez écrire des commits conventionnels sans cette extension, c'est juste pour vous guider
 > 2.  **GitLens**: C'est très pratique sur certains points mais pas nécéssaire pour le code. Surtout que vu à quel point c'est complet, ça doit plus ralentir que les autres
 > 3.  **PHP Debug**: On peut se débrouiller à debug sans les outils que ça propose
 > 4.  **Prettier**: C'est pas obligatoire pour un code fonctionnel, c'est juste pour la lisibilité, surtout que c'est seulement pour du Javascript et CSS, ce qu'on ne va sans doute pas beaucoup utiliser. De plus, il suffit de soit bien formatter à la main, soit que quelqu'un passe derrière vous avec l'extension pour appliquer le formatage automatique
->     Certaines extensions vscode affichent une erreur en bas à droite de l'écran. Ne faites pas attention, cliquez sur "Ne plus afficher", l'extension fonctionne quand même.
-
 > 5.  **Laravel Pint**: La même chose que Prettier même si là c'est plus utile car ça concerne le PHP
 > 6.  **Live Share**: ça risque d'être très utile, notamment pour demander de l'aide à quelqu'un mais au pire vous l'installez uniquement lorsque vous en avez besoin et lorsque vous ne l'utilisez plus vous le désinstallez.
 >
-> Et pour le reste, ils sont tous très pratique pour coder dans de bonnes conditions, sans ralentissement, sans être perdu etc... Si votre pc est encore lent vous pouvez en désinstaller encore quelques unes, du moins utile au plus utile (Laravel Goto View en premier et Laravel ainsi que PHP Intelephense en dernier). Mais sans ces autres extensions le développement risque d'être compliqué.
+> Et pour le reste, elles sont toutes très pratique pour coder dans de bonnes conditions, sans ralentissement, sans être perdu etc... Si votre pc est encore lent vous pouvez en désinstaller encore quelques unes, du moins utile au plus utile (Laravel Goto View en premier et Laravel ainsi que PHP Intelephense en dernier). Mais sans ces autres extensions le développement risque d'être compliqué.
 
-> [!NOTE]
-> Vous pouvez mettre le dossier du projet où vous souhaitez sur votre ordinateur
+> ✅ Maintenant que l'IDE est configuré, lisez la prochaine partie pour importer le code du projet depuis github.
 
-## Introduction à git
+### III Importation du projet
+
+Avant tout, le dossier du projet n'a pas été crée. Il vous faut d'abord importer le projet, ce qui créera le dossier.
+
+#### Rappel: Utilisation de Git
 
 Tout d'abord assurez vous de bien avoir le logiciel Git d'installé [(lien d'installation)](https://git-scm.com/downloads).
 Pour commencer, on parlera de **git** quand on veut parler de l'outil qui permet de gérer un **dépot local**[^1]. Alors que **github** est l'outil en ligne qui nous permet d'héberger le code en ligne, c'est-à-dire sur un **dépôt distant**[^2].
 Pour en savoir plus sur le fonctionnement de git et de github, et notamment comprendre la notion de dépôts, [cliquez ici](https://comprendre-git.com/fr/glossaire/git-depot-distant-et-local/).
 
-#### Utiliser git sur Windows:
+##### Utiliser git sur Windows:
 
 > [!NOTE]
 > Si vous utilisez WSL, cela ne vous concerne pas. Vous utiliserez git comme sur Linux avec le terminal WSL
@@ -147,22 +156,20 @@ Je vous conseil d'utiliser l'invite de commandes git, disponible avec un clique 
 
 Pour exécuter des commandes git vous devrez tout le temps passer par cet invite de commande git (Git bash) **et dans le bon dossier**.
 
-#### Utiliser git sur Linux
+##### Utiliser git sur Linux
 
 Vous pouvez utiliser la commande `git` dans le terminal classique
 
-#### Utiliser git sur Mac
+##### Utiliser git sur Mac
 
 Aucune idée. Bon courage ! :) _ça doit être proche de linux je suppose ?_
 
-## Importer le projet
-
-Avant tout, le dossier du projet n'a pas été crée. Il vous faut d'abord importer le projet.
+#### Clonage
 
 1. Pour cela, placez-vous dans le dossier dans lequel vous souhaitez placer le projet, et ouvrez l'invite de commandes. (l'invite de commandes git ou "Git bash" sur windows)
 
-    > [!TIP]
-    > Vous pouvez utiliser la commande `cd` dans l'invite de commande pour vous déplacer de dossier
+> [!NOTE]
+> Vous pouvez utiliser la commande `cd` dans l'invite de commande pour vous déplacer de dossier
 
 2. Ensuite clonez le code du projet à l'aide de la commande :
 
@@ -173,27 +180,32 @@ git clone https://github.com/Nostres25/suivi-colis-iutv.git
 > [!NOTE]
 > la première fois, il vous sera demandé de vous connecter. Si vous n'êtes pas redirigé vers une interface pour entrer vos identifiants github, vous devrez [créer un token d'accès personnel](https://docs.github.com/fr/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) pour l'entrer à la place du mot de passe.
 
-Maintenant vous pouvez ouvrir **le dossier su projet**, crée sous le nom de "suivi-colis-iutv", dans votre IDE favori ! ✅
+> ✅ Maintenant vous pouvez ouvrir **le dossier du projet**, crée sous le nom de "suivi-colis-iutv", dans votre IDE favori ! Accédez à la suite pour la suite de la mise en place de l'environnement.
 
-> [!WARNING]
-> Toutefois, attention à ne rien modifier à cette étape. Car vous êtes sur la branche `main` du projet et que si vous modifiez quoi que ce soit, vous pouvez créer des conflits sur cette branche. **Prenez connaissance de la suite de cette documentation avant de faire quoi que ce soit**.
+> [!IMPORTANT]
+> Toutefois, attention à ne rien modifier dans le code à cette étape. Car vous êtes sur la branche `main` du projet et que si vous modifiez quoi que ce soit, vous pouvez créer des conflits sur cette branche. **Prenez connaissance de la suite de cette documentation, dont [les règles d'organisation du développement](#r%C3%A9sum%C3%A9-des-r%C3%A8gles-du-d%C3%A9veloppement-du-projet) avant de faire quoi que ce soit**.
+> _Spécifiquement pour la suite de la mise en place de l'environnement, il n'est pas nécéssaire de changer de branche._
 
-## Mise en place de l'environnement
+### IV. Installation des modules du projet
 
-###### Spécifiquement pour cette catégorie, il n'est pas nécéssaire de changer de branche. Il n'y a aucun risque de conflit.
+D'abord, assurez-vous de bien avoir installé php, composer, mariadb, vscode avec ses extensions et autres [comme indiqué plus haut](#i-installation-des-paquets-sur-ubuntu)
 
-Assurez-vous de bien avoir installé php, composer, mariadb et auree [comme indiqué plus haut](#installation-des-paquets-n%C3%A9c%C3%A9ssaires-pour-le-d%C3%A9veloppement)
-
-### I. Installer les modules du projet
-
-Pour installer les modules du projet, il vous faut d'abord vous rendre dans le répertoire du projet (le dossier `suivi-colis-iutv` créé suite à `git clone...`)
+Pour installer les modules composer du projet, il vous faut d'abord vous rendre dans le répertoire du projet (le dossier `suivi-colis-iutv` créé suite à `git clone...`)
 Ensuite exécutez la commande suivante:
 
 ```bash
-composer update
+composer install
 ```
 
-### II. Définition des variables d'environnement
+> [!NOTE]
+>
+> -   Cette commande est à exécuter de nouveau pour installer les nouveaux modules utilisés et les mises à jours des modules.
+> -   Cela peut prendre du temps. Sachez que pour les prochaines exécutions, cela sera plus rapide car seuls les paquets avec du changement seront installés
+> -   Une fois la commande exécutée, il se peut que le fichier `composer.lock` soit modifié
+
+> ✅ Si tout s'est bien passé, les modules sont désormais installés. Dès à présent, il reste à la suite la configuration des variables d'environnement, la mise en place de la base de donnée et la création de la clé de chiffrement à faire pour que l'application fonctionne correctement. Et pour accessoirement commencer le développement.
+
+### V. Définition des variables d'environnement
 
 Ouvrez le dossier du projet (suivi-colis-iutv) avec visual studio code et vous verrez un fichier `.env.example`.
 
@@ -202,9 +214,11 @@ Ouvrez le dossier du projet (suivi-colis-iutv) avec visual studio code et vous v
    Il s'agit du mot de passe pour l'utilisateur de base de données présente sur votre pc.
    (Si vous avez déjà une base de données et un utilisateur MariaDB, vous pouvez modifier les valeurs du `.env` selon votre système).
 
-### III. Mise en place de la base de données
+> ✅ Les valeurs dans les variables d'environnement du`.env` seront utilisées par l'application. Notamment pour la connexion à la base de données dont le guide de mise en place est à la suite.
 
-1. Lancez la base de données MariaDB:
+### VI. Mise en place de la base de données
+
+1. Accédez à MariaDB:
 
 ```bash
 sudo mariadb -u root -p
@@ -227,7 +241,7 @@ Si tout à fonctionné, vous pouvez sortir de la base de données en entrant `EX
 3. Pour tester si votre base de données fonctionne correctement, vous pouvez exécuter `php artisan db` dans le dossier du projet, ce qui devrait vous connecter à la base de données selon les informations présentes dans le `.env`
 4. Si vous réussissez à créer une table (ex: `CREATE TABLE TABLE_NAME (a INT);`), c'est que les permissions ont bien été configurées
    (pensez à sortir avec `EXIT` ou `\q` pour continuer)
-5. Enfin, il ne reste plus qu'à préparer la base de données `suivi_colis_iutv` de sorte à ce que l'application puisse se lancer. Pour cela, rendez-vous dans le dossier du projet et exécutez:
+5. Enfin, il ne reste plus qu'à préparer la base de données `suivi_colis_iutv` grâce aux migrations, de sorte à ce que l'application puisse se lancer. Pour cela, rendez-vous dans le dossier du projet et exécutez:
 
 ```bash
 php artisan migrate
@@ -250,9 +264,9 @@ php artisan migrate
 >
 > -   Une fois l'application en production, ne modifiez jamais une migrations ! Préférez en créer une nouvelle migration avec la nouvelle structure des tables concernées. Ceci permet de garder une rétrocompatibilité des données suite aux changements structuraux.
 
-(cela pour le moment, ne fait que créer les tables par défaut pour le fonctionnement de laravel)
+> ✅ La base de données est maintenant prête ! Seulement, Laravel requière encore une dernière chose pour faire fonctionner l'application. Vous trouverez la dernière étape à la suite.
 
-### IV Création de la clé de chiffrement
+### VII Création de la clé de chiffrement
 
 Laravel impose la création d'une clé de chiffrement. Sûrement pour des raisons de sécurité avec certaines fonctionnalités. Je ne sais pas si c'est utile pour nous mais c'est obligatoire pour faire fonctionner l'application:
 
@@ -260,10 +274,19 @@ Laravel impose la création d'une clé de chiffrement. Sûrement pour des raison
 php artisan key:generate
 ```
 
-### V Lancement du serveur local de développement
+> ✅ Dorénavant, l'application est prête ! La suite concerne le lancement du serveur de développement pour pouvoir la faire fonctionner en local et la tester.
 
-Tout est en principe, correctement configuré. Utilisez la commande `php artisan serv` pour lancer l'application sur votre machine.
+### VIII Lancement du serveur local de développement
+
+Tout est en principe, correctement configuré. Utilisez la commande suivante pour lancer l'application sur votre machine:
+
+```bash
+php artisan serv
+```
+
 Pour arrêter le serveur local de développement, appuyez sur CTRL + C
+
+> ✅ Vous pouvez maintenant commencer le développement. Attention toutefois, travailler à plusieurs sur un même problème amène des problématiques qui peuvent faire perdre du temps de travail. Pour éviter tout problème, nous utilisons git avec github mais il faut également respecter une certaines organisation afin de garantir un développement fluide. Les détails de cette organisation sont ci-dessous.
 
 ## Travailler avec git
 
@@ -272,8 +295,7 @@ Pour éviter ce genre de complications, nous devons respecter une organisation s
 
 ### Résumé des règles du développement du projet
 
-Si vous n'êtes pas familier avec les termes employés dans les consignes ci-dessous, accédez à la suite et lisez le règlement une fois que vous aurez compris comment git fonctionne. Le non respect de ces règles nous risque à de la perte de travaille et de la perte de temps. \
-[--> [Accéder à la suite]](#etat-du-d%C3%A9p%C3%B4t-local)
+Si vous n'êtes pas familier avec les termes employés dans les consignes ci-dessous, [Accédez à la suite](#etat-du-d%C3%A9p%C3%B4t-local) et lisez le règlement une fois que vous aurez compris comment git fonctionne. Le non respect de ces règles nous risque à de la perte de travaille et de la perte de temps.
 
 #### 1. Ne jamais modifier la branche[^4] `main`
 
@@ -306,7 +328,7 @@ Si vous n'êtes pas familier avec les termes employés dans les consignes ci-des
 
 #### 8. Ne jamais merge[^7] directement, mais créer un pull request[^8] à la place
 
-Pour s'assurer que les merges sont correct et donc éviter des pertes de travaille ou l'introduction de bugs, ne faites pas de merge directement si vous n'êtes pas sûr de ce que vous faites. Il faudra [créer un pull request](#pull-requests-et-merges) à la place.
+> Pour s'assurer que les merges sont correct et donc éviter des pertes de travaille ou l'introduction de bugs, ne faites pas de merge directement si vous n'êtes pas sûr de ce que vous faites. Il faudra [créer un pull request](#pull-requests-et-merges) à la place.
 
 #### 9. Vous devez créer un pull request une fois que vous avez terminé votre travail sur une branche.
 
@@ -339,7 +361,7 @@ Cette commande affiche l'état du dépôt local, c'est-à-dire :
 
 ### Au sujet des branches[^4]
 
-Si vous avez suivi [le tuto pour importer le projet](#importer-le-projet) sur votre ordinateur, vous avez cloné la branche principale (main) du repository.
+Si vous avez suivi [le tuto pour importer le projet](#importation-du-projet) sur votre ordinateur, vous avez cloné la branche principale (main) du repository.
 
 > [!CAUTION]
 >
@@ -458,7 +480,7 @@ Il peut être possible de travailler à plusieurs sur une même branche mais il 
 -   Si vous voulez avancer sur une branche alors que quelqu'un y travaille déjà, et donc a potentiellement du code/des commits non publié, créez une autre branche à partir de celle que vous voulez modifier. Lorsque vous aurez terminé avec cette nouvelle branche, vous pourrez faire un [Pull Request](https://github.com/Nostres25/HeartOfStellars/pulls) pour fusionner avec la branche de départ (à ne pas confondre avec la branche principale). **Et communiquez pour ne pas apporter les mêmes modifications ou des modifications contradictoires**
 -   Cependant si la personne qui s'occupe de cette branche a terminé, n'a plus de modification/de commit non publié et ne va pas continuer sur cette branche avant la fin de vos modifications, alors vous pouvez continuer le travail sur cette branche sans en créer une nouvelle. (⚠️ en vous assurant bien d'être sur la bonne branche et de [`git pull`](#pull) avant)
 
-[--> [Revenir aux règles du développement du projet]](#r%C3%A9sum%C3%A9-des-r%C3%A8gles-du-d%C3%A9veloppement-du-projet)
+[--> [Revenir aux règles de l'ogranisation du développement du projet]](#r%C3%A9sum%C3%A9-des-r%C3%A8gles-du-d%C3%A9veloppement-du-projet)
 
 ### Autre
 
@@ -472,26 +494,25 @@ Il peut être possible de travailler à plusieurs sur une même branche mais il 
 
     Pour plus d'informations sur la commande rendez-vous sur la [documentation git](https://git-scm.com/docs/git-diff).
 
--   Ce n'est pas obligatoire mais de manière conventionnelle, les messages de commits doivent respecter une certaines syntaxe qui peut ressembler à `fix: 🐛 fight system bug fixed`. Et oui, **en anglais**, C'est plus pratique car plus facilement lisible lorsqu'on visionne la progression du projet. [(Plus d'infos sur les conventionnal commits)](https://www.conventionalcommits.org/fr/v1.0.0/)
+-   Ce n'est pas obligatoire mais de manière conventionnelle, les messages de commits et le [nom des branches](https://conventional-branch.github.io/) doivent respecter une certaines syntaxe. Pour un commit ça peut ressembler à `fix: 🐛 fight system bug fixed`. Et oui, **en anglais**. C'est plus pratique d'écrire comme cela car plus facilement lisible lorsqu'on visionne la progression du projet. [(Plus d'infos sur les conventionnal commits)](https://www.conventionalcommits.org/fr/v1.0.0/)
 
-    Pout ma part, j'utiliserai cette syntaxe de commits conventionnels en anglais. Ce serait mieux que tout le monde fasse de même pour un ensemble cohérent
+    Pout ma part, je suis habitué à utiliser cette syntaxe de commits conventionnels en anglais. Ce serait mieux que tout le monde fasse de même pour un ensemble cohérent.
 
 ## Avec Github Desktop
 
-Malheureusement cette partie n'a pas encore été rédigée. Passer par la commande, surtout en suivant cette documentation vous permettra de beaucoup mieux comprendre le fonctionnement de git et de GitHub.
-Mais si vous avez compris le fonctionnement de git avec les commandes, Github desktop sera facile à comprendre car chaque action correspond en réalité à une commande git.
-Il est vrai que Github desktop offre un meilleur confort avec une interface. Surtout pour l'affichage des différences (équivalent à `git diff`).
+Malheureusement cette partie n'a pas encore été rédigée. Passer par la commande, surtout en suivant cette documentation vous permettra de beaucoup mieux comprendre le fonctionnement de git et de GitHub.  
+Mais si vous avez compris le fonctionnement de git avec les commandes, Github desktop sera facile à comprendre car chaque action correspond en réalité à une commande git. Tout comme les "menu git" dans les IDE.  
+Il est vrai que Github desktop offre un meilleur confort avec une interface. Surtout pour l'affichage des différences (équivalent à `git diff`). Mais certains IDE, dont Visual Studio Code intègre un menu dédié à git.
 
 ## Avec Docker
 
-On pourra utiliser docker pour tester le déploiement sur un système Ubuntu avec Apache2. Actuellement, la question du déploiement n'a pas été travaillée, mais c'est à faire en parallèle du développement. (pas trop à la fin, sinon on risque d'avoir beaucoup de problèmes à corriger)
+On pourra utiliser docker pour tester le déploiement sur un système Ubuntu avec Apache2. Actuellement, la question du déploiement n'a pas été travaillée, mais c'est à faire en parallèle du développement. (pas trop à la fin, sinon on risque d'avoir beaucoup de problèmes à corriger)  
 Pour un maximum de stabilité, on considère que l'application devrait être testée sur une machine Ubuntu (qui est dérivé de débian) dans un environnement le plus semblable possible à l'environnement de production. Actuellement, l'image Docker est une image Debian par souci de praticité mais cela pourrait changer pour du Ubuntu à terme. Aussi, il est probablement préférable que l'application tourne sur un repertoire personnalisé comme `/var/www/suivi-colis-iutv`. Mais j'ai passé une après-midi à essayer de faire cela en vain, apache2 fait donc tourner l'application web sur `/var/www/html` pour le moment.
 
 ###### Triste histoire
 
-Toute fois ce qui est intéressant c'est que grâce au Dockerfile, vous savez ce qu'il faut faire pour faire fonctionner l'environnement. Et sur une distribution debian, vous savez quoi faire.
-
-###### Toutefois, il y a tellement de mauvaises choses que ça pourrait ne pas ressembler à ça à l'avenir
+Toute fois ce qui est intéressant c'est que grâce au Dockerfile, vous savez ce qu'il faut faire pour faire fonctionner l'environnement en production.
+_Toutefois, il y a beaucoup de mauvaises choses qui ça pourraient ne pas ressembler à ça à l'avenir_
 
 Commandes docker:
 

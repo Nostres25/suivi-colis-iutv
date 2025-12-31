@@ -36,14 +36,31 @@ RUN apt-get update -qq && \
     php-dom \
     php-mbstring \
     php-xml \
+    php-zip \
     php-mysql && \
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN aptitude install apache2-threaded-dev
 
-RUN \. "$HOME/.nvm/nvm.sh" && nvm install 24 && sleep 10
+RUN svn co https://www.ja-sig.org/svn/cas-clients/mod_auth_cas/trunk && \
+    mod_auth_cas 
 
+WORKDIR /var/www/mod_auth_cas/src
+
+RUN cd mod_auth_cas/src && \
+    apxs2 -i -c mod_auth_cas.c
+
+WORKDIR ${DOCUMENT_ROOT}
+
+COPY configDocker/cas.load /etc/apache2/mods-available/cas.load
+COPY configDocker/cas.conf /etc/apache2/mods-available/cas.conf   
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'c8b085408188070d5f52bcfe4ecfbee5f727afa458b2573b8eaaf77b3419b0bf2768dc67c86944da1544f06fa544fd47') { echo 'Installer verified'.PHP_EOL; } else { echo 'Installer corrupt'.PHP_EOL; unlink('composer-setup.php'); exit(1); }"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+
+RUN mv composer.phar /usr/local/bin/composer
 # PHP Extensions - not in tuto for laravel
 # RUN docker-php-ext-install -j$(nproc) opcache pdo_mysql
 

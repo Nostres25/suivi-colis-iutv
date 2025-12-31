@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // En anglais: "users" table ; clé étrangère "user_id"; clé primaire "id" ;
 
-        Schema::create('utilisateur', function (Blueprint $table) {
-            $table->id('id_utilisateur');
-            $table->string('nom');
-            $table->string('prenom');
-            $table->string('email');
-            $table->string('numero_tel');
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('login')->unique();
+            $table->string('last_name');
+            $table->string('first_name');
+            $table->string('email')->nullable();
+            $table->string('phone_number')->nullable();
 
             // Pas utile, l'application ne gère pas les mots de passes
             // $table->string('password');
@@ -31,16 +33,15 @@ return new class extends Migration
         //     $table->timestamp('created_at')->nullable();
         // });
 
-        // Pas nécéssaire de stocker les sessions en base de données
-        // On les stock uniquement
-        // Schema::create('sessions', function (Blueprint $table) {
-        //     $table->string('id')->primary();
-        //     $table->foreignId('user_id')->nullable()->index();
-        //     $table->string('ip_address', 45)->nullable();
-        //     $table->text('user_agent')->nullable();
-        //     $table->longText('payload');
-        //     $table->integer('last_activity')->index();
-        // });
+        // Nécéssaire, sinon l'application ne se lance pas
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->constrained('users', 'id')->nullOnDelete()->cascadeOnUpdate();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
     }
 
     /**
@@ -48,8 +49,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('utilisateur');
+        Schema::dropIfExists('users');
         // Schema::dropIfExists('password_reset_tokens');
-        // Schema::dropIfExists('sessions');
+        Schema::dropIfExists('sessions');
     }
 };
