@@ -15,9 +15,9 @@ return new class extends Migration
             $table->unsignedBigInteger('id')->autoIncrement();
             $table->foreignId('order_id')->constrained('orders', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->text('text');
-            $table->dateTime('created_at');
-            $table->dateTime('updated_at')->nullable();
             $table->foreignId('author_id')->nullable()->constrained('users', 'id')->nullOnDelete();
+            $table->timestamps();
+
 
             $table->primary(['id', 'order_id']);
         });

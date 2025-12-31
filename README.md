@@ -121,7 +121,8 @@ Avec les extensions suivantes:
 -   **Conventional commits** (pour des commits à la norme)
 
 > [!NOTE]
-> Certaines extensions vscode affichent une erreur en bas à droite de l'écran. Ne faites pas attention, cliquez sur "Ne plus afficher", l'extension fonctionne quand même.
+> Certaines extensions vscode affichent une erreur en bas à droite de l'écran. Ne faites pas attention, cliquez sur "Ne plus afficher", l'extension fonctionne quand même pour certains fonctionnalités.
+> Toutefois, à cause de l'efficacité minimes des extensions vscode pour du développement laravel. Je vous invite à utiliser PHPStorm qui est certes payant mais **[gratuit](https://www.jetbrains.com/fr-fr/phpstorm/buy/?section=commercial&billing=yearly&special-offers=students) pour les étudiants, les enseignants** et les projets opens-ource 
 
 > [!WARNING]
 > Concernant les extensions Vscode surtout, il se peut que **si votre ordinateur est lent**, ce soit encore pire avec les extensions. Je vous conseil donc de tester les extensions mais si ça ralenti votre ordinateur, vous pouvez désinstaller les extensions suivantes progressivement, dans l'ordre ci-dessous :
