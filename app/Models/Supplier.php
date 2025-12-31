@@ -4,21 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Supplier extends Model
 {
     use HasFactory;
-
-    // Source - https://stackoverflow.com/a
-    // Posted by Sameer Shaikh, modified by community. See post 'Timeline' for change history
-    // Retrieved 2025-12-26, License - CC BY-SA 4.0
-
-    // Utile ? Pourquoi ça n'est pas défini automatiquement pour nous mais dansl les tutos si ?
-    // protected $table = 'suppliers';
-
-    // protected $connection = 'mariadb';
-
-    public $timestamps = false;
 
     // protected $fillable = [
     //     'company_name',
@@ -33,4 +23,14 @@ class Supplier extends Model
     protected $guarded = [
 
     ];
+
+    /**
+     * Retourne la liste des commandes du fournisseur
+     *
+     * @return HasMany // Liste des commandes du fournisseur
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
 }
