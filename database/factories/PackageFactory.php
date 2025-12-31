@@ -16,8 +16,8 @@ class PackageFactory extends Factory
      */
     public function definition(): array
     {
-        $shipping_date = fake()->dateTimeThisYear();
-        if ($shipping_date < now()) {
+        $shipping_date = fake()->dateTimeThisYear('+3 years');
+        if ($shipping_date->getTimestamp() > now()->getTimestamp()) {
             $shipping_date = null;
         }
 
