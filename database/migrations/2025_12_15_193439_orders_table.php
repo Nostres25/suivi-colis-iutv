@@ -36,7 +36,7 @@ return new class extends Migration
             $table->string('path_quote')->nullable(); // chemin vers le fichier du devis
             $table->string('path_purchase_order')->nullable(); // chemin vers le fichier du bon de commande signé ou non signé
             $table->string('path_delivery_note')->nullable(); // chemin vers le fichier du bon de livraison
-            $table->enum('states', [ // états possibles de la commande (triés dans l'ordre) :
+            $table->enum('state', [ // états possibles de la commande (triés dans l'ordre) :
 
                 'BROUILLON', // enregistré à l'état de brouillon. Affiché seulement pour le demandeur
 
@@ -64,6 +64,7 @@ return new class extends Migration
 
                 'ANNULE', // La commande a été annulée par le demandeur à n'importe quelle étape
             ])->default('BROUILLON');
+            $table->timestamps();
         });
 
         Schema::create('packages', function (Blueprint $table) {
@@ -73,8 +74,10 @@ return new class extends Migration
             $table->decimal('cost', 12, 2)->nullable();
             $table->date('date_expected_delivery')->nullable();
             $table->dateTime('shipping_date')->nullable();
+            $table->timestamps();
 
             $table->primary(['id', 'order_id']);
+
         });
 
     }

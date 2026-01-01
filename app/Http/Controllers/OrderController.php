@@ -45,7 +45,7 @@ class OrderController extends Controller
         $supplier->save();
 
         // $order = new \App\Models\Order;
-        // $order->order_num = '450016182d8'; // présent dans le nom du fichier du bon de commande et devis, et dans le bon de commande lui-même
+        // $order->order_num = '4500161828'; // présent dans le nom du fichier du bon de commande et devis, et dans le bon de commande lui-même
         // $order->label = 'Cablage salle blanche'; // désignation de la commande dans bon de commande et nom du projet dans devis (différents)
         // $order->description = 'Cablage electrique de la salle blanche du CRIT';
         // $order->supplier_id = 1;

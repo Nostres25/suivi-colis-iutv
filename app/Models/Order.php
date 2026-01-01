@@ -3,18 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class Order extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-
-    // Source - https://stackoverflow.com/a
-    // Posted by Sameer Shaikh, modified by community. See post 'Timeline' for change history
-    // Retrieved 2025-12-26, License - CC BY-SA 4.0
-
-    public $timestamps = false;
 
     protected $fillable = [
         'label',
@@ -27,7 +23,12 @@ class Order extends Model
         'states',
     ];
 
-    public function getSupplier()
+    /**
+     * Retourne la liste le fournisseur de la commande
+     *
+     * @return BelongsTo // Fournisseur de la commande
+     */
+    public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);
     }
@@ -146,9 +147,93 @@ class Order extends Model
     }
 
     /**
-     * Retourne la liste des colis de la commmande
+     * Retourne le coût formaté avec la devise en euro en chaîne de caractères.
      *
-     * @return Package // Liste des colis de la commande
+     * @return string le coût formaté en euro ou 'Non communiqué' si le coût n'est pas encore indiqué.
+     */
+    public function getCostFormatted(): string
+    {
+        if (is_null($this->cost)) {
+            return 'Non communiqué';
+        }
+
+        return number_format($this->cost, 2, ',', ' ').' €';
+    }
+
+    /**
+     * Retourne l'url du devis.
+     *
+     * @return string|null l'url du devis ou null si le devis n'est pas encore enregistré.
+     */
+    public function getUrlQuote(): ?string
+    {
+        if (is_null($this->path_quote)) {
+            return null;
+        }
+
+        return Storage::url($this->path_quote);
+    }
+
+    /**
+     * Retourne l'url du bon de commande.
+     *
+     * @return string|null l'url du bon de commande ou null si le bon de commande n'est pas encore enregistré.
+     */
+    public function getUrlPurchaseOrder(): ?string
+    {
+        if (is_null($this->path_purchase_order)) {
+            return null;
+        }
+
+        return Storage::url($this->path_purchase_order);
+    }
+
+    /**
+     * Retourne l'url du bon de livraison.
+     *
+     * @return string|null l'url du bon de livraison ou null si le bon de livraison n'est pas encore enregistré.
+     */
+    public function getUrlDeliveryNote(): ?string
+    {
+        if (is_null($this->path_delivery_note)) {
+            return null;
+        }
+
+        return Storage::url($this->path_delivery_note);
+    }
+
+    // TODO : Autre moyen de récupérer l'url d'un fichier (à tester)
+    public function getUrlQuoteAlt(): ?string
+    {
+        if (is_null($this->path_quote)) {
+            return null;
+        }
+
+        return asset('storage/'.$this->path_quote);
+    }
+
+    public function getUrlPurchaseOrderAlt(): ?string
+    {
+        if (is_null($this->path_purchase_order)) {
+            return null;
+        }
+
+        return asset('storage/'.$this->path_purchase_order);
+    }
+
+    public function getUrlDeliveryNoteAlt(): ?string
+    {
+        if (is_null($this->path_delivery_note)) {
+            return null;
+        }
+
+        return asset('storage/'.$this->path_delivery_note);
+    }
+
+    /**
+     * Retourne la liste des colis de la commande
+     *
+     * @return HasMany // Liste des colis de la commande
      */
     public function packages(): HasMany
     {
@@ -156,13 +241,23 @@ class Order extends Model
     }
 
     /**
-     * Retourne la liste des commentaires de la commmande
+     * Retourne la liste des commentaires de la commande
      *
      * @return HasMany // Liste des commentaires de la commande
      */
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * Retourne la liste des actions associées à la commande
+     *
+     * @return HasMany // Liste des actions de la commande
+     */
+    public function logs(): HasMany
+    {
+        return $this->hasMany(Log::class);
     }
 
     // TODO
