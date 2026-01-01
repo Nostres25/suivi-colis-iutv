@@ -23,10 +23,10 @@ class Log extends Model
     /**
      * Retourne l'auteur de l'action
      *
-     * @return HasOne // Auteur de l'action
+     * @return BelongsTo // Auteur de l'action
      */
-    public function user(): HasOne
+    public function author(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class, 'author_id');
     }
 }
