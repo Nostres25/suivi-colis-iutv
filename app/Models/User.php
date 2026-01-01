@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 
 class User extends Authenticatable
 {
@@ -95,19 +96,28 @@ class User extends Authenticatable
      * Vérifie si un utilisateur a la permission "$permission"
      *
      * @param   \Database\Seeders\Permission    $permission Permission à vérifier
-     * @param   bool    $strict Si retourne toujours true avec la permission administrateur (à false par défaut)
+     * @param bool $strict Si retourne toujours true avec la permission administrateur (à false par défaut)
      * @return  bool        // true si l'utilisateur a un rôle avec la permission "$permission", false sinon
      */
-    public function hasPermission(\Database\Seeders\Permission $permission, $strict = false): bool
+    public function hasPermission(\Database\Seeders\Permission $permission, bool $strict = false): bool
     {
         // TODO pour des questions de performances charger au préalable les permissions de l'utilisateur dans le "constructeur" (voir comment faire avec laravel)
-        foreach ($this->roles()->allRelatedIds() as $role) {
+        foreach ($this->roles()->getResults() as $role) {
             if ($role->hasPermission($permission, $strict)) {
                 return true;
             }
         }
         return false;
     }
-    // public function getRoles(): array {}
+
+    /**
+     * Retoune la liste des rôles de l'utilisateur
+     *
+     * @return  Collection      // Collection (liste) des rôles de l'utilisateur
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles()->getResults();
+    }
     // public function hasRole(): bool {}
 }

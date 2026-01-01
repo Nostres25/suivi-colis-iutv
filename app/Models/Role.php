@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use \App\Models\Permission;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -34,9 +33,9 @@ class Role extends Model
     /**
      * Vérifie si un rôle a la permission "$permission"
      *
-     * @param   \Database\Seeders\Permission    $permission Permission à vérifier
-     * @param   bool    $strict Si retourne toujours true avec la permission administrateur (à false par défaut)
-     * @return  bool        // true si le rôle a la permission "$permission", false sinon
+     * @param  \Database\Seeders\Permission  $permission  Permission à vérifier
+     * @param  bool  $strict  Si retourne toujours true avec la permission administrateur (à false par défaut)
+     * @return bool // true si le rôle a la permission "$permission", false sinon
      */
     public function hasPermission(\Database\Seeders\Permission $permission, $strict = false): bool
     {

@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,11 +26,11 @@ class Order extends Model
     /**
      * Retourne la liste le fournisseur de la commande
      *
-     * @return HasOne // Fournisseur de la commande
+     * @return BelongsTo // Fournisseur de la commande
      */
-    public function supplier(): HasOne
+    public function supplier(): BelongsTo
     {
-        return $this->hasOne(Supplier::class);
+        return $this->belongsTo(Supplier::class);
     }
 
     // TODO peut-être un peut factoriser l'upload des fichiers mais... plus tard
@@ -146,55 +146,59 @@ class Order extends Model
         return false;
     }
 
-
     /**
      * Retourne le coût formaté avec la devise en euro en chaîne de caractères.
+     *
      * @return string le coût formaté en euro ou 'Non communiqué' si le coût n'est pas encore indiqué.
      */
-
     public function getCostFormatted(): string
     {
         if (is_null($this->cost)) {
             return 'Non communiqué';
         }
+
         return number_format($this->cost, 2, ',', ' ').' €';
     }
 
     /**
-     * Retourne l'url du devis. 
+     * Retourne l'url du devis.
+     *
      * @return string|null l'url du devis ou null si le devis n'est pas encore enregistré.
      */
-
     public function getUrlQuote(): ?string
     {
         if (is_null($this->path_quote)) {
             return null;
         }
+
         return Storage::url($this->path_quote);
     }
 
     /**
-     * Retourne l'url du bon de commande. 
+     * Retourne l'url du bon de commande.
+     *
      * @return string|null l'url du bon de commande ou null si le bon de commande n'est pas encore enregistré.
      */
-
     public function getUrlPurchaseOrder(): ?string
     {
         if (is_null($this->path_purchase_order)) {
             return null;
         }
+
         return Storage::url($this->path_purchase_order);
     }
+
     /**
-     * Retourne l'url du bon de livraison. 
+     * Retourne l'url du bon de livraison.
+     *
      * @return string|null l'url du bon de livraison ou null si le bon de livraison n'est pas encore enregistré.
      */
-
     public function getUrlDeliveryNote(): ?string
     {
         if (is_null($this->path_delivery_note)) {
             return null;
         }
+
         return Storage::url($this->path_delivery_note);
     }
 
@@ -204,13 +208,16 @@ class Order extends Model
         if (is_null($this->path_quote)) {
             return null;
         }
+
         return asset('storage/'.$this->path_quote);
     }
+
     public function getUrlPurchaseOrderAlt(): ?string
     {
         if (is_null($this->path_purchase_order)) {
             return null;
         }
+
         return asset('storage/'.$this->path_purchase_order);
     }
 
@@ -219,11 +226,10 @@ class Order extends Model
         if (is_null($this->path_delivery_note)) {
             return null;
         }
+
         return asset('storage/'.$this->path_delivery_note);
     }
 
-
-    
     /**
      * Retourne la liste des colis de la commande
      *
@@ -253,7 +259,6 @@ class Order extends Model
     {
         return $this->hasMany(Log::class);
     }
-
 
     // TODO
     // /**

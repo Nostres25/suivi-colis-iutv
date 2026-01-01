@@ -47,7 +47,7 @@ class OrderFactory extends Factory
         $state = fake()->randomElement($orderStats);
 
         return [
-            'order_num' => fake()->unique()->randomNumber(5).fake()->unique()->randomNumber(6), // Not only digits
+            'order_num' => fake()->unique()->randomNumber(5).fake()->unique()->randomNumber(6),
             'label' => fake()->title(),
             'description' => fake()->sentences(6, true),
             'state' => $state,
