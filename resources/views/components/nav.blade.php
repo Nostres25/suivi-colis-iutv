@@ -2,11 +2,11 @@
   <div class="container-fluid">
 
     {{-- Amélioration proposée:
-      faire apparaître le bouton uniquement en fonction de la taille de la fenêtre pour différencier smartphone/pc apporte des problèmes : 
+      faire apparaître le bouton uniquement en fonction de la taille de la fenêtre pour différencier smartphone/pc apporte des problèmes :
       - notamment, si on rétrécie la fenêtre sur pc ça va faire apparaître le bouton comme si on était sur téléphone
       - mais aussi, les téléphones pliables ne pourrons donc pas voir le bouton pour utiliser l'objectif en grand écran
       - Cela peut aussi ne pas faire apparaître le bouton sur des tablettes qui ont pourtant une caméra
-      Solutions: 
+      Solutions:
       - Pour détecter réellement si un appareil a une caméra en JS et non juste si la taille d'écran correspond: navigator.mediaDevices.enumerateDevices().then(result=>console.log(result.filter(r=>r.kind=='videoinput'))) (source: https://www.reddit.com/r/learnjavascript/comments/qsehvi/is_there_a_way_to_detect_if_the_device_has_a/)
       - Même solution en php : ?
       - Plutôt détecter si un appareil est un téléphone ou une tablette (car les pc peuvent avoir une caméra webcam notamment): nécéssite l'installation d'un module: mobiledetect/mobiledetectlib (source: https://stackoverflow.com/questions/23779088/laravel-detect-mobile-tablet-and-load-correct-views) Attention toutefois il faut s'assurer de la légitimité du module et se demander si ce n'est pas de trop (github : https://github.com/serbanghita/Mobile-Detect)
@@ -37,7 +37,7 @@
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/Supplier">Fournisseurs</a>
+          <a class="nav-link" href="/suppliers">Fournisseurs</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/about">À propos</a>

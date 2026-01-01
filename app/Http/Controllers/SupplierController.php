@@ -7,7 +7,7 @@ use Illuminate\View\View;
 
 class SupplierController extends Controller
 {
-    public function Supplier(): View
+    public function viewSuppliers(): View
     {
         // Liste d'exemples de suppliers
         $suppliers = [
@@ -90,7 +90,7 @@ class SupplierController extends Controller
             ],
         ];
 
-        return view('Supplier', [
+        return view('suppliers', [
             'suppliers' => $suppliers,
         ]);
     }

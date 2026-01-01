@@ -14,9 +14,8 @@ Route::post('orders/new', [\App\Http\Controllers\OrderController::class, 'submit
 
 Route::get('/cas/login', [CASController::class, 'casLogin'])
     ->name('cas.login');
-Route::get('suppliers', [\App\Http\Controllers\OrderController::class, 'viewSuppliers']);
+Route::get('suppliers', [\App\Http\Controllers\SupplierController::class, 'viewSuppliers']);
 
 Route::get('/about', [\App\Http\Controllers\AboutController::class, 'about']);
 // Only for tests:
 // Route::get('/', [\App\Http\Controllers\HomeController::class, 'home']);
-Route::get('/Supplier', [\App\Http\Controllers\SupplierController::class, 'Supplier']);
