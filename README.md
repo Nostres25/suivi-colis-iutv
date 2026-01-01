@@ -242,19 +242,20 @@ Si tout à fonctionné, vous pouvez sortir de la base de données en entrant `EX
 3. Pour tester si votre base de données fonctionne correctement, vous pouvez exécuter `php artisan db` dans le dossier du projet, ce qui devrait vous connecter à la base de données selon les informations présentes dans le `.env`
 4. Si vous réussissez à créer une table (ex: `CREATE TABLE TABLE_NAME (a INT);`), c'est que les permissions ont bien été configurées
    (pensez à sortir avec `EXIT` ou `\q` pour continuer)
-5. Enfin, il ne reste plus qu'à préparer la base de données `suivi_colis_iutv` grâce aux migrations, de sorte à ce que l'application puisse se lancer. Pour cela, rendez-vous dans le dossier du projet et exécutez:
+5. Enfin, il ne reste plus qu'à préparer la base de données `suivi_colis_iutv` grâce aux migrations et aux seeders, de sorte à ce que l'application puisse se lancer. Pour cela, rendez-vous dans le dossier du projet et exécutez:
 
 ```bash
-php artisan migrate
+php artisan migrate --seeder
 ```
 
 > [!NOTE]
 > Les migrations dans Laravel sont des fichiers de classe qui contiennent des instructions pour créer, modifier ou supprimer des tables, des colonnes, des index et d'autres éléments de la base de données. Chaque migration correspond à une étape spécifique dans l'évolution de la structure de la base de données. La commande `php artisan migrate` va créer, modifier ou supprimer les tables en fonctions des migrations présentes.
->
-> -   À chaque changement aux niveau des migrations, il faut exécuter la commande suivante:
+> Les seeders permettent le remplissage automatique de données par défaut comme des données de test mais pas seulement (ce projet a des données par défaut également en production pour les rôles et les permissions)
+> 
+> -   À chaque changement aux niveau des migrations ou des seeder, il faut exécuter la commande suivante:
 >
 > ```bash
-> php artisan migrate:fresh
+> php artisan migrate:fresh --seeder
 > ```
 >
 > -   Si vous supprimez une migration ou que vous modifiez une migration existante, veuillez exécuter:
