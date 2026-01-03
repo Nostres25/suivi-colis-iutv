@@ -13,8 +13,8 @@ Route::post('/', [\App\Http\Controllers\OrderController::class, 'viewOrders']);
 Route::get('orders/new', [\App\Http\Controllers\OrderController::class, 'newOrder']);
 Route::post('orders/new', [\App\Http\Controllers\OrderController::class, 'submitNewOrder']);
 
-Route::get('/cas/login', [CASController::class, 'casLogin'])
-    ->name('cas.login');
+Route::get('/cas/login', [CASController::class, 'casLogin']);
+
 Route::get('suppliers', [\App\Http\Controllers\OrderController::class, 'viewSuppliers']);
 
 // Only for tests:

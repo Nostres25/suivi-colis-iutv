@@ -9,6 +9,12 @@ class CASController extends Controller
 {
     public function casLogin()
     {
+        // simulation CAS en local
+         if (app()->environment('local')&& !isset($_SERVER['REMOTE_USER'])) {
+            $_SERVER['REMOTE_USER'] = 'etudiant.test';
+            $_SERVER['HTTP_CAS_DISPLAYNAME'] = 'Etudiant Test';
+        }
+
         // Apache a déjà authentifié l'utilisateur
         if (!isset($_SERVER['REMOTE_USER'])) {
             abort(403, 'Utilisateur non authentifié par CAS');
@@ -28,14 +34,14 @@ class CASController extends Controller
         $user = User::firstOrCreate(
             ['login' => $login],
             [
-                'prenom' => $prenom,
-                'nom' => $nom,
+                'first_name' => $prenom,
+                'last_name' => $nom,
                 'email' => $login . '@univ.fr'
             ]
         );
 
         Auth::login($user);
 
-        return redirect('/dashboard');
+        return redirect('/');// permet de rediriger vers la page d'accueil
     }
 }
