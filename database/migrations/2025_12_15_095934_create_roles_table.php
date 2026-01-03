@@ -18,6 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->tinyText('description');
+            $table->timestamps();
         });
 
         Schema::create('role_user', function (Blueprint $table) {
@@ -31,6 +32,7 @@ return new class extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->string('label')->unique();
+            $table->timestamps();
         });
 
         Schema::create('permission_role', function (Blueprint $table) {

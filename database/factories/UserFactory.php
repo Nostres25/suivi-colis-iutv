@@ -20,6 +20,7 @@ class UserFactory extends Factory
         return [
             'last_name' => fake()->lastName(),
             'first_name' => fake()->firstName(),
+            'login' => fake()->unique()->userName(),
             'email' => fake()->unique()->safeEmail(),
             'phone_number' => fake()->phoneNumber(),
         ];
@@ -28,14 +29,14 @@ class UserFactory extends Factory
     /**
      * Configure the model factory.
      */
-    public function configure(): static
-    {
-
-        return $this->afterMaking(function (User $user) {
-
-            // ...
-
-        })->afterCreating(function (User $user) {});
-
-    }
+    //    public function configure(): static
+    //    {
+    //
+    //        return $this->afterMaking(function (User $user) {
+    //
+    //            // ...
+    //
+    //        })->afterCreating(function (User $user) {});
+    //
+    //    }
 }

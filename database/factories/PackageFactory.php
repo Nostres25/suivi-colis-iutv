@@ -16,8 +16,8 @@ class PackageFactory extends Factory
      */
     public function definition(): array
     {
-        $shipping_date = fake()->dateTimeThisYear();
-        if ($shipping_date < now()) {
+        $shipping_date = fake()->dateTimeThisYear('+3 years');
+        if ($shipping_date->getTimestamp() > now()->getTimestamp()) {
             $shipping_date = null;
         }
 
@@ -25,7 +25,7 @@ class PackageFactory extends Factory
             'label' => fake()->title(),
             'cost' => fake()->randomFloat(2, 0, 12), // TODO S'il y a une erreur à propos du coût c'est que les 12 chiffres sont à prendre dans les négatifs et les positifs
             'date_expected_delivery' => fake()->dateTimeBetween(now(), '+3 years'),
-            'shipping_date' => fake()->random,
+            'shipping_date' => $shipping_date,
         ];
     }
 }

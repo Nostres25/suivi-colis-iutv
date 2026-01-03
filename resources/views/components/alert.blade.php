@@ -1,3 +1,3 @@
 <div class="alert alert-success">
-    Mon message d'alert (c'est un composant)
+    Mon message d'alerte (c'est un composant)
 </div>
