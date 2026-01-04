@@ -7,36 +7,6 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 
-// Permissions
-// - Consulter toutes les commandes      => Pouvoir voir et rechercher toutes les commandes dans le système.
-// - Consulter ses commandes             => Pouvoir voir uniquement les commandes appartenant au même département/service.
-// - Créer des commandes                 => Pouvoir créer des commandes à l'état de devis.
-// - Modifier des commandes              => Pouvoir modifier les informations principales d'une commande.
-// - Ajouter un bon de livraison         => Pouvoir marquer les colis respectifs comme livrés et ajouter un bon de livraison.
-// - Notes et commentaires               => Pouvoir ajouter des commentaires et modifier la note pour les commandes et les fournisseurs.
-// - Demander l'ajout d'un fournisseur   => Pouvoir demander l'ajout d'un fournisseur au service financier.
-// - Consulter la liste des fournisseurs => Pouvoir consulter la liste des fournisseurs valides.
-// - Gérer les fournisseurs              => Pouvoir ajouter, modifier et valider ou invalider les fournisseurs.
-// - Gérer les bons de commande          => Pouvoir ajouter, refuser, modifier et supprimer des bons de commande.
-// - Payer les fournisseurs              => Pouvoir marquer les commandes comme payées.
-// - Admin                               => Avoir tous les accès et pouvoir gérer la base de données.
-enum Permission: int
-{
-    case CONSULTER_COMMANDES = 2;
-    case CONSULTER_SES_COMMANDES = 3;
-    case CREER_COMMANDES = 4;
-    case MODIFIER_COMMANDES = 5;
-    case AJOUTER_BON_DE_LIVRAISON = 6;
-
-    case NOTES_ET_COMMENTAIRES = 7;
-    case DEMANDER_AJOUT_FOURNISSEUR = 8;
-    case CONSULTER_LISTE_FOURNISSEURS = 9;
-    case GERER_FOURNISSEUR = 10;
-    case GERER_BONS_DE_COMMANDES = 11;
-    case PAYER_FOURNISSEUR = 12;
-
-    case ADMIN = 1;
-}
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
@@ -50,7 +20,8 @@ class DatabaseSeeder extends Seeder
                 'id' => 1,
                 'description' => 'Accès total à la base de données.',
                 'permissions' => [
-                    Permission::CONSULTER_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES,
+                    PermissionValue::ADMIN,
                 ],
             ],
             [
@@ -58,7 +29,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 2,
                 'description' => 'S\'occupe de livrer les colis aux départements respectifs.',
                 'permissions' => [
-                    Permission::CONSULTER_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES,
                 ],
             ],
             [
@@ -66,7 +37,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 3,
                 'description' => 'S\'occupe de la liste des fournisseurs valides, des bons de commandes et de payer le fournisseur.',
                 'permissions' => [
-                    Permission::CONSULTER_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES,
                 ],
             ],
             [
@@ -74,7 +45,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 4,
                 'description' => 'Membre du département informatique.',
                 'permissions' => [
-                    Permission::CONSULTER_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES,
                 ],
             ],
             [
@@ -82,7 +53,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 5,
                 'description' => 'Membre du département GEA.',
                 'permissions' => [
-                    Permission::CONSULTER_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES,
                 ],
             ],
             [
@@ -90,7 +61,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 6,
                 'description' => 'Membre du département CJ.',
                 'permissions' => [
-                    Permission::CONSULTER_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES,
                 ],
             ],
             [
@@ -98,7 +69,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 7,
                 'description' => 'Membre du département GEII.',
                 'permissions' => [
-                    Permission::CONSULTER_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES,
                 ],
             ],
             [
@@ -106,7 +77,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 8,
                 'description' => 'Membre du département réseaux et télécommunications.',
                 'permissions' => [
-                    Permission::CONSULTER_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES,
                 ],
             ],
             [
@@ -114,7 +85,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 9,
                 'description' => 'Membre du département sciences des données.',
                 'permissions' => [
-                    Permission::CONSULTER_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES,
                 ],
             ],
         ]);
@@ -189,13 +160,13 @@ class DatabaseSeeder extends Seeder
         //            ['label' => 'Admin'],
         //        ];
 
-        $permissions = Permission::cases();
+        $permissions = PermissionValue::cases();
         sort($permissions);
         $permissionElements = [];
         foreach ($permissions as $permission) {
-            $permissionElements[] = ['label' => $permission];
+            $permissionElements[] = ['name' => $permission];
         }
-        DB::table('permissions')->upsert($permissionElements, uniqueBy: ['label']);
+        DB::table('permissions')->upsert($permissionElements, uniqueBy: ['name']);
 
         // Attribution de permissions par défaut
         $permission_roleElements = [];

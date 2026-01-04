@@ -80,7 +80,7 @@ class LocalTestSeeder extends Seeder
                     foreach ($user->getRoles() as $role1) {
                         // Si l'utilisateur a la permission administrateur, il a accès à la commande donc il écrit un commentaire
                         // OU si un rôle en commun a été trouvé et que la boucle imbriquée a été sautée, sauter aussi cette boucle
-                        if ($write_comment || $role1->hasPermission(Permission::ADMIN)) {
+                        if ($write_comment || $role1->hasPermission(PermissionValue::ADMIN)) {
                             $write_comment = true;
                             break;
                         }

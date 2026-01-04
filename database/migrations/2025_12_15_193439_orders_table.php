@@ -1,5 +1,6 @@
 <?php
 
+use Database\Seeders\Status;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -27,53 +28,51 @@ return new class extends Migration
         //     AND COLUMN_NAME = 'nom_de_votre_colonne';
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('order_num')->unique();
-            $table->string('label');
-            $table->text('description')->nullable();
-            $table->foreignId('supplier_id')->nullable()->constrained('suppliers', 'id')->nullOnDelete();
-            $table->decimal('cost', 12, 2)->nullable();
-            $table->string('quote_num')->unique();
-            $table->string('path_quote')->nullable(); // chemin vers le fichier du devis
-            $table->string('path_purchase_order')->nullable(); // chemin vers le fichier du bon de commande signé ou non signé
-            $table->string('path_delivery_note')->nullable(); // chemin vers le fichier du bon de livraison
-            $table->enum('state', [ // états possibles de la commande (triés dans l'ordre) :
-
-                'BROUILLON', // enregistré à l'état de brouillon. Affiché seulement pour le demandeur
-
-                'DEVIS', // à l'état de devis ; en attente d'un bon de commande (première étape)
-
-                'DEVIS_REFUSE', // à l'état de devis ; l'éditeur de bon de commande a refusé de faire un bon de commande
-
-                'BON_DE_COMMANDE_NON_SIGNE', // à l'état de bon de commande ; doit être signé par le directeur
-
-                'BON_DE_COMMANDE_REFUSE', // à l'état de bon de commande ; le directeur a refusé de signer
-
-                'BON_DE_COMMANDE_SIGNE', // à l'état de bon de commande signé ; en attente d'envoi du bon signé de commande au fournisseur
-
-                'COMMANDE', // à l'état de bon de commande signé ; commmandé sans réponse, en attente de réponse du fournisseur
-
-                'COMMANDE_REFUSEE', // à l'état de bon de commande signé ; commande refusée par le fournisseur
-
-                'COMMANDE_AVEC_REPONSE', // à l'état de bon de commande signé ; le fournisseur a répondu favorablement à la commande. (Peut fournir le délai de livraison)
-
-                'PARTIELLEMENT_LIVRE', // le demandeur à signalé que certains colis ont été livrés, et que d'autres sont manquants.
-
-                'SERVICE_FAIT', // = terme utilisé par le demandeur pour signaler que la commande a été totalement livrée ; en attente de paiment par le service financier
-
-                'LIVRE_ET_PAYE', // commande payée par le service financié (dernière étape)
-
-                'ANNULE', // La commande a été annulée par le demandeur à n'importe quelle étape
-            ])->default('BROUILLON');
+            $table->string('order_num')
+                ->unique()
+                ->comment('Numéro associé à la commande notamment fournit par le logiciel Chorus');
+            $table->string('title')
+                ->comment('Désignation de la commande');
+            $table->text('description')
+                ->nullable()
+                ->comment('Description du contenu de la commande et informations complémentaires');
+            $table->foreignId('supplier_id')->nullable()
+                ->constrained('suppliers', 'id')
+                ->nullOnDelete();
+            $table->decimal('cost', 12, 2)
+                ->nullable()
+                ->comment('Coût total de la commande présent sur le devis et sur le bon de commande');
+            $table->string('quote_num')
+                ->unique()
+                ->comment('Numéro du devis associé à la commande');
+            $table->string('path_quote')
+                ->nullable()
+                ->comment('Chemin vers le fichier du devis de la commande');
+            $table->string('path_purchase_order')
+                ->nullable()
+                ->comment('Chemin vers le fichier du bon de commande signé ou non signé');
+            $table->string('path_delivery_note')
+                ->nullable()
+                ->comment('Chemin vers le fichier du bon de livraison associé à la commande');
+            $table->enum('status', Status::cases())
+                ->default(Status::BROUILLON)
+                ->comment('Statut de la commande');
             $table->timestamps();
         });
 
         Schema::create('packages', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->autoIncrement();
             $table->foreignId('order_id')->constrained('orders', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('label');
-            $table->decimal('cost', 12, 2)->nullable();
-            $table->date('date_expected_delivery')->nullable();
-            $table->dateTime('shipping_date')->nullable();
+            $table->string('name');
+            $table->decimal('cost', 12, 2)
+                ->nullable()
+                ->comment('Coût unitaire du colis');
+            $table->date('date_expected_delivery')
+                ->nullable()
+                ->comment('Date prévue pour la livraison du colis');
+            $table->dateTime('shipping_date')
+                ->nullable()
+                ->comment('Date de livraison si le colis à été reçu');
             $table->timestamps();
 
             $table->primary(['id', 'order_id']);
