@@ -3,27 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suivi colis IUTV</title>
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    @yield('css')
-    <script type="text/javascript" src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <title>{{ config('app.name', 'Suivi IUT Villetaneuse') }}</title>
+    <link href="{{asset('bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <script type="text/javascript" src="{{asset('bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <link href="{{asset('style.css')}}" rel="stylesheet" type="text/css">
 </head>
 <body>
-<header>
-  <x-nav></x-nav>
+<header class="mb-5">
+    <x-nav></x-nav>
+    <x-alert></x-alert>
+
+    {{--Bannière bleue--}}
+    <div class="page-header">
+        @yield('header')
+    </div>
 </header>
 <main>
     @yield('content')
 </main>
-<footer></footer>
+<footer>
+    @yield('footer')
+</footer>
 </body>
-<style>
-  .modal-open {
-    padding-right: 0 !important;
-  }
-
-  html {
-    overflow-y: scroll !important;
-  }
-</style>
 </html>

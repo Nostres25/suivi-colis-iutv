@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('contact_name')
                 ->nullable()
                 ->comment('Nom du contact dans l\'entreprise fournisseur');
+            $table->string('speciality')
+                ->nullable()
+                ->comment("Domaine d'expertise du fournisseur");
             $table->text('note')->nullable();
             $table->boolean('is_valid')
                 ->default(false)
