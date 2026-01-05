@@ -18,6 +18,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->tinyText('description');
+            $table->boolean('is_department')
+                ->comment('Si le rôle est un département qui peut créer des commandes');
             $table->timestamps();
         });
 

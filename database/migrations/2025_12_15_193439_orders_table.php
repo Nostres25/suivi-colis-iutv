@@ -58,6 +58,8 @@ return new class extends Migration
                 ->default(Status::BROUILLON)
                 ->comment('Statut de la commande');
             $table->timestamps();
+
+            $table->foreignId('department_id')->constrained('roles', 'id')->cascadeOnUpdate();
         });
 
         Schema::create('packages', function (Blueprint $table) {

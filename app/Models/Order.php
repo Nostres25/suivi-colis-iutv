@@ -7,30 +7,223 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Ramsey\Collection\Collection;
 
+// Projet abandonné car ça ne trouve pas l'enum ici
+// enum OrderAttributes: string {
+//    case TITLE = 'title';
+//    case ORDER_NUM = 'order_num';
+//    case DESCRIPTION = 'description';
+//    case COST = 'cost';
+//    case QUOTE_NUM = 'quote_num';
+//    case PATH_QUOTE = 'path_quote';
+//    case PATH_PURCHASE_ORDER = 'path_purchase_order';
+//    case PATH_DELIVERY_NOTE = 'path_delivery_note';
+//    case STATUS = 'status';
+// }
 class Order extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     protected $fillable = [
-        'label',
+        'titre',
         'description',
         'cost',
         'quote_num',
         'path_quote',
         'path_purchase_order',
         'path_delivery_note',
-        'states',
+        'status',
     ];
 
     /**
-     * Retourne la liste le fournisseur de la commande
+     * Retourne le titre/la désignation de la commande
      *
-     * @return BelongsTo // Fournisseur de la commande
+     * @return string // titre de la commande
      */
-    public function supplier(): BelongsTo
+    public function getTitle(): string
     {
-        return $this->belongsTo(Supplier::class);
+        return $this->attributes['title'];
+    }
+
+    /**
+     * Retourne le numéro de la commande
+     *
+     * @return string // Numéro de la commande
+     */
+    public function getNumero(): string
+    {
+        return $this->attributes['quote_num'];
+    }
+
+    /**
+     * Retourne le numéro de la commande
+     *
+     * @return string // numéro de la commande
+     */
+    public function getOrderNumber(): string
+    {
+        return $this->attributes['order_num'];
+    }
+
+    /**
+     * Retourne la description de la commande
+     *
+     * @return string // description de la commande
+     */
+    public function getDescription(): string
+    {
+        return $this->attributes['description'];
+    }
+
+    /**
+     * Retourne le coût en euros total de la commande
+     *
+     * @return string // coût en euros de la commande
+     */
+    public function getCost(): string
+    {
+        return $this->attributes['cost'];
+    }
+
+    /**
+     * Retourne le coût formaté avec la devise en euro en chaîne de caractères.
+     *
+     * @return string le coût formaté en euro ou 'Non communiqué' si le coût n'est pas encore indiqué.
+     */
+    public function getCostFormatted(): string
+    {
+        if (is_null($this->getCost())) {
+            return 'Non précisé';
+        }
+
+        return number_format($this->getCost(), 2, ',', ' ').' €';
+    }
+
+    /**
+     * Retourne le numéro du devis associé à la commande
+     *
+     * @return string // Numero du devis de la commande
+     */
+    public function getQuoteNumber(): string
+    {
+        return $this->attributes['quote_num'];
+    }
+
+    /**
+     * Retourne l'url du devis.html/css avec bootstrap)
+     *
+     * @return string|null l'url du devis ou null si le devis n'est pas encore enregistré.
+     */
+    public function getUrlQuote(): ?string
+    {
+        $path_quote = $this->getAttributeValue('path_quote');
+        if (is_null($path_quote)) {
+            return null;
+        }
+
+        return Storage::url($path_quote);
+    }
+
+    /**
+     * Retourne l'url du bon de commande.
+     *
+     * @return string|null l'url du bon de commande ou null si le bon de commande n'est pas encore enregistré.
+     */
+    public function getUrlPurchaseOrder(): ?string
+    {
+        $path_purchase_order = $this->getAttributeValue('path_purchase_order');
+        if (is_null($path_purchase_order)) {
+            return null;
+        }
+
+        return Storage::url($path_purchase_order);
+    }
+
+    /**
+     * Retourne l'url du bon de livraison.
+     *
+     * @return string|null l'url du bon de livraison ou null si le bon de livraison n'est pas encore enregistré.
+     */
+    public function getUrlDeliveryNote(): ?string
+    {
+        $path_delivery_note = $this->getAttributeValue('path_delivery_note');
+        if (is_null($path_delivery_note)) {
+            return null;
+        }
+
+        return Storage::url($path_delivery_note);
+    }
+
+    /**
+     * Retourne le fournisseur de la commande
+     *
+     * @return Supplier // Fournisseur de la commande
+     */
+    public function getSupplier(): Supplier
+    {
+        return $this->supplier()->getResults();
+    }
+
+    /**
+     * Retourne le rôle correspondant au département de la commande
+     *
+     * @return Role // Département (rôle) de la commande
+     */
+    public function getDepartment(): Role
+    {
+        return $this->department()->getResults();
+    }
+
+    /**
+     * Définir le titre d'une commande. Cela va automatiquement passer la première lettre en majuscule
+     *
+     * @param  string  $title  Titre à définir qui doit décrire la commande de manière assez concise (taille max de 255)
+     */
+    public function setTitle(string $title): void
+    {
+        // TODO Vérifier si cette solution sauvegarde correctement. Sinon faire en sorte que ça sauvegarde
+        $this->setAttribute('title', ucfirst($title));
+    }
+
+    /**
+     * Définir le numéro d'une commande.
+     *
+     * @param  string  $order_num  Numéro de commande à définir
+     */
+    public function setOrderNumber(string $order_num): void
+    {
+        $this->setAttribute('order_num', $order_num);
+    }
+
+    /**
+     * Définir la déscription longue de la commande.
+     *
+     * @param  string  $description  Description de commande à définir
+     */
+    public function setDescription(string $description): void
+    {
+        $this->setAttribute('description', $description);
+    }
+
+    /**
+     * Définir le coût en euros total de la commande.
+     *
+     * @param  float  $cost  Coût de la commande à définir
+     */
+    public function setCost(float $cost): void
+    {
+        $this->setAttribute('cost', $cost);
+    }
+
+    /**
+     * Définir le numéro du devis la commande.
+     *
+     * @param  string  $quote_num  Coût de la commande à définir
+     */
+    public function setQuoteNumber(string $quote_num): void
+    {
+        $this->setAttribute('quote_num', $quote_num);
     }
 
     // TODO peut-être un peut factoriser l'upload des fichiers mais... plus tard
@@ -146,62 +339,6 @@ class Order extends Model
         return false;
     }
 
-    /**
-     * Retourne le coût formaté avec la devise en euro en chaîne de caractères.
-     *
-     * @return string le coût formaté en euro ou 'Non communiqué' si le coût n'est pas encore indiqué.
-     */
-    public function getCostFormatted(): string
-    {
-        if (is_null($this->cost)) {
-            return 'Non communiqué';
-        }
-
-        return number_format($this->cost, 2, ',', ' ').' €';
-    }
-
-    /**
-     * Retourne l'url du devis.
-     *
-     * @return string|null l'url du devis ou null si le devis n'est pas encore enregistré.
-     */
-    public function getUrlQuote(): ?string
-    {
-        if (is_null($this->path_quote)) {
-            return null;
-        }
-
-        return Storage::url($this->path_quote);
-    }
-
-    /**
-     * Retourne l'url du bon de commande.
-     *
-     * @return string|null l'url du bon de commande ou null si le bon de commande n'est pas encore enregistré.
-     */
-    public function getUrlPurchaseOrder(): ?string
-    {
-        if (is_null($this->path_purchase_order)) {
-            return null;
-        }
-
-        return Storage::url($this->path_purchase_order);
-    }
-
-    /**
-     * Retourne l'url du bon de livraison.
-     *
-     * @return string|null l'url du bon de livraison ou null si le bon de livraison n'est pas encore enregistré.
-     */
-    public function getUrlDeliveryNote(): ?string
-    {
-        if (is_null($this->path_delivery_note)) {
-            return null;
-        }
-
-        return Storage::url($this->path_delivery_note);
-    }
-
     // TODO : Autre moyen de récupérer l'url d'un fichier (à tester)
     public function getUrlQuoteAlt(): ?string
     {
@@ -241,6 +378,16 @@ class Order extends Model
     }
 
     /**
+     * Retourne la liste le fournisseur de la commande
+     *
+     * @return BelongsTo // Fournisseur de la commande
+     */
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
+    /**
      * Retourne la liste des commentaires de la commande
      *
      * @return HasMany // Liste des commentaires de la commande
@@ -258,6 +405,16 @@ class Order extends Model
     public function logs(): HasMany
     {
         return $this->hasMany(Log::class);
+    }
+
+    /**
+     * Retourne le rôle du département associé à la commande
+     *
+     * @return BelongsTo // Rôle du département
+     */
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'department_id');
     }
 
     // TODO

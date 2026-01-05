@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 // Permissions
-// - Consulter toutes les commandes      => Pouvoir voir et rechercher toutes les commandes dans le système.
-// - Consulter ses commandes             => Pouvoir voir uniquement les commandes appartenant au même département/service.
+// - CONSULTER_TOUTES_COMMANDES          => Pouvoir voir et rechercher toutes les commandes dans le système.
+// - CONSULTER_COMMANDES_DEPARTMENT      => Pouvoir voir uniquement les commandes appartenant au même département/service.
 // - Créer des commandes                 => Pouvoir créer des commandes à l'état de devis.
 // - Modifier des commandes              => Pouvoir modifier les informations principales d'une commande.
 // - Ajouter un bon de livraison         => Pouvoir marquer les colis respectifs comme livrés et ajouter un bon de livraison.
@@ -17,8 +17,8 @@ namespace Database\Seeders;
 // - Admin                               => Avoir tous les accès et pouvoir gérer la base de données.
 enum PermissionValue: int
 {
-    case CONSULTER_COMMANDES = 2;
-    case CONSULTER_SES_COMMANDES = 3;
+    case CONSULTER_TOUTES_COMMANDES = 2;
+    case CONSULTER_COMMANDES_DEPARTMENT = 3;
     case CREER_COMMANDES = 4;
     case MODIFIER_COMMANDES = 5;
     case AJOUTER_BON_DE_LIVRAISON = 6;
