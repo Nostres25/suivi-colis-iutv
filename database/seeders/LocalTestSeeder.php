@@ -70,7 +70,7 @@ class LocalTestSeeder extends Seeder
                 // Le département ne doit pas avoir aucun membre
                 if ($department->users()->count() == 0) {
                     foreach ($departments as $other_department) {
-                        if (! $department->users()->count() == 0) {
+                        if (! $other_department->users()->count() == 0) {
                             $department = $other_department;
                             break;
                         }
