@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\Role;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -22,9 +24,12 @@ class OrderController extends Controller
         } else {
 
             // En local, on utilise un utilisateur de test
-            // session()->put('user', User::where('role', 'Administrateur BD')->first());
+            session()->put('user', User::all()->first());
 
         }
+
+        /* @var User $user */
+        $user = session('user');
 
         $supplier = Supplier::all()->first();
 
@@ -54,66 +59,31 @@ class OrderController extends Controller
         // $order->
 
         // $order->save();
-        $orders = [
-            [
-                'id' => '1',
-                'department' => 'CRIT',
-                'author' => 'Franck BUTELLE',
-                'title' => 'Cablage salle blanche',
-                'state' => 'En attente d’un bon de commande',
-                'stateChangedAt' => '06/11/2025 à 12:33',
-                'createdAt' => '01/11/2025 à 00:01',
-            ],
-            [
-                'id' => '2',
-                'department' => 'R&T',
-                'author' => 'John DOE',
-                'title' => 'Rasbery PI',
-                'state' => 'Commande en attente de livraison',
-                'stateChangedAt' => 'Depuis le 25/10/2025 à 14:12',
-                'createdAt' => '01/11/2025 à 00:01',
-            ],
-            [
-                'id' => '3',
-                'department' => 'R&T',
-                'author' => 'John DOE',
-                'title' => 'Rasbery PI',
-                'state' => 'Commande en attente de livraison',
-                'stateChangedAt' => 'Depuis le 25/10/2025 à 14:12',
-                'createdAt' => '01/11/2025 à 00:01',
-            ],
-        ];
 
+        // TODO réduire le nombre de requêtes et voir à propos du cache
+        // TODO Filtrer les commandes visibles en fonction du rôle
+        // TODO faire un scroll infini
+        $orders = Order::all();
+        //            ->map(function (Order $order) {
+        //            return [
+        //                'order_num' => $order->getOrderNumber(),
+        //                'title' => $order->getTitle(),
+        //                'department' => $order->getDepartment(),
+        //                'author' => $order->getAuthor(),
+        //                'status' => $order->getStatus(),
+        //                'createdAt' => $order->getCreationDate(),
+        //                'updatedAt' => $order->getLastUpdateDate(),
+        //            ];
+        //        });
+
+        $suppliers = Supplier::all(['id', 'company_name', 'is_valid']);
+
+        //TODO flash messages: redirect('urls.create')->with('success', 'URL has been added');
         return view('orders', [
             'orders' => $orders,
-            'orderStates' => [
-                'BROUILLON', // enregistré à l'état de brouillon. Affiché seulement pour le demandeur
-
-                'ANNULE', // La commande a été annulée par le demandeur à n'importe quelle étape
-
-                'DEVIS_REFUSE', // à l'état de devis ; l'éditeur de bon de commande a refusé de faire un bon de commande
-
-                'DEVIS', // à l'état de devis ; en attente d'un bon de commande (première étape)
-
-                'BON_DE_COMMANDE_REFUSE', // à l'état de bon de commande ; le directeur a refusé de signer
-
-                'BON_DE_COMMANDE_NON_SIGNE', // à l'état de bon de commande ; doit être signé par le directeur
-
-                'BON_DE_COMMANDE_SIGNE', // à l'état de bon de commande signé ; en attente d'envoi du bon signé de commande au fournisseur
-
-                'COMMANDE_REFUSEE', // à l'état de bon de commande signé ; commande refusée par le fournisseur
-
-                'COMMANDE', // à l'état de bon de commande signé ; commmandé sans réponse, en attente de réponse du fournisseur
-
-                'COMMANDE_AVEC_REPONSE', // à l'état de bon de commande signé ; le fournisseur a répondu favorablement à la commande. (Peut fournir le délai de livraison)
-
-                'PARTIELLEMENT_LIVRE', // le demandeur à signalé que certains colis ont été livrés, et que d'autres sont manquants.
-
-                'SERVICE_FAIT', // = terme utilisé par le demandeur pour signaler que la commande a été totalement livrée ; en attente de paiment par le service financier
-
-                'LIVRE_ET_PAYE', // commande payée par le service financié (dernière étape)
-            ],
-            'defaultOrderState' => 'BROUILLON',
+            'validSupplierNames' => $suppliers->where('is_valid', true)->map(fn (Supplier $supplier) => $supplier->getCompanyName())->values()->toArray(),
+            'suppliers' => $suppliers,
+            'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$user->getRoles()->map(fn (Role $role) => $role->getName())}",
         ]);
     }
 

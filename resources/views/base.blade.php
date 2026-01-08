@@ -11,7 +11,7 @@
 <body>
 <header class="mb-5">
     <x-nav></x-nav>
-    <x-alert></x-alert>
+    @yield('alert')
 
     {{--Bannière bleue--}}
     <div class="page-header">

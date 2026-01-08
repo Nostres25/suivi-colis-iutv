@@ -134,45 +134,6 @@ class LocalTestSeeder extends Seeder
                             $comment->save();
                         });
                 });
-                // Ancienne méthode pour trouver faire écrire des commentaires uniquement aux utilisateurs ayant normalement accès à la commande :
-                //                /** @var User $user */
-                //                foreach ($users as $user) {
-                //
-                //                    // Pour cela, vérification si l'utilisateur a un rôle en commun avec l'auteur de la commande (actuellement l'auteur du premier log / première actionà
-                //                    /** @var Log $log_creation_order */
-                //                    $log_creation_order = $order->logs()->first();
-                //                    /** @var User $author_order */
-                //                    $author_order = $log_creation_order->author()->getResults();
-                //                    $roles_order_author = $author_order->roles()->getResults();
-                //                    $write_comment = false;
-                //                    foreach ($user->getRoles() as $role1) {
-                //                        // Si l'utilisateur a la permission administrateur, il a accès à la commande donc il écrit un commentaire
-                //                        // OU si un rôle en commun a été trouvé et que la boucle imbriquée a été sautée, sauter aussi cette boucle
-                //                        if ($write_comment || $role1->hasPermission(PermissionValue::ADMIN)) {
-                //                            $write_comment = true;
-                //                            break;
-                //                        }
-                //
-                //                        // Vérification des rôles en commun
-                //                        foreach ($roles_order_author as $role2) {
-                //                            if ($role1->is($role2)) {
-                //                                $write_comment = true;
-                //                                break;
-                //                            }
-                //                        }
-                //                    }
-                //
-                //                    // Si l'utilisateur a accès à la commande, créer 0 à 3 commentaires pour la commande actuel dont l'auteur est l'utilisateur actuel
-                //                    if ($write_comment) {
-                //                        Comment::factory(rand(0, 3))
-                //                            ->make()
-                //                            ->each(function (Comment $comment) use ($order, $user) {
-                //                                $comment->order()->associate($order);
-                //                                $comment->author()->associate($user);
-                //                                $comment->save();
-                //                            });
-                //                    }
-                //                }
             });
     }
 }

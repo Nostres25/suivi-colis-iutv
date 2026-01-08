@@ -15,6 +15,11 @@ namespace Database\Seeders;
 // - Gérer les bons de commande          => Pouvoir ajouter, refuser, modifier et supprimer des bons de commande.
 // - Payer les fournisseurs              => Pouvoir marquer les commandes comme payées.
 // - Admin                               => Avoir tous les accès et pouvoir gérer la base de données.
+
+//  /---------------------------------------------------------------------------------------------------------------------\
+// | ATTENTION : Si vous souhaitez ajouter ou modifier des permissions, vous devrez exécuter à nouveau le seeder           |
+// | avec la commande "php artisan db:seed" (ATTENTION, en local cette commande va générer à nouveau les données de test)  |
+//  \---------------------------------------------------------------------------------------------------------------------/
 enum PermissionValue: int
 {
     case CONSULTER_TOUTES_COMMANDES = 2;
@@ -22,13 +27,14 @@ enum PermissionValue: int
     case CREER_COMMANDES = 4;
     case MODIFIER_COMMANDES = 5;
     case AJOUTER_BON_DE_LIVRAISON = 6;
-
     case NOTES_ET_COMMENTAIRES = 7;
     case DEMANDER_AJOUT_FOURNISSEUR = 8;
     case CONSULTER_LISTE_FOURNISSEURS = 9;
     case GERER_FOURNISSEUR = 10;
     case GERER_BONS_DE_COMMANDES = 11;
-    case PAYER_FOURNISSEUR = 12;
-
+    case GERER_PAIEMENT_FOURNISSEUR = 12;
+    case GERER_DEVIS = 13;
+    case SIGNER_BONS_DE_COMMANDES = 14;
+    case GERER_COLIS_LIVRES = 15;
     case ADMIN = 1;
 }

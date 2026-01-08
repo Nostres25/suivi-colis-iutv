@@ -13,14 +13,18 @@ class DatabaseSeeder extends Seeder
     {
         // Données par défaut générales
 
-        // Rôles par défaut-
+        // Rôles par défaut
+        //  /-------------------------------------------------------------------------------\
+        // | ATTENTION : Si vous modifiez des rôles ou leurs permissions,                    |
+        // | vous devrez exécuter à nouveau le seeder avec la commande "php artisan db:seed" |
+        // | (ATTENTION, en local cette commande va générer à nouveau les données de test)   |
+        //  \-------------------------------------------------------------------------------/
         $roles = collect([
             [
                 'name' => 'Administrateur BD',
                 'id' => 1,
                 'description' => 'Accès total à la base de données.',
                 'permissions' => [
-                    PermissionValue::CONSULTER_TOUTES_COMMANDES,
                     PermissionValue::ADMIN,
                 ],
                 'is_department' => false,
@@ -31,6 +35,8 @@ class DatabaseSeeder extends Seeder
                 'description' => 'S\'occupe de livrer les colis aux départements respectifs.',
                 'permissions' => [
                     PermissionValue::CONSULTER_TOUTES_COMMANDES,
+                    PermissionValue::NOTES_ET_COMMENTAIRES,
+                    PermissionValue::CONSULTER_LISTE_FOURNISSEURS,
                 ],
                 'is_department' => false,
             ],
@@ -40,6 +46,14 @@ class DatabaseSeeder extends Seeder
                 'description' => 'S\'occupe de la liste des fournisseurs valides, des bons de commandes et de payer le fournisseur.',
                 'permissions' => [
                     PermissionValue::CONSULTER_TOUTES_COMMANDES,
+                    // n'est pas un département : PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
+                    PermissionValue::NOTES_ET_COMMENTAIRES,
+                    PermissionValue::GERER_DEVIS,
+                    PermissionValue::GERER_BONS_DE_COMMANDES,
+                    PermissionValue::GERER_PAIEMENT_FOURNISSEUR,
+                    PermissionValue::GERER_FOURNISSEUR,
+                    PermissionValue::CONSULTER_LISTE_FOURNISSEURS,
+                    PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
                 ],
                 'is_department' => false,
             ],
@@ -48,7 +62,11 @@ class DatabaseSeeder extends Seeder
                 'id' => 4,
                 'description' => 'Membre du département informatique.',
                 'permissions' => [
-                    PermissionValue::CONSULTER_TOUTES_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
+                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::AJOUTER_BON_DE_LIVRAISON,
+                    PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
+                    PermissionValue::NOTES_ET_COMMENTAIRES,
                 ],
                 'is_department' => true,
             ],
@@ -57,7 +75,11 @@ class DatabaseSeeder extends Seeder
                 'id' => 5,
                 'description' => 'Membre du département GEA.',
                 'permissions' => [
-                    PermissionValue::CONSULTER_TOUTES_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
+                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::AJOUTER_BON_DE_LIVRAISON,
+                    PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
+                    PermissionValue::NOTES_ET_COMMENTAIRES,
                 ],
                 'is_department' => true,
             ],
@@ -66,7 +88,11 @@ class DatabaseSeeder extends Seeder
                 'id' => 6,
                 'description' => 'Membre du département CJ.',
                 'permissions' => [
-                    PermissionValue::CONSULTER_TOUTES_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
+                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::AJOUTER_BON_DE_LIVRAISON,
+                    PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
+                    PermissionValue::NOTES_ET_COMMENTAIRES,
                 ],
                 'is_department' => true,
             ],
@@ -75,7 +101,11 @@ class DatabaseSeeder extends Seeder
                 'id' => 7,
                 'description' => 'Membre du département GEII.',
                 'permissions' => [
-                    PermissionValue::CONSULTER_TOUTES_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
+                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::AJOUTER_BON_DE_LIVRAISON,
+                    PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
+                    PermissionValue::NOTES_ET_COMMENTAIRES,
                 ],
                 'is_department' => true,
             ],
@@ -84,7 +114,11 @@ class DatabaseSeeder extends Seeder
                 'id' => 8,
                 'description' => 'Membre du département réseaux et télécommunications.',
                 'permissions' => [
-                    PermissionValue::CONSULTER_TOUTES_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
+                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::AJOUTER_BON_DE_LIVRAISON,
+                    PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
+                    PermissionValue::NOTES_ET_COMMENTAIRES,
                 ],
                 'is_department' => true,
             ],
@@ -93,7 +127,11 @@ class DatabaseSeeder extends Seeder
                 'id' => 9,
                 'description' => 'Membre du département sciences des données.',
                 'permissions' => [
-                    PermissionValue::CONSULTER_TOUTES_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
+                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::AJOUTER_BON_DE_LIVRAISON,
+                    PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
+                    PermissionValue::NOTES_ET_COMMENTAIRES,
                 ],
                 'is_department' => true,
             ],
@@ -102,7 +140,11 @@ class DatabaseSeeder extends Seeder
                 'id' => 10,
                 'description' => "Directeur de l'IUT. Son rôle est de signer les bons de commandes",
                 'permissions' => [
-                    PermissionValue::CONSULTER_TOUTES_COMMANDES,
+                    PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
+                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::AJOUTER_BON_DE_LIVRAISON,
+                    PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
+                    PermissionValue::NOTES_ET_COMMENTAIRES,
                 ],
                 'is_department' => false,
             ],

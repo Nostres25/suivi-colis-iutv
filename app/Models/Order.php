@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use Database\Seeders\Status;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Ramsey\Collection\Collection;
 
-// Projet abandonné car ça ne trouve pas l'enum ici
+// Projet abandonné car ça ne trouve pas l'enum qui est ici (sans doute conflit d'importation avec le model ?)
 // enum OrderAttributes: string {
 //    case TITLE = 'title';
 //    case ORDER_NUM = 'order_num';
@@ -74,6 +75,19 @@ class Order extends Model
     public function getDescription(): string
     {
         return $this->attributes['description'];
+    }
+
+    /**
+     * Retourne le statut de la commande
+     *
+     * @param  bool  $noEnum  Si le résultat ne doit pas retourner une énumération mais un string
+     * @return Status|string // Statut de la commande
+     */
+    public function getStatus(bool $noEnum = false): Status|string
+    {
+        $status = $this->attributes['status'];
+
+        return $noEnum ? $status : Status::from($status);
     }
 
     /**
@@ -156,6 +170,26 @@ class Order extends Model
     }
 
     /**
+     * Retourne la date de la dernière modification de la commande
+     *
+     * @return string // date
+     */
+    public function getLastUpdateDate(): string
+    {
+        return $this->attributes[$this->getUpdatedAtColumn()];
+    }
+
+    /**
+     * Retourne la date de création de la commande
+     *
+     * @return string // date
+     */
+    public function getCreationDate(): string
+    {
+        return $this->attributes[$this->getCreatedAtColumn()];
+    }
+
+    /**
      * Retourne le fournisseur de la commande
      *
      * @return Supplier // Fournisseur de la commande
@@ -173,6 +207,38 @@ class Order extends Model
     public function getDepartment(): Role
     {
         return $this->department()->getResults();
+    }
+
+    /**
+     * Retourne la collection (liste) de logs associés à la commande (type Log)
+     *
+     * @return Collection // Collection (liste) de logs de la commande
+     */
+    public function getLogs(): Collection
+    {
+        return $this->logs()->getResults();
+    }
+
+    /**
+     * Retourne le premier log associé à la création de la commande
+     *
+     * @return Log // Le premier log associé à la création de la commande
+     */
+    public function getFirstLog(): Log
+    {
+        // TODO Peut-être faire un cache ?
+        return $this->getLogs()->first();
+    }
+
+    /**
+     * Retourne l'auteur de la commande (mentionné dans le premier log)
+     *
+     * @return User // L'utilisateur auteur de la commande
+     */
+    public function getAuthor(): User
+    {
+        // TODO Peut-être faire un cache ?
+        return $this->getFirstLog()->getAuthor();
     }
 
     /**
@@ -204,6 +270,16 @@ class Order extends Model
     public function setDescription(string $description): void
     {
         $this->setAttribute('description', $description);
+    }
+
+    /**
+     * Définir le status de la commande.
+     *
+     * @param  Status  $status  Status de commande à définir
+     */
+    public function setStatus(Status $status): void
+    {
+        $this->setAttribute('description', $status->value);
     }
 
     /**
@@ -432,19 +508,6 @@ class Order extends Model
     //  */
     // public function getUser(): User {}
     //
-    // /**
-    //  * Retourne la date de la dernière modification de la commande
-    //  *
-    //  * @return int // date
-    //  */
-    // public function getLastUpdateDate(): int {}
-    //
-    // /**
-    //  * Retourne la date de création de la commande
-    //  *
-    //  * @return int // date
-    //  */
-    // public function getCreationDate(): int {}
 
     // Pas prioritaire - TODO
     // j'ai mis pleins d'options de recherche mais pas obliger de toutes les coder si on manque de temps

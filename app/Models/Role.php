@@ -12,6 +12,16 @@ class Role extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     /**
+     * Retourne le nom du rôle
+     *
+     * @return string // nom du rôle
+     */
+    public function getName(): string
+    {
+        return $this->attributes['name'];
+    }
+
+    /**
      * Retourne true si le rôle correspond à un département
      *
      * @return bool // Si le rôle correspond à un départment

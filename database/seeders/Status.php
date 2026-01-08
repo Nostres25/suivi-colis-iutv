@@ -2,32 +2,78 @@
 
 namespace Database\Seeders;
 
+// /---------------------------------------------------------------------------------------------------------------\
+// | ATTENTION ! si vous souhaitez ajouter ou modifiez des status :                                                 |
+// | Dû à la colonne "status" de type ENUM de la table "orders", ajouter un nouveau status nécessite de changer le  |
+// | type de la colonne "status" par les migrations.                                                                |
+// | Pour cela il vous faudra créer une nouvelle migration de la table orders visant à renommer la colonne "status" |
+// | de la table "orders" SANS PERTE DE DONNÉES ! (SE RENSEIGNER sur les migrations laravel)                        |
+// | Ensuite vous pourrez exécuter "php artisan migrate --seed"                                                     |
+// | OU si vous êtes en local et que les pertes de données engendrées par la recréation totale de la base de données|
+// | ne sont d'aucun souci, alors vous pouvez totalement la base de données à partir des migrations et exécuter à   |
+// | avec la commande "php artisan migrate:fresh --seed"                                                            |
+// \---------------------------------------------------------------------------------------------------------------/
 enum Status: string
 { // états possibles de la commande (triés dans l'ordre) :
 
-    case BROUILLON = 'BROUILLON'; // enregistré à l'état de brouillon. Affiché seulement pour le demandeur
+    case BROUILLON = 'BROUILLON';
+    case DEVIS = 'DEVIS'; // (première étape)
+    case DEVIS_REFUSE = 'DEVIS_REFUSE';
+    case BON_DE_COMMANDE_NON_SIGNE = 'BON_DE_COMMANDE_NON_SIGNE';
+    case BON_DE_COMMANDE_REFUSE = 'BON_DE_COMMANDE_REFUSE';
+    case BON_DE_COMMANDE_SIGNE = 'BON_DE_COMMANDE_SIGNE';
+    case COMMANDE = 'COMMANDE';
+    case COMMANDE_REFUSEE = 'COMMANDE_REFUSEE';
+    case COMMANDE_AVEC_REPONSE = 'COMMANDE_AVEC_REPONSE';
+    case PARTIELLEMENT_LIVRE = 'PARTIELLEMENT_LIVRE';
+    case SERVICE_FAIT = 'SERVICE_FAIT';
+    case LIVRE_ET_PAYE = 'LIVRE_ET_PAYE'; // (dernière étape)
+    case ANNULE = 'ANNULE';
 
-    case DEVIS = 'DEVIS'; // à l'état de devis ; en attente d'un bon de commande (première étape)
+    public static function getDefault(): Status
+    {
+        return Status::BROUILLON;
+    }
 
-    case DEVIS_REFUSE = 'DEVIS_REFUSE'; // à l'état de devis ; l'éditeur de bon de commande a refusé de faire un bon de commande
+    public static function getDescriptions(): string
+    {
+        return "
+        - BROUILLON : Commande enregistrée à l'état de brouillon. Visible seulement par les membres du département qui a crée la commande.
+        - DEVIS : Commande à l'état de devis. En attente d'un bon de commande (première étape).
+        - DEVIS_REFUSE : À l'état de devis. Le service financier a refusé de faire un bon de commande.
+        - BON_DE_COMMANDE_NON_SIGNE : À l'état de bon de commande non signé. Le bon de commande réalisé par le service financier doit être signé par le directeur.
+        - BON_DE_COMMANDE_REFUSE : À l'état de bon de commande non signé. Le directeur de l'IUT a refusé de signer de le bon de commande.
+        - BON_DE_COMMANDE_SIGNE : À l'état de bon de commande signé. Le directeur a signé le bon de commande et la commande peut être passée auprès du fournisseur.
+        - COMMANDE : À l'état de bon de commande signé. Le bon de commande a été envoyé au fournisseur. Sans répone pour le moment.
+        - COMMANDE_REFUSEE : À l'état de bon de commande signé. Le fournisseur a refusé le bon de commande.
+        - COMMANDE_AVEC_REPONSE : À l'état de commande officiellement en cours. Le fournisseur a répondu favorablement à la commande avec ou sans communication d'un délai de livraison. En attente de livraison.
+        - PARTIELLEMENT_LIVRE : À l'état de commande officiellement en cours. Seulement certains colis ont été marqués comme livrés par des membre du département de la commande. Les autres colis sont en attente de livraison.
+        - SERVICE_FAIT : À l'état de bon de livraison. Commande marquée comme totalement livrée par des membres du département qui ont aussi transmis le bon de livraison au service financier. En attente du paiement par le service financier.
+        - LIVRE_ET_PAYE : À l'état de bon de livraison. Commande totalement livrée et payée par le service financier.
+        ";
+    }
 
-    case BON_DE_COMMANDE_NON_SIGNE = 'BON_DE_COMMANDE_NON_SIGNE'; // à l'état de bon de commande ; doit être signé par le directeur
+    public static function getDescriptionsDict(): array
+    {
+        return [
+            Status::BROUILLON->value => "Commande enregistrée à l'état de brouillon. Visible seulement par les membres du département qui a crée la commande.",
+            Status::DEVIS->value => "Commande à l'état de devis. En attente d'un bon de commande (première étape).",
+            Status::DEVIS_REFUSE->value => "À l'état de devis. Le service financier a refusé de faire un bon de commande.",
+            Status::BON_DE_COMMANDE_NON_SIGNE->value => "À l'état de bon de commande non signé. Le bon de commande réalisé par le service financier doit être signé par le directeur.",
+            Status::BON_DE_COMMANDE_REFUSE->value => "À l'état de bon de commande non signé. Le directeur de l'IUT a refusé de signer de le bon de commande.",
+            Status::BON_DE_COMMANDE_SIGNE->value => "À l'état de bon de commande signé. Le directeur a signé le bon de commande et la commande peut être passée auprès du fournisseur.",
+            Status::COMMANDE->value => "À l'état de bon de commande signé. Le bon de commande a été envoyé au fournisseur. Sans répone pour le moment.",
+            Status::COMMANDE_REFUSEE->value => "À l'état de bon de commande signé. Le fournisseur a refusé le bon de commande.",
+            Status::COMMANDE_AVEC_REPONSE->value => "À l'état de commande officiellement en cours. Le fournisseur a répondu favorablement à la commande avec ou sans communication d'un délai de livraison. En attente de livraison",
+            Status::PARTIELLEMENT_LIVRE->value => "À l'état de commande officiellement en cours. Seulement certains colis ont été marqués comme livrés par des membre du département de la commande. Les autres colis sont en attente de livraison",
+            Status::SERVICE_FAIT->value => "À l'état de bon de livraison. Commande marquée comme totalement livrée par des membres du département qui ont aussi transmis le bon de livraison au service financier. En attente du paiement par le service financier",
+            Status::LIVRE_ET_PAYE->value => "À l'état de bon de livraison. Commande totalement livrée et payée par le service financier",
+            Status::ANNULE->value => 'Commande annulée',
+        ];
+    }
 
-    case BON_DE_COMMANDE_REFUSE = 'BON_DE_COMMANDE_REFUSE'; // à l'état de bon de commande ; le directeur a refusé de signer
-
-    case BON_DE_COMMANDE_SIGNE = 'BON_DE_COMMANDE_SIGNE'; // à l'état de bon de commande signé ; en attente d'envoi du bon signé de commande au fournisseur
-
-    case COMMANDE = 'COMMANDE'; // à l'état de bon de commande signé ; commmandé sans réponse, en attente de réponse du fournisseur
-
-    case COMMANDE_REFUSEE = 'COMMANDE_REFUSEE'; // à l'état de bon de commande signé ; commande refusée par le fournisseur
-
-    case COMMANDE_AVEC_REPONSE = 'COMMANDE_AVEC_REPONSE'; // à l'état de bon de commande signé ; le fournisseur a répondu favorablement à la commande. (Peut fournir le délai de livraison)
-
-    case PARTIELLEMENT_LIVRE = 'PARTIELLEMENT_LIVRE'; // le demandeur à signalé que certains colis ont été livrés, et que d'autres sont manquants.
-
-    case SERVICE_FAIT = 'SERVICE_FAIT'; // = terme utilisé par le demandeur pour signaler que la commande a été totalement livrée ; en attente de paiment par le service financier
-
-    case LIVRE_ET_PAYE = 'LIVRE_ET_PAYE'; // commande payée par le service financié (dernière étape)
-
-    case ANNULE = 'ANNULE'; // La commande a été annulée par le demandeur à n'importe quelle étape
+    public function getDescription(): string
+    {
+        return Status::getDescriptionsDict()[$this->value];
+    }
 }
