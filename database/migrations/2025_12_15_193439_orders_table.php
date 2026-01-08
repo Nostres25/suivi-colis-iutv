@@ -69,9 +69,9 @@ return new class extends Migration
             $table->decimal('cost', 12, 2)
                 ->nullable()
                 ->comment('Coût unitaire du colis');
-            $table->date('date_expected_delivery')
+            $table->string('expected_delivery_time')
                 ->nullable()
-                ->comment('Date prévue pour la livraison du colis');
+                ->comment('Délai prévu de livraison (en jours, semaines, mois ou années) ');
             $table->dateTime('shipping_date')
                 ->nullable()
                 ->comment('Date de livraison si le colis à été reçu');

@@ -24,6 +24,7 @@ class SupplierFactory extends Factory
             'phone_number' => fake()->phoneNumber(),
             'contact_name' => fake()->name(),
             'speciality' => fake()->domainWord(),
+            'public_contract_number' => fake()->numberBetween(1980, 2026).fake()->randomLetter().fake()->randomLetter().fake()->randomLetter().fake()->randomLetter().fake()->randomLetter().fake()->randomNumber(5),
             'note' => fake()->sentences(rand(1, 15), true),
             'is_valid' => fake()->boolean(),
         ];
