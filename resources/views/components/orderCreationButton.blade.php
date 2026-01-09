@@ -10,13 +10,9 @@
 </button>
 
 <!-- Modal de création de commande -->
-{{-- TODO: Ne pas valider s'il n'y a pas de numéro de commande, de fournisseur et de label. Voir https://getbootstrap.com/docs/5.3/forms/validation/ --}}
 {{-- TODO ajouter un message d'avertissement de validation de formulaire --}}
-{{-- TODO si on appuie sur la croix ça garde en brouillon le contenu du formulaire pour la personne (si elle réappuie sur le bouton, elle retrouve ce qu'elle avait précédemment écrit)
-          par contre si on appuie sur "annuler" ça retire bien tout, coder le vidage des inputs --}}
 {{--TODO: Il n'est pas possible de définir une langue par défaut bootstrap mais on peut changer la valeur des attribtuts (notamment pour le message qui apparaît quand on valide sans remplir les champs requis : https://stackoverflow.com/questions/23731862/how-can-i-set-bootstrap-language-manually--}}
 {{--TODO pour traduire le message "champ requis", la solution de l'attribut "oninvalid="this.setCustomValidity('Veuillez remplir un titre de commande avant de valider !')" sur l'input ne fonctionne pas. Peut-être trouver une solution (pas prioritaire)--}}
-{{--TODO si l'utilisateur a plusieurs départements, devoir choisir le département de la commande--}}
 
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -69,6 +65,24 @@
                             associé au devis ou au bon de commande (numéro en provenance de chorus).
                         </div>
                     </div>
+{{--                    TODO ne pas oublier de vérifier qu'une option est bien choisie avant de valider--}}
+{{--                    TODO ajouter une permission "CREER_COMMANDES_POUR_TOUS" qui permet de créer une commande pour d'autres départements--}}
+                    @if(session('user')->getDepartments()->count() > 1)
+                        <div class="mb-4">
+                            <label for="departmentSelect" class="col-form-label fs-5" title="{{\Database\Seeders\Status::getDescriptions()}}">Département <span title="champ requis" class="text-danger">*</span></label>
+                            <p>
+                                Vous êtes membre de plusieurs départements, veuillez choisir pour quel département vous créez cette commande<br/>
+                            </p>
+                            <select id="departmentSelect" class="form-select" required>
+                                <option>
+                                    Veuillez sélectionner le département de la commande...
+                                </option>
+                                @foreach (session('user')->getDepartments() as $department)
+                                    <option>{{$department->getName()}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
                     <div class="mb-4">
                         <label for="order-description" class="col-form-label fs-5">Description:</label>
                         <dl class="fw-light">Ajoutez des détails sur la commande et son contenu (facultatif).</dl>
@@ -145,8 +159,10 @@
                                 <dl class="fw-light">
                                     Coût total de la commande en euros (€)
                                 </dl>
-                                {{-- On peut mettre un form group pour indiquer que c'est en € --}}
-                                <input type="number" class="form-control" id="inputCost" maxlength="255">
+                                <div class="input-group w-25">
+                                    <input id="inputCost" maxlength="12" type="number" class="form-control" aria-label="Quantité en euros">
+                                    <span class="input-group-text">€</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -161,7 +177,7 @@
                     </label>
                 </div>
                 <div class="d-inline">
-                    <button type="reset" class="btn btn-secondary me-2" form="createOrderForm" data-bs-dismiss="modal">Annuler</button>
+                    <button type="reset" class="btn btn-secondary me-1" form="createOrderForm" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" form="createOrderForm" class="btn btn-primary">Valider</button>
                 </div>
             </div>
