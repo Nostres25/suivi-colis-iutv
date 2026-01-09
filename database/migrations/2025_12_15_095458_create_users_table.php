@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Pas utile, l'application ne gère pas les mots de passes
-            // $table->string('password');
+             $table->string('password');
             // $table->rememberToken();
             // $table->timestamps();
         });
