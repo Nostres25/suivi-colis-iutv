@@ -106,24 +106,6 @@
                             <input type="file" class="form-control mb-3" id="inputFichierDevis">
                         </div>
                     </div>
-                    <div class="mb-4">
-{{--                    TODO mettre le sélecteur de statut dans "avancé" et à la place mettre un checkbox "créer en tant que brouillon"
-                        + décocher le checkbox si un autre statut est seléctionné
-                        + mettre le sélecteur à "brouillon" si le checkbox est décoché et à "devis" sinon--}}
-                        <label for="statusSelect" class="col-form-label fs-5" title="{{\Database\Seeders\Status::getDescriptions()}}">Statut de la commande</label>
-                        <div id="alertLockedStatusBySupplierValue" class="alert alert-warning pb-0" role="alert" style="display: none">
-                            <p>
-                                Vous ne pouvez pas passer commande auprès d'un fournisseur non validé au préalable par le service financier.<br/>
-                                Ainsi, la commande restera à l'état de <span title="{{\Database\Seeders\Status::BROUILLON->getDescription()}}">brouillon¹</span> tant qu'elle ne sera pas associée à un fournisseur valide.
-                            </p>
-                        </div>
-                        <select id="statusSelect" class="form-select">
-                            @foreach (\Database\Seeders\Status::cases() as $status)
-                                <option {{ \Database\Seeders\Status::getDefault() == $status ? 'selected="selected"' : '' }} title="{{$status->getDescription()}}">{{$status}}</option>
-                            @endforeach
-                        </select>
-                        <small id="statusDescription" class="mt-2">{{ \Database\Seeders\Status::getDefault()->getDescription()}}</small>
-                    </div>
                     <hr/>
                     <div class="mb-4">
                         <label for="advancedInputs" class="col-form-label"><a class="" data-bs-toggle="collapse"
@@ -132,6 +114,22 @@
                                                                               aria-controls="collapseExample">Avancé
                                 ></a></label>
                         <div class="collapse" id="advancedInputs">
+                            <p>Les options avancées servent lorsque vous souhaitez créer une commande qui est déjà à une étape avancée. Après la rédaction d'un bon de commande par exemple.</p>
+                            <div class="mb-4">
+                                <label for="statusSelect" class="col-form-label fs-5" title="{{\Database\Seeders\Status::getDescriptions()}}">Statut de la commande</label>
+                                <div id="alertLockedStatusBySupplierValue" class="alert alert-warning pb-0" role="alert" style="display: none">
+                                    <p>
+                                        Vous ne pouvez pas passer commande auprès d'un fournisseur non validé au préalable par le service financier.<br/>
+                                        Ainsi, la commande restera à l'état de <span title="{{\Database\Seeders\Status::BROUILLON->getDescription()}}">brouillon¹</span> tant qu'elle ne sera pas associée à un fournisseur valide.
+                                    </p>
+                                </div>
+                                <select id="statusSelect" class="form-select">
+                                    @foreach (\Database\Seeders\Status::cases() as $status)
+                                        <option {{ \Database\Seeders\Status::getDefault() == $status ? 'selected="selected"' : '' }} title="{{$status->getDescription()}}">{{$status}}</option>
+                                    @endforeach
+                                </select>
+                                <small id="statusDescription" class="mt-2">{{ \Database\Seeders\Status::getDefault()->getDescription()}}</small>
+                            </div>
                             <label for="inputFichierBonDeCommande" class="col-form-label fs-5">Bon de commande</label>
                             <div id="inputsBonDeCommande">
                                 <input type="file" class="form-control mb-3" id="inputFichierBonDeCommande">
@@ -152,15 +150,20 @@
                             </div>
                         </div>
                     </div>
-                    {{-- obselette <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
-                        <label class="form-check-label" for="flexSwitchCheckChecked">Créer en tant que brouillon</label>
-                    </div> --}}
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="reset" class="btn btn-secondary" form="createOrderForm" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" form="createOrderForm" class="btn btn-primary">Valider</button>
+            <div class="modal-footer justify-content-between">
+                <div class="d-flex justify-content-start" title="{{\Database\Seeders\Status::BROUILLON->getDescription()}}">
+                    <input class="form-check-input me-2" type="checkbox" value=""
+                           id="checkboxDraft" form="createOrderForm">
+                    <label class="form-check-label" for="checkboxDraft">
+                        Enregistrer comme brouillon
+                    </label>
+                </div>
+                <div class="d-inline">
+                    <button type="reset" class="btn btn-secondary me-2" form="createOrderForm" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" form="createOrderForm" class="btn btn-primary">Valider</button>
+                </div>
             </div>
         </div>
     </div>
@@ -173,6 +176,7 @@
     const askToAddNewSupplierCheckBox = document.getElementById("askToAddSupplierCheckBox");
     const statusSelect = document.getElementById('statusSelect');
     const alertLockedStatusBySupplierValue = document.getElementById('alertLockedStatusBySupplierValue');
+    const drawCheckBox = document.getElementById('checkboxDraft');
 
     supplierInputs.addEventListener("blur", (event) => {
         const askToAddSupplier = document.getElementById("askToAddSupplierDiv");
@@ -181,13 +185,18 @@
             askToAddNewSupplierCheckBox.required = false;
             statusSelect.disabled = false;
             alertLockedStatusBySupplierValue.style.display = "none";
+            drawCheckBox.checked = false;
+            drawCheckBox.disabled = false;
+            drawCheckBox.parentElement.title = "{{\Database\Seeders\Status::BROUILLON->getDescription()}}";
         } else {
             askToAddSupplier.style.display = "block";
             askToAddNewSupplierCheckBox.required = true;
             statusSelect.disabled = true;
             statusSelect.value = "{{ \Database\Seeders\Status::BROUILLON }}";
             alertLockedStatusBySupplierValue.style.display = "block";
-
+            drawCheckBox.checked = true;
+            drawCheckBox.disabled = true;
+            drawCheckBox.parentElement.title = "{{\Database\Seeders\Status::BROUILLON->getDescription()}}\n /!\\ Vous ne pouvez pas passer commande auprès d'un fournisseur non validé au préalable par le service financier.\nAinsi, la commande restera à l'état de brouillon tant qu'elle ne sera pas associée à un fournisseur valide.";
         }
     });
 
@@ -198,5 +207,13 @@
 
     statusSelect.addEventListener('change', (event) => {
        statusDescriptionP.textContent = statusDescriptions[event.target.value];
+       drawCheckBox.checked = event.target.value === "{{\Database\Seeders\Status::BROUILLON}}" && !drawCheckBox.checked;
     });
+
+    drawCheckBox.addEventListener('click', (event) => {
+        statusSelect.value = event.target.checked ? "{{\Database\Seeders\Status::BROUILLON}}" : "{{\Database\Seeders\Status::getDefault()}}"
+        statusDescriptionP.textContent = statusDescriptions[statusSelect.value];
+    });
+
+
 </script>

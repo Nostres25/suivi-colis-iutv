@@ -32,7 +32,7 @@ enum Status: string
 
     public static function getDefault(): Status
     {
-        return Status::BROUILLON;
+        return Status::DEVIS;
     }
 
     public static function getDescriptions(): string
