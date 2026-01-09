@@ -1,4 +1,5 @@
-<!-- Button trigger modal -->
+@use(Database\Seeders\Status)
+    <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" style="display: table-row" data-bs-toggle="modal"
         data-bs-target="#staticBackdrop">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
@@ -35,8 +36,10 @@
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label for="supplierInput" class="col-form-label fs-5">Fournisseur <span title="champ requis" class="text-danger">*</span></label>
-                        <input type="text" id="supplierInput" class="form-select" list="supplierList" placeholder="Veuillez écrire ou sélectionner un fournisseur" required/>
+                        <label for="supplierInput" class="col-form-label fs-5">Fournisseur <span title="champ requis"
+                                                                                                 class="text-danger">*</span></label>
+                        <input type="text" id="supplierInput" class="form-select" list="supplierList"
+                               placeholder="Veuillez écrire ou sélectionner un fournisseur" required/>
                         <datalist id="supplierList">
                             @foreach ($validSupplierNames as $supplier)
                                 <option>{{$supplier}}</option>
@@ -45,10 +48,13 @@
                         <div class="mt-1" id="askToAddSupplierDiv" style="display: none;">
                             <div class="alert alert-warning" role="alert">
                                 <p class="fs-5">Fournisseur invalide !</p>
-                                <p>Veuillez sélectionner un fournisseur valide ou s'il s'agit d'un nouveau fournisseur, vous ne pouvez pas commander auprès d'un fournisseur qui n'a pas été validé au préalable par le service financier.<br/>
+                                <p>Veuillez sélectionner un fournisseur valide ou s'il s'agit d'un nouveau fournisseur,
+                                    vous ne pouvez pas commander auprès d'un fournisseur qui n'a pas été validé au
+                                    préalable par le service financier.<br/>
                                     Veuillez d'abord, <strong>demander l'ajout du fournisseur en question</strong>.<br/>
-                                    À la validation, la commande sera sauvegardée à l'état de brouillon. C'est seulement lorsque le fournisseur sera validé que vous pourrez la passer à l'état de devis</p>
-                                <input class="form-check-input" type="checkbox" value="" id="askToAddSupplierCheckBox" >
+                                    À la validation, la commande sera sauvegardée à l'état de brouillon. C'est seulement
+                                    lorsque le fournisseur sera validé que vous pourrez la passer à l'état de devis</p>
+                                <input class="form-check-input" type="checkbox" value="" id="askToAddSupplierCheckBox">
                                 <label class="form-check-label" for="askToAddSupplierCheckBox">
                                     Demander l'ajout du fournisseur
                                 </label>
@@ -65,19 +71,22 @@
                             associé au devis ou au bon de commande (numéro en provenance de chorus).
                         </div>
                     </div>
-{{--                    TODO ne pas oublier de vérifier qu'une option est bien choisie avant de valider--}}
-{{--                    TODO ajouter une permission "CREER_COMMANDES_POUR_TOUS" qui permet de créer une commande pour d'autres départements--}}
-                    @if(session('user')->getDepartments()->count() > 1)
+                    {{--                    TODO ne pas oublier de vérifier qu'une option est bien choisie avant de valider--}}
+                    {{--                    TODO ajouter une permission "CREER_COMMANDES_POUR_TOUS" qui permet de créer une commande pour d'autres départements--}}
+                    @if($userDepartment->count() > 1)
                         <div class="mb-4">
-                            <label for="departmentSelect" class="col-form-label fs-5" title="{{\Database\Seeders\Status::getDescriptions()}}">Département <span title="champ requis" class="text-danger">*</span></label>
+                            <label for="departmentSelect" class="col-form-label fs-5"
+                                   title="{{Status::getDescriptions()}}">Département <span title="champ requis"
+                                                                                           class="text-danger">*</span></label>
                             <p>
-                                Vous êtes membre de plusieurs départements, veuillez choisir pour quel département vous créez cette commande<br/>
+                                Vous êtes membre de plusieurs départements, veuillez choisir pour quel département vous
+                                créez cette commande<br/>
                             </p>
                             <select id="departmentSelect" class="form-select" required>
                                 <option>
                                     Veuillez sélectionner le département de la commande...
                                 </option>
-                                @foreach (session('user')->getDepartments() as $department)
+                                @foreach ($userDepartment as $department)
                                     <option>{{$department->getName()}}</option>
                                 @endforeach
                             </select>
@@ -89,7 +98,8 @@
                         <textarea class="form-control" id="order-description"></textarea>
                     </div>
                     <div class="mb-4">
-                        <label class="col-form-label fs-5">Colis <span title="Au moins un colis requis" class="text-danger">*</span></label>
+                        <label class="col-form-label fs-5">Colis <span title="Au moins un colis requis"
+                                                                       class="text-danger">*</span></label>
                         {{-- TODO probablement de trop, autant modifier la commande après l'avoir crée si la commande à une étape avancée. À la première étape de la commande, cette option ne devrait pas exister
                         <div class="mb-3">
                           <input class="form-check-input" type="checkbox" value="" id="checkboxBonDeCommandeSigne">
@@ -100,7 +110,7 @@
                         {{-- TODO ajouter les colis progressivement quand on clique sur le bouton avec possibilité de définir : titre, cout, date_prevu_livraison et date_reception --}}
                         <div class="newPackages"><p>à suivre</p></div>
                         <div class="input-group mb-3">
-                            <button type="button" class="btn btn-outline-primary" >+ Ajoute un colis</button>
+                            <button type="button" class="btn btn-outline-primary">+ Ajoute un colis</button>
                         </div>
 
                         {{-- TODO ne devrait apparaîte que si on défini les colis comme livrés --}}
@@ -110,13 +120,14 @@
                         </div> --}}
                     </div>
                     <div class="mb-3">
-                        <label for="order-input-fichiers" class="col-form-label fs-5">Devis:</label>
+                        <label for="order-input-devis" class="col-form-label fs-5">Devis:</label>
                         <dl class="fw-light">
-                            Ajoutez un devis <strong>au format pdf</strong></br>
-                            Le contenu présent dans le fichier peut permettre de remplir certains champs vides
-                            (experimental)
+                            Ajoutez un devis <strong>au format pdf</strong>
+{{--                            TODO pouvoir remplir automatiquement les champs en fonctions des infos du fichier--}}
+{{--                            Le contenu présent dans le fichier peut permettre de remplir certains champs vides--}}
+{{--                            (experimental)--}}
                         </dl>
-                        <div id="order-input-fichiers">
+                        <div id="order-input-devis">
                             <input type="file" class="form-control mb-3" id="inputFichierDevis">
                         </div>
                     </div>
@@ -128,21 +139,29 @@
                                                                               aria-controls="collapseExample">Avancé
                                 ></a></label>
                         <div class="collapse" id="advancedInputs">
-                            <p>Les options avancées servent lorsque vous souhaitez créer une commande qui est déjà à une étape avancée. Après la rédaction d'un bon de commande par exemple.</p>
+                            <p>Les options avancées servent lorsque vous souhaitez créer une commande qui est déjà à une
+                                étape avancée. Après la rédaction d'un bon de commande par exemple.</p>
                             <div class="mb-4">
-                                <label for="statusSelect" class="col-form-label fs-5" title="{{\Database\Seeders\Status::getDescriptions()}}">Statut de la commande</label>
-                                <div id="alertLockedStatusBySupplierValue" class="alert alert-warning pb-0" role="alert" style="display: none">
+                                <label for="statusSelect" class="col-form-label fs-5"
+                                       title="{{Status::getDescriptions()}}">Statut de la commande</label>
+                                <div id="alertLockedStatusBySupplierValue" class="alert alert-warning pb-0" role="alert"
+                                     style="display: none">
                                     <p>
-                                        Vous ne pouvez pas passer commande auprès d'un fournisseur non validé au préalable par le service financier.<br/>
-                                        Ainsi, la commande restera à l'état de <span title="{{\Database\Seeders\Status::BROUILLON->getDescription()}}">brouillon¹</span> tant qu'elle ne sera pas associée à un fournisseur valide.
+                                        Vous ne pouvez pas passer commande auprès d'un fournisseur non validé au
+                                        préalable par le service financier.<br/>
+                                        Ainsi, la commande restera à l'état de <span
+                                            title="{{Status::BROUILLON->getDescription()}}">brouillon¹</span> tant
+                                        qu'elle ne sera pas associée à un fournisseur valide.
                                     </p>
                                 </div>
                                 <select id="statusSelect" class="form-select">
-                                    @foreach (\Database\Seeders\Status::cases() as $status)
-                                        <option {{ \Database\Seeders\Status::getDefault() == $status ? 'selected="selected"' : '' }} title="{{$status->getDescription()}}">{{$status}}</option>
+                                    @foreach (Status::cases() as $status)
+                                        <option
+                                            {{ Status::getDefault() == $status ? 'selected="selected"' : '' }} title="{{$status->getDescription()}}">{{$status}}</option>
                                     @endforeach
                                 </select>
-                                <small id="statusDescription" class="mt-2">{{ \Database\Seeders\Status::getDefault()->getDescription()}}</small>
+                                <small id="statusDescription"
+                                       class="mt-2">{{ Status::getDefault()->getDescription()}}</small>
                             </div>
                             <label for="inputFichierBonDeCommande" class="col-form-label fs-5">Bon de commande</label>
                             <div id="inputsBonDeCommande">
@@ -160,7 +179,8 @@
                                     Coût total de la commande en euros (€)
                                 </dl>
                                 <div class="input-group w-25">
-                                    <input id="inputCost" maxlength="12" type="number" class="form-control" aria-label="Quantité en euros">
+                                    <input id="inputCost" maxlength="12" type="number" class="form-control"
+                                           aria-label="Quantité en euros">
                                     <span class="input-group-text">€</span>
                                 </div>
                             </div>
@@ -169,7 +189,7 @@
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
-                <div class="d-flex justify-content-start" title="{{\Database\Seeders\Status::BROUILLON->getDescription()}}">
+                <div class="d-flex justify-content-start" title="{{Status::BROUILLON->getDescription()}}">
                     <input class="form-check-input me-2" type="checkbox" value=""
                            id="checkboxDraft" form="createOrderForm">
                     <label class="form-check-label" for="checkboxDraft">
@@ -177,7 +197,9 @@
                     </label>
                 </div>
                 <div class="d-inline">
-                    <button type="reset" class="btn btn-secondary me-1" form="createOrderForm" data-bs-dismiss="modal">Annuler</button>
+                    <button type="reset" class="btn btn-secondary me-1" form="createOrderForm" data-bs-dismiss="modal">
+                        Annuler
+                    </button>
                     <button type="submit" form="createOrderForm" class="btn btn-primary">Valider</button>
                 </div>
             </div>
@@ -203,31 +225,30 @@
             alertLockedStatusBySupplierValue.style.display = "none";
             drawCheckBox.checked = false;
             drawCheckBox.disabled = false;
-            drawCheckBox.parentElement.title = "{{\Database\Seeders\Status::BROUILLON->getDescription()}}";
+            drawCheckBox.parentElement.title = "{{Status::BROUILLON->getDescription()}}";
         } else {
             askToAddSupplier.style.display = "block";
             askToAddNewSupplierCheckBox.required = true;
             statusSelect.disabled = true;
-            statusSelect.value = "{{ \Database\Seeders\Status::BROUILLON }}";
+            statusSelect.value = "{{ Status::BROUILLON }}";
             alertLockedStatusBySupplierValue.style.display = "block";
             drawCheckBox.checked = true;
             drawCheckBox.disabled = true;
-            drawCheckBox.parentElement.title = "{{\Database\Seeders\Status::BROUILLON->getDescription()}}\n /!\\ Vous ne pouvez pas passer commande auprès d'un fournisseur non validé au préalable par le service financier.\nAinsi, la commande restera à l'état de brouillon tant qu'elle ne sera pas associée à un fournisseur valide.";
+            drawCheckBox.parentElement.title = "{{Status::BROUILLON->getDescription()}}\n /!\\ Vous ne pouvez pas passer commande auprès d'un fournisseur non validé au préalable par le service financier.\nAinsi, la commande restera à l'état de brouillon tant qu'elle ne sera pas associée à un fournisseur valide.";
         }
     });
 
 
-
-    const statusDescriptions = {!! json_encode(\Database\Seeders\Status::getDescriptionsDict()) !!};
+    const statusDescriptions = {!! json_encode(Status::getDescriptionsDict()) !!};
     const statusDescriptionP = document.getElementById('statusDescription');
 
     statusSelect.addEventListener('change', (event) => {
-       statusDescriptionP.textContent = statusDescriptions[event.target.value];
-       drawCheckBox.checked = event.target.value === "{{\Database\Seeders\Status::BROUILLON}}" && !drawCheckBox.checked;
+        statusDescriptionP.textContent = statusDescriptions[event.target.value];
+        drawCheckBox.checked = event.target.value === "{{Status::BROUILLON}}" && !drawCheckBox.checked;
     });
 
     drawCheckBox.addEventListener('click', (event) => {
-        statusSelect.value = event.target.checked ? "{{\Database\Seeders\Status::BROUILLON}}" : "{{\Database\Seeders\Status::getDefault()}}"
+        statusSelect.value = event.target.checked ? "{{Status::BROUILLON}}" : "{{Status::getDefault()}}"
         statusDescriptionP.textContent = statusDescriptions[statusSelect.value];
     });
 

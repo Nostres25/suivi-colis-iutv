@@ -96,6 +96,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Retourne un dictionnaire des permissions de l'utilisateur
+     *
+     * @return array // Dictionnaire des permissions de l'utilisateur
+     */
+    public function getPermissionsAsDict(): array
+    {
+        return Role::getPermissionsAsDict($this->getRoles());
+    }
+
+    /**
      * Définit le prénom de l'utilisateur en covertissant la chaîne en miniscule
      * puis en mettant la première lettre en majuscule avant de l'assigner.
      *
@@ -150,7 +160,7 @@ class User extends Authenticatable
      * Vérifie si un utilisateur a la permission "$permission"
      *
      * @param  PermissionValue  $permission  Permission à vérifier
-     * @param  bool  $strict  Si retourne toujours true avec la permission administrateur (à false par défaut)
+     * @param  bool  $strict  Si ne retourne pas true avec la permission administrateur (à false par défaut)
      * @return bool // true si l'utilisateur a un rôle avec la permission "$permission", false sinon
      */
     public function hasPermission(PermissionValue $permission, bool $strict = false): bool

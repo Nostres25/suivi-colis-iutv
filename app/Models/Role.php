@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Seeders\PermissionValue;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,6 +11,24 @@ use Illuminate\Support\Collection;
 class Role extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
+
+    /**
+     * Retourne un dictionnaire des permissions de l'association de plusieurs
+     *
+     * @param Collection $roles
+     * @return array // Dictionnaire des permissions
+     */
+    public static function getPermissionsAsDict(Collection $roles): array
+    {
+        $permissions = PermissionValue::getDict();
+        foreach ($roles as $role) {
+            foreach ($role->getPermissionsAsIds() as $permission) {
+                $permissions[$permission] = true;
+            }
+        }
+
+        return $permissions;
+    }
 
     /**
      * Retourne le nom du rôle
@@ -29,6 +48,53 @@ class Role extends Model
     public function isDepartment(): bool
     {
         return $this->attributes['is_department'];
+    }
+
+    /**
+     * Retourne la liste des permissions en tant que modèles, du rôle
+     *
+     * @return Collection // permissions en modèles du rôle
+     */
+    public function getPermissionsAsModels(bool $fromDatabase = true): Collection
+    {
+        return $fromDatabase ? $this->permissions()->getResults() : $this->getAttribute('permissions');
+    }
+
+    /**
+     * Retourne la liste des noms des permissions en tant que string, du rôle
+     *
+     * @return Collection // Liste des noms des permissions en string
+     */
+    public function getPermissionsAsNames(): Collection
+    {
+        return $this->permissions()->pluck('name');
+    }
+
+    /**
+     * Retourne la liste des identifiants des permissions en tant que string, du rôle
+     *
+     * @return Collection // Liste des identifiants des permissions en string
+     */
+    public function getPermissionsAsIds(): Collection
+    {
+        return $this->permissions()->pluck('id');
+    }
+
+    /**
+     * Vérifie si un rôle a la permission "$permission"
+     *
+     * @param  PermissionValue  $permission  Permission à vérifier
+     * @param  bool  $strict  Si ne retourne pas true avec la permission administrateur (à false par défaut)
+     * @return bool // true si le rôle à la permission "$permission", false sinon
+     */
+    // TODO à tester
+    public function hasPermission(PermissionValue $permission, bool $strict = false): bool
+    {
+        if (! $strict && $this->permissions()->where('id', PermissionValue::ADMIN)->exists()) {
+            return true;
+        }
+
+        return (bool) $this->permissions()->where('id', $permission)->exists();
     }
 
     /**
@@ -60,24 +126,6 @@ class Role extends Model
     public function permissions(): BelongsToMany
     {
         return $this->BelongsToMany(Permission::class);
-    }
-
-    // TODO à tester
-    /**
-     * Vérifie si un rôle a la permission "$permission"
-     *
-     * @param  \Database\Seeders\PermissionValue  $permission  Permission à vérifier
-     * @param  bool  $strict  Si retourne toujours true avec la permission administrateur (à false par défaut)
-     * @return bool // true si le rôle a la permission "$permission", false sinon
-     */
-    public function hasPermission(\Database\Seeders\PermissionValue $permission, $strict = false): bool
-    {
-        if (! $strict && $this->permissions()->where('id', \Database\Seeders\PermissionValue::ADMIN)->exists()) {
-            return true;
-        }
-
-        return (bool) $this->permissions()->where('id', $permission)->exists();
-
     }
 
     /**

@@ -206,7 +206,7 @@ class Order extends Model
      */
     public function getDepartment(): Role
     {
-        return $this->department()->getResults();
+        return $this->getAttribute('department');
     }
 
     /**

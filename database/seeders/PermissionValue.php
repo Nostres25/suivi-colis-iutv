@@ -37,4 +37,14 @@ enum PermissionValue: int
     case SIGNER_BONS_DE_COMMANDES = 14;
     case GERER_COLIS_LIVRES = 15;
     case ADMIN = 1;
+
+    public static function getDict(): array
+    {
+        $permissions = [];
+        foreach (PermissionValue::cases() as $permission) {
+            $permissions[] = [$permission->value => false];
+        }
+
+        return $permissions;
+    }
 }

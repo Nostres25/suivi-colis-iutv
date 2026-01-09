@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Role;
 use App\Models\Supplier;
 use App\Models\User;
+use Database\Seeders\PermissionValue;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -24,66 +25,54 @@ class OrderController extends Controller
         } else {
 
             // En local, on utilise un utilisateur de test
-            session()->put('user', User::all()->first());
+            session()->put(
+                'user',
+                User::all()->first(
+                    fn (User $user) => $user->getRoles()->first(fn (Role $role) => $role->getName() === 'Département Info')
+                )
+            );
 
         }
 
         /* @var User $user */
         $user = session('user');
 
-        $supplier = Supplier::all()->first();
-
-        if (is_null($supplier)) {
-            $supplier = new Supplier(
-                [
-                    'company_name' => 'S.C.I.E Câblage',
-                    'siret' => '37865039400042',
-                    'email' => 'info@scie.fr',
-                    'phone_number' => '0148923756',
-                    'contact_name' => 'Geoffrey Delacourt',
-                    'note' => 'Fournisseur sérieux, respectant les délais annoncés. À ne pas facher avec des délais de paiement trop élevés',
-                    'is_valid' => true,
-                ]);
-
-        }
-
-        $supplier->save();
-
-        // $order = new \App\Models\Order;
-        // $order->order_num = '4500161828'; // présent dans le nom du fichier du bon de commande et devis, et dans le bon de commande lui-même
-        // $order->label = 'Cablage salle blanche'; // désignation de la commande dans bon de commande et nom du projet dans devis (différents)
-        // $order->description = 'Cablage electrique de la salle blanche du CRIT';
-        // $order->supplier_id = 1;
-        // $order->quote_num = 'd2509123';
-        // $order->states = 'BROUILLON';
-        // $order->
-
-        // $order->save();
-
         // TODO réduire le nombre de requêtes et voir à propos du cache
         // TODO Filtrer les commandes visibles en fonction du rôle
         // TODO faire un scroll infini
+        // TODO Chercher plusieurs permissions en une boucle
+
+        /* @var User $user */
+        $user = session('user');
+        $userRoles = $user->getRoles();
+
+        $userPermissions = Role::getPermissionsAsDict($userRoles);
+
         $orders = Order::all();
-        //            ->map(function (Order $order) {
-        //            return [
-        //                'order_num' => $order->getOrderNumber(),
-        //                'title' => $order->getTitle(),
-        //                'department' => $order->getDepartment(),
-        //                'author' => $order->getAuthor(),
-        //                'status' => $order->getStatus(),
-        //                'createdAt' => $order->getCreationDate(),
-        //                'updatedAt' => $order->getLastUpdateDate(),
-        //            ];
-        //        });
+
+        if (! $userPermissions[PermissionValue::ADMIN->value]) {
+            $orders
+                ->filter(function (Order $order) use ($userRoles, $userPermissions) {
+                    $department = $order->getDepartment();
+                    $sameDepartment = $userRoles->contains($department);
+
+                    return
+                        ($sameDepartment && $userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value])
+                        || $userPermissions[PermissionValue::CONSULTER_TOUTES_COMMANDES->value];
+                });
+        }
 
         $suppliers = Supplier::all(['id', 'company_name', 'is_valid']);
 
-        //TODO flash messages: redirect('urls.create')->with('success', 'URL has been added');
+        // TODO flash messages: redirect('urls.create')->with('success', 'URL has been added');
         return view('orders', [
+            'user' => $user,
             'orders' => $orders,
             'validSupplierNames' => $suppliers->where('is_valid', true)->map(fn (Supplier $supplier) => $supplier->getCompanyName())->values()->toArray(),
-            'suppliers' => $suppliers,
-            'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$user->getRoles()->map(fn (Role $role) => $role->getName())}",
+            'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$userRoles->map(fn (Role $role) => $role->getName())}",
+            'userPermissions' => $userPermissions,
+            'userRoles' => $userRoles,
+            'userDepartment' => $userRoles->filter(fn (Role $role) => $role->isDepartment()),
         ]);
     }
 

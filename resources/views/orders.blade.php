@@ -38,7 +38,7 @@
 {{-- TODO Peut-être afficher un aperçu de ce qu'il y a dans la commande (colis) --}}
 {{-- TODO format mobile : afficher les commandes comme la solution 1 ou 2 mais juste cliquer dessus ça fonctionne donc pas prioritaire : https://www.behance.net/gallery/95240691/Responsive-Data-Table-Designs# --}}
 <section class="table-section table-responsive">
-    <x-orderCreationButton :suppliers="$suppliers" :validSupplierNames="$validSupplierNames"/>
+    <x-orderCreationButton :user="$user" :userDepartment="$userDepartment" :validSupplierNames="$validSupplierNames"/>
     <div class="table-header mt-4">
         <h2 class="h3"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-list-ul" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
@@ -81,7 +81,7 @@
                         <div>
 {{--                            TODO faire fonctionner tous les boutons d'actions--}}
                             {{-- TODO optimiser tout ça notamment avec un switch par status et après seulement vérifier les rôles + cache pour éviter que la vérification de permissions envoie pleins de requêtes--}}
-                            @if($order->getStatus() == Status::BON_DE_COMMANDE_NON_SIGNE && (session('user')->hasPermission(PermissionValue::SIGNER_BONS_DE_COMMANDES) || session('user')->hasPermission(PermissionValue::GERER_BONS_DE_COMMANDES)))
+                            @if($order->getStatus() == Status::BON_DE_COMMANDE_NON_SIGNE && ($userPermissions[PermissionValue::SIGNER_BONS_DE_COMMANDES->value] || $userPermissions[PermissionValue::GERER_BONS_DE_COMMANDES->value]))
                                 <button class="btn btn-success btn-action mb-2" title="Déposer un bon de commande signé">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
                                         <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
@@ -92,7 +92,7 @@
                                     Signature refusée
                                 </button>
                             @endif
-{{--                            @if(($order->getStatus() == Status::COMMANDE || $order->getStatus() == Status::PARTIELLEMENT_LIVRE) && session('user')->hasPermission(PermissionValue::GERER_COLIS_LIVRES))--}}
+{{--                            @if(($order->getStatus() == Status::COMMANDE || $order->getStatus() == Status::PARTIELLEMENT_LIVRE) && $userPermissions[PermissionValue::GERER_COLIS_LIVRES->value])--}}
 {{--                                TODO juste rediriger vers les commentaires qui sont normalement visible quand on clique sur la commande, non prioritaire--}}
 {{--                                <button class="btn btn-primary btn-action mb-2" title="Commenter l'arrivée d'un colis">--}}
 {{--                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">--}}
@@ -101,7 +101,7 @@
 {{--                                    </svg> Commenter l'arrivée d'un colis--}}
 {{--                                </button>--}}
 {{--                            @endif--}}
-                            @if(session('user')->hasPermission(PermissionValue::GERER_BONS_DE_COMMANDES))
+                            @if($userPermissions[PermissionValue::GERER_BONS_DE_COMMANDES->value])
                                 @if($order->getStatus() == Status::DEVIS)
                                     <button class="btn btn-success btn-action mb-2" title="Déposer un bon de commande">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
@@ -110,7 +110,9 @@
                                         </svg> Déposer un bon
                                     </button>
                                     <button class="btn btn-danger btn-action mb-2" title="Refuser la demande de bon de commande">
-                                        Refuser
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                        </svg> Refuser
                                     </button>
                                 @elseif($order->getStatus() == Status::SERVICE_FAIT)
                                     <button class="btn btn-success btn-action mb-2" title="Marquer la commande comme payée">
@@ -119,14 +121,14 @@
                                         </svg> Payé
                                     </button>
                                 @endif
-                            @elseif(session('user')->hasRole($order->getDepartment()))
+                            @elseif($user->hasRole($order->getDepartment()))
                                     @if($order->getStatus() == Status::COMMANDE)
                                         <button class="btn btn-primary btn-action mb-2" title="Ajouter un délai de livraison">
                                             + Ajouter un délai de livraison
                                         </button>
                                         <button class="btn btn-danger btn-action mb-2" title="Marquer la commande comme refusée par le fournisseur">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
                                             </svg> Refus du fournisseur
                                         </button>
                                     @endif
@@ -150,20 +152,23 @@
                                             </svg> Service fait
                                         </button>
                                     @elseif($order->getStatus() == Status::DEVIS_REFUSE || $order->getStatus() == Status::BON_DE_COMMANDE_REFUSE || $order->getStatus() == Status::COMMANDE_AVEC_REPONSE || $order->getStatus() == Status::COMMANDE_REFUSEE)
-                                        <button class="btn btn-danger btn-action mb-2" title="Voir raison du refus">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                        <button class="btn btn-primary btn-action mb-2" title="Voir raison du refus">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
                                             </svg> Raison du refus
                                         </button>
-                                        <button class="btn btn-primary btn-action mb-2" title="Rectifier la commande">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286 .289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
-                                            </svg> Rectifier la commande
+                                        <button class="btn btn-secondary btn-action mb-2" title="Rectifier la commande">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                            </svg>Rectifier la commande
                                         </button>
                                     @else
                                         <button class="btn btn-secondary btn-action mb-2" title="Modifier la commande">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286 .289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                             </svg>
                                         </button>
                                     @endif()
@@ -187,7 +192,7 @@
 {{--                                    </svg>--}}
 {{--                                </button>--}}
                         </div>
-                        <small class="d-none d-lg-inline">{{ $order->getLastUpdateDate() }}</small>
+                        <small class="d-none d-lg-inline">Dernière modification: {{ $order->getLastUpdateDate() }}</small>
                     </td>
                     <td class="d-none d-md-table-cell">{{ $order->getCreationDate() }}</td>
                     <td class="ps-0 pe-0">
