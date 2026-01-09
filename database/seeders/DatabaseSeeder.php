@@ -161,7 +161,7 @@ class DatabaseSeeder extends Seeder
         sort($permissions);
         $permissionElements = [];
         foreach ($permissions as $permission) {
-            $permissionElements[] = ['name' => $permission];
+            $permissionElements[] = ['name' => $permission->name, 'created_at' => now()];
         }
         DB::table('permissions')->upsert($permissionElements, uniqueBy: ['name']);
 
