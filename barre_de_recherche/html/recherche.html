@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Recherche de colis</title>
+    <style>
+        body { font-family: Arial; padding: 40px; }
+        input, button { padding: 10px; }
+        .resultat { margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<h2>Recherche de colis</h2>
+
+<form method="GET" action="/recherche-colis">
+    <input type="text" name="mot" placeholder="ID ou nom du colis" required>
+    <button type="submit">Rechercher</button>
+</form>
+
+<div class="resultat">
+    @if(isset($colis))
+        @if($colis)
+            <h3>Colis trouvé</h3>
+            <p><strong>ID :</strong> {{ $colis->id_colis }}</p>
+            <p><strong>Nom :</strong> {{ $colis->label }}</p>
+            <p><strong>Coût :</strong> {{ $colis->cout }} euro </p>
+            <p><strong>Date réception :</strong> {{ $colis->date_reception }}</p>
+            <p><strong>Date livraison :</strong> {{ $colis->date_livraison }}</p>
+        @else
+            <p>Aucun colis trouvé pour : <strong>{{ $mot }}</strong></p>
+        @endif
+    @endif
+</div>
+
+</body>
+</html>
+
+</body>
+</html>
