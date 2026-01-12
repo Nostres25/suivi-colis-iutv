@@ -238,7 +238,7 @@ class Order extends Model
     public function getAuthor(): User
     {
         // TODO Peut-être faire un cache ?
-        return $this->getFirstLog()->getAuthor();
+        return $this->author()->getResults();
     }
 
     /**
@@ -493,21 +493,15 @@ class Order extends Model
         return $this->belongsTo(Role::class, 'department_id');
     }
 
-    // TODO
-    // /**
-    //  * Retourne le nom du service/département à l'origine de la commande
-    //  *
-    //  * @return string // Nom du service/département
-    //  */
-    // public function getService(): string {}
-    //
-    // /**
-    //  * Retourne l'utilisateur à l'origine de la commande
-    //  *
-    //  * @return User // Nom du service/département
-    //  */
-    // public function getUser(): User {}
-    //
+    /**
+     * Retourne l'utilisateur, auteur de la commande
+     *
+     * @return BelongsTo // Utilisateur, auteur de la commande
+     */
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
 
     // Pas prioritaire - TODO
     // j'ai mis pleins d'options de recherche mais pas obliger de toutes les coder si on manque de temps

@@ -66,6 +66,7 @@ class LocalTestSeeder extends Seeder
                 // Pour chaque commande associer un fournisseur
                 /** @var User $author */
                 $department = $departments->random();
+                $author = $department->getUsers()->random();
 
                 // Le département ne doit pas avoir aucun membre
                 if ($department->users()->count() == 0) {
@@ -81,7 +82,9 @@ class LocalTestSeeder extends Seeder
                 }
 
                 $order->department()->associate($department);
+                $order->author()->associate($author);
                 $order->supplier()->associate(($suppliers->random()));
+
                 $order->save();
             })
             ->each(function (Order $order) use ($users_can_access_all_orders) {
@@ -109,13 +112,13 @@ class LocalTestSeeder extends Seeder
                 // Pour chaque commande créer entre 1 et 5 log (action)
                 Log::factory(rand(1, 5))
                     ->make()
-                    ->each(function (Log $log, int $index) use ($order, $users_same_department, $users_can_access) {
+                    ->each(function (Log $log, int $index) use ($order, $users_can_access) {
                         $log->order()->associate($order);
 
-                        // S'il s'agit du premier log, l'auteur doit obligatoirement venir du département de la commande
+                        // S'il s'agit du premier log, l'auteur doit être l'auteur de la commande
                         // Sinon, il peut être du même département ou avoir un rôle avec la permission de voir toutes les commandes
                         if ($index === 0) {
-                            $log->author()->associate($users_same_department->random());
+                            $log->author()->associate($order->getAuthor());
                         } else {
                             $log->author()->associate($users_can_access->random());
                         }

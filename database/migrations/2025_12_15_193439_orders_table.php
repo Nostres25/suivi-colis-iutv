@@ -59,6 +59,7 @@ return new class extends Migration
                 ->comment('Statut de la commande');
             $table->timestamps();
 
+            $table->foreignId('author_id')->constrained('users', 'id')->cascadeOnUpdate();
             $table->foreignId('department_id')->constrained('roles', 'id')->cascadeOnUpdate();
         });
 
