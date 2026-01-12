@@ -26,22 +26,20 @@ class OrderController extends Controller
         } else {
 
             // En local, on utilise un utilisateur de test
+            // Choix du rôle de l'utilisateur : Service financier, Département Info
             session()->put(
                 'user',
                 User::all()->first(
-                    fn (User $user) => $user->getRoles()->first(fn (Role $role) => $role->getName() === 'Département Info')
+                    fn (User $user) => $user->getRoles()->first(fn (Role $role) => $role->getName() === 'Service financier')
                 )
             );
 
         }
 
-        /* @var User $user */
-        $user = session('user');
 
         // TODO réduire le nombre de requêtes et voir à propos du cache
         // TODO Filtrer les commandes visibles en fonction du rôle
         // TODO faire un scroll infini
-        // TODO Chercher plusieurs permissions en une boucle
 
         /* @var User $user */
         $user = session('user');
@@ -53,7 +51,7 @@ class OrderController extends Controller
         // Récupération uniquement des commandes dont l'utilisateur a accès
         $orders =
             $userPermissions[PermissionValue::ADMIN->value] || $userPermissions[PermissionValue::CONSULTER_TOUTES_COMMANDES->value]
-                ? Order::all()
+                ? Order::paginate(20)
                 : Order::where(function (Builder $query) use ($userDepartments, $userPermissions) {
                     $userDepartments->each(function (Role $department) use ($query, $userPermissions) {
                         if ($userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value]) {
@@ -61,7 +59,7 @@ class OrderController extends Controller
                         }
                     });
                 })
-                    ->get();
+                    ->paginate(20);
 
         $suppliers = Supplier::all(['id', 'company_name', 'is_valid']); // Récupération uniquement des informations utiles à propos des fournisseurs
 

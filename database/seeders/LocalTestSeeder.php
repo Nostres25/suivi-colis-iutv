@@ -23,10 +23,9 @@ class LocalTestSeeder extends Seeder
      */
     public function run(): void
     {
-
         $nbSuppliers = 10;
         $nbUsers = 20;
-        $nbOrders = 50;
+        $nbOrders = 100;
 
         // Récupérer les rôles par défaut (crées dans DatabaseSeeder)
         $roles = Role::all();
@@ -66,7 +65,6 @@ class LocalTestSeeder extends Seeder
                 // Pour chaque commande associer un fournisseur
                 /** @var User $author */
                 $department = $departments->random();
-                $author = $department->getUsers()->random();
 
                 // Le département ne doit pas avoir aucun membre
                 if ($department->users()->count() == 0) {
@@ -80,6 +78,8 @@ class LocalTestSeeder extends Seeder
                 if ($department->users()->count() == 0) {
                     throw new Exception("Une erreur est survenue lors de la création de données de tests (orders/commandes) : Aucun département ne possède de membre. Il n'est donc pas possible de créer des données");
                 }
+
+                $author = $department->getUsers()->random();
 
                 $order->department()->associate($department);
                 $order->author()->associate($author);

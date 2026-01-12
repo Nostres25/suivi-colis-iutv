@@ -205,6 +205,9 @@
                 </tr>
             @endforeach
         </tbody>
+        <tfooter>
+            {{ $orders->links()}}
+        </tfooter>
     </table>
 </section>
 
