@@ -42,7 +42,7 @@ enum PermissionValue: int
     {
         $permissions = [];
         foreach (PermissionValue::cases() as $permission) {
-            $permissions[] = [$permission->value => false];
+            $permissions[$permission->value] = false;
         }
 
         return $permissions;
