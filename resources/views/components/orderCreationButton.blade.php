@@ -73,7 +73,7 @@
                     </div>
                     {{--                    TODO ne pas oublier de vérifier qu'une option est bien choisie avant de valider--}}
                     {{--                    TODO ajouter une permission "CREER_COMMANDES_POUR_TOUS" qui permet de créer une commande pour d'autres départements--}}
-                    @if($userDepartment->count() > 1)
+                    @if($userDepartments->count() > 1)
                         <div class="mb-4">
                             <label for="departmentSelect" class="col-form-label fs-5"
                                    title="{{Status::getDescriptions()}}">Département <span title="champ requis"
@@ -86,7 +86,7 @@
                                 <option>
                                     Veuillez sélectionner le département de la commande...
                                 </option>
-                                @foreach ($userDepartment as $department)
+                                @foreach ($userDepartments as $department)
                                     <option>{{$department->getName()}}</option>
                                 @endforeach
                             </select>

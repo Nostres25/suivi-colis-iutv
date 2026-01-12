@@ -13,9 +13,9 @@ class Role extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     /**
-     * Retourne un dictionnaire des permissions de l'association de plusieurs
+     * Retourne un dictionnaire des permissions de l'association de plusieurs rôles déjà chargés
      *
-     * @param Collection $roles
+     * @param  Collection  $roles  Collection de rôles (modèle Role)
      * @return array // Dictionnaire des permissions
      */
     public static function getPermissionsAsDict(Collection $roles): array
@@ -28,6 +28,16 @@ class Role extends Model
         }
 
         return $permissions;
+    }
+
+    /**
+     * Retourne l'identifiant rôle
+     *
+     * @return string // identifiant du rôle
+     */
+    public function getId(): string
+    {
+        return $this->attributes['id'];
     }
 
     /**

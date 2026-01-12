@@ -38,7 +38,7 @@
 {{-- TODO Peut-être afficher un aperçu de ce qu'il y a dans la commande (colis) --}}
 {{-- TODO format mobile : afficher les commandes comme la solution 1 ou 2 mais juste cliquer dessus ça fonctionne donc pas prioritaire : https://www.behance.net/gallery/95240691/Responsive-Data-Table-Designs# --}}
 <section class="table-section table-responsive">
-    <x-orderCreationButton :user="$user" :userDepartment="$userDepartment" :validSupplierNames="$validSupplierNames"/>
+    <x-orderCreationButton :user="$user" :userDepartments="$userDepartments" :validSupplierNames="$validSupplierNames"/>
     <div class="table-header mt-4">
         <h2 class="h3"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-list-ul" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
@@ -121,7 +121,7 @@
                                         </svg> Payé
                                     </button>
                                 @endif
-                            @elseif($user->hasRole($order->getDepartment()))
+                            @elseif($userDepartments->contains($order->getDepartment()))
                                     @if($order->getStatus() == Status::COMMANDE)
                                         <button class="btn btn-primary btn-action mb-2" title="Ajouter un délai de livraison">
                                             + Ajouter un délai de livraison

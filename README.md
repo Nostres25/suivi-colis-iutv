@@ -549,6 +549,7 @@ Il vous faut maîtriser la programmation orientée objets avec le principe d'hé
 -   Pensez à utiliser des [fonctions](https://www.php.net/manual/fr/language.functions.php) pour des bouts de codes que vous souhaitez utiliser plusieurs fois, de sorte à ne jamais répéter des blocs de code.
 -   Une des règles avec les fonctions est : une fonction pour un usage. Si votre fonction possède plusieurs étapes (exemple : le chargement de plusieurs types de données différentes), il est probablement nécéssaire de faire une fonction pour chaque étape (exemple: une fonction pour le chargement des sauvegardes, une fonction pour le chargement des paramètres etc...).
 -   Pensez optimisation de la mémoire et des opérations. En effet, votre code doit en priorité comporter le moins d'opérations possibles, en éliminant les répétitions et en stockant des données en mémoire à l'aide de variables. Mais il faut aussi faire attention à ne pas utiliser de mémoire inutilement.
+-   Pour les projets Laravel trouvez [quelques conseils pour optimiser le code](https://medium.com/@dev.muhammadazeem/14-advanced-tips-to-optimize-laravel-database-queries-0e738108a548).
 
 #### Commentaires & noms de symboles
 

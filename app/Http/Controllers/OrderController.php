@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\Supplier;
 use App\Models\User;
 use Database\Seeders\PermissionValue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -44,25 +45,25 @@ class OrderController extends Controller
 
         /* @var User $user */
         $user = session('user');
-        $userRoles = $user->getRoles();
+        $userRoles = $user->getRoles(); // Récupération des rôles en base de données
+        $userDepartments = $userRoles->filter(fn (Role $role) => $role->isDepartment()); // Filtre des rôles qui sont des départements
 
-        $userPermissions = Role::getPermissionsAsDict($userRoles);
+        $userPermissions = Role::getPermissionsAsDict($userRoles); // Récupération d'un dictionnaire des permissions pour simplifier la vérification de permissions
 
-        $orders = Order::all();
+        // Récupération uniquement des commandes dont l'utilisateur a accès
+        $orders =
+            $userPermissions[PermissionValue::ADMIN->value] || $userPermissions[PermissionValue::CONSULTER_TOUTES_COMMANDES->value]
+                ? Order::all()
+                : Order::where(function (Builder $query) use ($userDepartments, $userPermissions) {
+                    $userDepartments->each(function (Role $department) use ($query, $userPermissions) {
+                        if ($userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value]) {
+                            $query->orWhere('department_id', $department->getId());
+                        }
+                    });
+                })
+                    ->get();
 
-        if (! $userPermissions[PermissionValue::ADMIN->value]) {
-            $orders
-                ->filter(function (Order $order) use ($userRoles, $userPermissions) {
-                    $department = $order->getDepartment();
-                    $sameDepartment = $userRoles->contains($department);
-
-                    return
-                        ($sameDepartment && $userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value])
-                        || $userPermissions[PermissionValue::CONSULTER_TOUTES_COMMANDES->value];
-                });
-        }
-
-        $suppliers = Supplier::all(['id', 'company_name', 'is_valid']);
+        $suppliers = Supplier::all(['id', 'company_name', 'is_valid']); // Récupération uniquement des informations utiles à propos des fournisseurs
 
         // TODO flash messages: redirect('urls.create')->with('success', 'URL has been added');
         return view('orders', [
@@ -72,7 +73,7 @@ class OrderController extends Controller
             'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$userRoles->map(fn (Role $role) => $role->getName())}",
             'userPermissions' => $userPermissions,
             'userRoles' => $userRoles,
-            'userDepartment' => $userRoles->filter(fn (Role $role) => $role->isDepartment()),
+            'userDepartments' => $userDepartments,
         ]);
     }
 
