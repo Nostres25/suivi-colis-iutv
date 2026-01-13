@@ -9,12 +9,13 @@ use App\Models\User;
 use Database\Seeders\PermissionValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class OrderController extends Controller
 {
     // TODO Annotation pour utiliser la fonction auth() de AuthController pour chaque page
-    public function viewOrders(Request $request): View
+    public function viewOrders(Request $request): View|\Illuminate\Http\JsonResponse|Response
     {
 
         // Connexion de l'utilisateur
@@ -26,27 +27,59 @@ class OrderController extends Controller
         } else {
 
             // En local, on utilise un utilisateur de test
-            // Choix du rôle de l'utilisateur : Service financier, Département Info
             session()->put(
                 'user',
                 User::all()->first(
-                    fn (User $user) => $user->getRoles()->first(fn (Role $role) => $role->getName() === 'Service financier')
+                    function (User $user) {
+                        $roles = $user->getRoles();
+
+                        // Rôle que l'utilisateur de test doit avoir (mettre null pour pas de rôle en particulier)
+                        // Choix du rôle de l'utilisateur : Service financier, Directeur IUT, Département Info, Département SD, Département RT
+                        $roleToHave = 'Directeur IUT';
+
+                        // Nombre de rôles que l'utilisateur de test doit avoir
+                        $roleNumber = 2;
+
+                        return (is_null($roleToHave) || $roles->first((fn (Role $role) => $role->getName() == $roleToHave))) && $roles->count() == $roleNumber;
+
+                    }
                 )
             );
 
         }
 
-
-        // TODO réduire le nombre de requêtes et voir à propos du cache
-        // TODO Filtrer les commandes visibles en fonction du rôle
-        // TODO faire un scroll infini
+        // TODO réduire le nombre de requêtes et voir à propos du cache (je pense qu'on ne fera pas de cache mais on opti les requêtes)
 
         /* @var User $user */
         $user = session('user');
-        $userRoles = $user->getRoles(); // Récupération des rôles en base de données
-        $userDepartments = $userRoles->filter(fn (Role $role) => $role->isDepartment()); // Filtre des rôles qui sont des départements
+        if (is_null($user)) {
+            $response_content =
+                "
+                <h1> Erreur 401 : Unauthorized</h1><br/>
+                Votre compte utilisateur n'a pas été trouvé, vous n'avez donc pas la permission d'accéder au site.<br/>
+                Il s'agit très probablement d'une erreur, merci de contacter le responsable de ce site de suivi des colis à l'IUT de Villetaneuse et de sa base de données.
+                ";
 
+            if (app()->isLocal()) {
+                $response_content .=
+                    "
+                    <br/><br/><strong>Si vous êtes en local</strong>, pour tester le site par exemple, la raison est qu'aucun des utilisateurs en base de données ne respecte les conditions de l'utilisateur de test.<br/>
+                    Pour régler cela :<br/>
+                    - mettez des conditions qui correspondent à au moins un utilisateur dans la base de données<br/><br/>
+                    - générez de nouvelles données de test additionnelles avec la commande <code>php artisan db:seed</code> une ou plusieurs fois afin d'espérer générer l'utilisateur qui correspond à ces conditions (Il se peut que les tables de la base de données n'aient pas été créées ou qu'elles aient été modifiées, ce qui provoquerait une erreur. Ainsi, exécutez <code>php artisan migrate --seed</code> pour créer tables de la base de données et les remplir de données de test)<br/><br/>
+                    - créez vous-même l'utilisateur en base de données, en lui attribuant un rôle via la table pivot (ou table association) <code>role_user</code> (accédez à la base de données à l'aide de la commande <code>php artisan db</code>. Si le site est correctement installé, cela fonctionnera)<br/><br/>
+                    - ajoutez dans le fichier <code>database/seeders/LocalTestSeeder.php</code> une condition pour toujours garantir d'avoir un utilisateur respectant les conditions souhaitées dans les données de test <br/><br/>
+
+                    Si vous venez d'installer le projet, assurez-vous de bien suivre toutes les instructions de l'installation au préalable !
+                    ";
+            }
+
+            return response($response_content, 401);
+        }
+        $userRoles = $user->getRoles(); // Récupération des rôles en base de données
         $userPermissions = Role::getPermissionsAsDict($userRoles); // Récupération d'un dictionnaire des permissions pour simplifier la vérification de permissions
+
+        $userDepartments = $userRoles->filter(fn (Role $role) => $role->isDepartment()); // Filtre des rôles qui sont des départements
 
         // Récupération uniquement des commandes dont l'utilisateur a accès
         $orders =
@@ -68,7 +101,7 @@ class OrderController extends Controller
             'user' => $user,
             'orders' => $orders,
             'validSupplierNames' => $suppliers->where('is_valid', true)->map(fn (Supplier $supplier) => $supplier->getCompanyName())->values()->toArray(),
-            'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$userRoles->map(fn (Role $role) => $role->getName())}",
+            'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$userRoles->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}",
             'userPermissions' => $userPermissions,
             'userRoles' => $userRoles,
             'userDepartments' => $userDepartments,

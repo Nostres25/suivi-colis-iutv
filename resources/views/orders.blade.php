@@ -16,6 +16,8 @@
 @section('content')
     @use(Database\Seeders\Status)
     @use(Database\Seeders\PermissionValue)
+    @use(App\Models\Role)
+    @use(App\Models\Order)
 
 <section>
     <div class="row justify-content-center">
@@ -38,7 +40,12 @@
 {{-- TODO Peut-être afficher un aperçu de ce qu'il y a dans la commande (colis) --}}
 {{-- TODO format mobile : afficher les commandes comme la solution 1 ou 2 mais juste cliquer dessus ça fonctionne donc pas prioritaire : https://www.behance.net/gallery/95240691/Responsive-Data-Table-Designs# --}}
 <section class="table-section table-responsive">
-    <x-orderCreationButton :user="$user" :userDepartments="$userDepartments" :validSupplierNames="$validSupplierNames"/>
+
+    {{--Pour pouvoir créer une commande il faut appartenir à un département et avoir la permission de créer une commande--}}
+    @if ($userPermissions[PermissionValue::CREER_COMMANDES->value] && !empty($userDepartments))
+        <x-orderCreationButton :user="$user" :userDepartments="$userDepartments" :validSupplierNames="$validSupplierNames"/>
+    @endif
+
     <div class="table-header mt-4">
         <h2 class="h3"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-list-ul" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
@@ -47,9 +54,14 @@
     </div>
 
     <table class="table table-striped mb-0">
+        {{ $orders->links()}}
         <caption>
-            {{-- TODO Si c'est un département (ex: CRIT) : mettre "liste des commandes du département CRIT" --}}
-            Liste des commandes à l'IUT de Villetaneuse
+            @if ($userPermissions[PermissionValue::CONSULTER_TOUTES_COMMANDES->value])
+                Liste des commandes
+            @else
+                Liste des commandes {{($userDepartments->count() > 1 ? "de : " : "du  ").implode(', ', $userDepartments->map(fn (Role $department) => $department->getName())->toArray()).' '}}
+            @endif
+            à l'IUT de Villetaneuse
         </caption>
         <thead>
             <tr>
@@ -205,10 +217,8 @@
                 </tr>
             @endforeach
         </tbody>
-        <tfooter>
-            {{ $orders->links()}}
-        </tfooter>
     </table>
+    {{ $orders->links()}}
 </section>
 
 @endsection
