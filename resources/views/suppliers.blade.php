@@ -1,5 +1,6 @@
 @extends('base')
 
+
 @section('header')
     <div class="container">
         <h1 class="h1"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
@@ -9,7 +10,14 @@
     </div>
 @endsection
 
+@section('alert')
+    <x-alert :alertMessage="$alertMessage"></x-alert>
+@endsection
+
 @section('content')
+    @use(Database\Seeders\PermissionValue)
+    @use(App\Models\Role)
+    @use(App\Models\Supplier)
 
 
 <section>
@@ -32,8 +40,10 @@
 
 <!-- Tableau des fournisseurs -->
 <section class="table-section table-responsive">
-    <x-supplierCreationButton/>
-
+    {{--Pour pouvoir ajouter un fournisseur il faut avoir la permission de demander l'ajout d'un fournisseur ou de gérer les fournisseur--}}
+    @if ($userPermissions[PermissionValue::GERER_FOURNISSEUR->value] || $userPermissions[PermissionValue::DEMANDER_AJOUT_FOURNISSEUR->value] )
+        <x-supplierCreationButton/>
+    @endif
     <div class="table-header mt-4">
         <h2 class="h3"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-building-fill" viewBox="0 0 16 16">
                 <path d="M3 0a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3v-3.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V16h3a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1zm1 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5M4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5m2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5m2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5"/>
@@ -41,6 +51,7 @@
         <p>Liste des fournisseurs référencés</p>
     </div>
     <table class="table table-striped mb-0">
+        {{ $suppliers->links()}}
         <caption>
             Liste des fournisseurs de l'IUT de Villetaneuse
         </caption>
@@ -88,7 +99,7 @@
                             </span>
                         @endif
                         <br>
-                        <small>{{ Str::limit($supplier['note'], 100).(strlen($supplier['note']) > 100 ? '...' : '') }}</small>
+                        <small>{{ Str::limit($supplier['note'], 100) }}</small>
                     </td>
                     <td class="ps-0 pe-0">
                         <button class="btn btn-light btn-more-options">
@@ -101,6 +112,7 @@
             @endforeach
         </tbody>
     </table>
+    {{ $suppliers->links()}}
 </section>
 
 @endsection

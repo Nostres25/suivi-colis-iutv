@@ -49,7 +49,7 @@ class OrderController extends Controller
         }
 
         // TODO réduire le nombre de requêtes et voir à propos du cache (je pense qu'on ne fera pas de cache mais on opti les requêtes)
-
+        // TODO factoriser avec un déctorateur le code pour l'utilisateur et si possible factoriser l'envoi des variables courantes (ex: $suerPermissions)
         /* @var User $user */
         $user = session('user');
         if (is_null($user)) {
