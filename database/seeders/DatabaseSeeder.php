@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         // | ATTENTION : Si vous modifiez des rôles ou leurs permissions,                    |
         // | vous devrez exécuter à nouveau le seeder avec la commande "php artisan db:seed" |
         // | (ATTENTION, en local cette commande va générer à nouveau les données de test)   |
+        // | (ATTENTION, À NE PAS CHANGER LES IDENTIFIANTS DE RÔLES                          |
         //  \-------------------------------------------------------------------------------/
         $roles = collect([
             [
@@ -50,8 +51,8 @@ class DatabaseSeeder extends Seeder
                     PermissionValue::NOTES_ET_COMMENTAIRES,
                     PermissionValue::GERER_DEVIS,
                     PermissionValue::GERER_BONS_DE_COMMANDES,
-                    PermissionValue::GERER_PAIEMENT_FOURNISSEUR,
-                    PermissionValue::GERER_FOURNISSEUR,
+                    PermissionValue::GERER_PAIEMENT_FOURNISSEURS,
+                    PermissionValue::GERER_FOURNISSEURS,
                     PermissionValue::CONSULTER_LISTE_FOURNISSEURS,
                     PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
                 ],
@@ -163,7 +164,7 @@ class DatabaseSeeder extends Seeder
         });
         Role::upsert($roles->map(function ($role) {
             return ['name' => $role['name'], 'description' => $role['description'], 'is_department' => $role['is_department']];
-        })->toArray(), uniqueBy: ['name'], update: ['description', 'is_department']);
+        })->toArray(), uniqueBy: ['id'], update: ['description', 'is_department']);
 
         $permissions = PermissionValue::cases();
         sort($permissions);
@@ -171,7 +172,7 @@ class DatabaseSeeder extends Seeder
         foreach ($permissions as $permission) {
             $permissionElements[] = ['name' => $permission->name, 'created_at' => now()];
         }
-        DB::table('permissions')->upsert($permissionElements, uniqueBy: ['name']);
+        DB::table('permissions')->upsert($permissionElements, uniqueBy: ['id']);
 
         // Attribution de permissions par défaut
         $permission_roleElements = [];
