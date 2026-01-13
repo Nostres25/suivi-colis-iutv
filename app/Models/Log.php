@@ -4,11 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Log extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
+
+    /**
+     * Retourne l'auteur de l'action, l'utilisateur associé au log
+     *
+     * @return User // Utilisateur auteur de l'action / associé au log
+     */
+    public function getAuthor(): User
+    {
+        return $this->author()->getResults();
+    }
 
     /**
      * Retourne la commande dont appartient le log

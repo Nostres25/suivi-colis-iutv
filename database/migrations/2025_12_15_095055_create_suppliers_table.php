@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // TODO pas d'adresse ?
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
             $table->string('company_name')

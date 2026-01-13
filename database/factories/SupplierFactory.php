@@ -19,7 +19,7 @@ class SupplierFactory extends Factory
     {
         return [
             'company_name' => fake()->company(),
-            'siret' => Str::random(14),
+            'siret' => fake()->unique()->randomNumber(7).fake()->unique()->randomNumber(7),
             'email' => fake()->unique()->safeEmail(),
             'phone_number' => fake()->phoneNumber(),
             'contact_name' => fake()->name(),
