@@ -131,7 +131,6 @@ class User extends Authenticatable implements FilamentUser
         );
     }
 
-    // On garde aussi ça pour être sûr
     public function getFilamentName(): string
     {
         return $this->name; 
