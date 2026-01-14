@@ -9,7 +9,7 @@
     }
 
     .fournisseurs-page-header {
-        background-color: #3170A8;
+        background-color: #293358;
         padding: 50px 0;
         color: white;
         margin-bottom: 40px;
@@ -67,8 +67,8 @@
 
     .fournisseurs-search-input:focus {
         outline: none;
-        border-color: #3170A8 !important;
-        box-shadow: 0 0 0 3px rgba(49, 112, 168, 0.1) !important;
+        border-color: #293358 !important;
+        box-shadow: 0 0 0 3px rgba(41, 51, 88, 0.1) !important;
     }
 
     .fournisseurs-search-icon {
@@ -81,8 +81,8 @@
 
     .fournisseurs-btn-filter {
         background: white;
-        border: 1px solid #3170A8;
-        color: #3170A8;
+        border: 1px solid #293358;
+        color: #293358;
         padding: 10px 22px;
         border-radius: 6px;
         font-weight: 500;
@@ -91,19 +91,19 @@
     }
 
     .fournisseurs-btn-filter:hover {
-        background: #3170A8;
+        background: #293358;
         color: white;
     }
 
     .fournisseurs-btn-primary {
-        background-color: #3170A8 !important;
-        border-color: #3170A8 !important;
+        background-color: #293358 !important;
+        border-color: #293358 !important;
         color: white !important;
     }
 
     .fournisseurs-btn-primary:hover {
-        background-color: #255a85 !important;
-        border-color: #255a85 !important;
+        background-color: #293358 !important;
+        border-color: #293358 !important;
     }
 
     .fournisseurs-section {
@@ -117,7 +117,7 @@
     .fournisseurs-table-header {
         padding: 20px 25px;
         background: #f8f9fa;
-        border-bottom: 3px solid #3170A8;
+        border-bottom: 3px solid #293358;
     }
 
     .fournisseurs-table-header h2 {
@@ -146,7 +146,7 @@
     }
 
     .fournisseurs-section thead {
-        background-color: #3170A8;
+        background-color: #293358;
         color: white;
     }
 
@@ -218,12 +218,12 @@
     }
 
     .fournisseurs-btn-details {
-        background-color: #3170A8;
+        background-color: #293358;
         color: white;
     }
 
     .fournisseurs-btn-details:hover {
-        background-color: #255a85;
+        background-color: #293358;
     }
 
     .fournisseurs-btn-edit {
