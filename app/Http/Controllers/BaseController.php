@@ -88,7 +88,7 @@ abstract class BaseController extends Controller
 
                         // Rôle que l'utilisateur de test doit avoir (mettre null pour pas de rôle en particulier)
                         // Choix du rôle de l'utilisateur : Service financier, Directeur IUT, Département Info, Département SD, Département RT
-                        $roleToHave = 'Directeur IUT';
+                        $roleToHave = 'Département Indo';
 
                         // Nombre de rôles que l'utilisateur de test doit avoir
                         $roleNumber = 2;
@@ -104,7 +104,7 @@ abstract class BaseController extends Controller
                 "
                 <h1> Erreur 403 : Forbidden</h1><br/>
                 Votre compte utilisateur n'a pas été trouvé, vous n'avez donc pas la permission d'accéder au site.<br/>
-                Il s'agit très probablement d'une erreur, merci de contacter le responsable de ce site de suivi des colis à l'IUT de Villetaneuse et de sa base de données.
+                Vous n'avez pas encore été ajouté au système. Autrement, il s'agit très probablement d'une erreur, veuillez contacter le responsable de ce site de suivi des colis à l'IUT de Villetaneuse et de sa base de données pour résoudre le problème.
                 ";
 
             if (app()->isLocal()) {
