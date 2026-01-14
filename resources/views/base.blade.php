@@ -38,4 +38,39 @@
 {{--    </div>--}}
 </footer>
 </body>
+
+<script>
+
+    // TODO à voir pour ne pas pouvoir sortir des modals sans faire exprès en rechargeant la page par exemple
+    // TODO ce serait bien aussi d'ajouter l'avertissement quand on clique sur la croix ou "annuler" MAIS PAS POUR "VALIDER" COMME CE CODE LE FAIT ACTUELLEMENT
+    // const buttonsWithErasureAlert = document.querySelectorAll('.erasure-alert');
+    // console.debug(buttonsWithErasureAlert)
+    // Pour tous les boutons avec la classe d'alerte d'effacement, activer l'alerte avant de décharger la page lorsque cliqué
+    // buttonsWithErasureAlert.forEach((button) => {
+    //     console.debug(button);
+    //     button.addEventListener('click', () => {
+    //         window.onbeforeunload = function(){
+    //             return 'Êtes-vous sûr de partir ? Si vous déchargez la page, vos modifications seront perdues !';
+    //         };
+    //     })
+    // });
+    // for (const button in buttonsWithErasureAlert) {
+    //     console.debug(button);
+    //     button.addEventListener('click', () => {
+    //         window.onbeforeunload = function(){
+    //             return 'Êtes-vous sûr de partir ? Si vous déchargez la page, vos modifications seront perdues !';
+    //         };
+    //     })
+    // }
+    //
+    // // Désactiver le message d'avertissement du déchargement de la page à la fermeture des modals (event bootstrap)
+    // document.addEventListener('hidden.bs.modal', () => {
+    //     window.onbeforeunload = function(){
+    //         return 'Êtes-vous sûr de partir ? Si vous déchargez la page, vos modifications seront perdues !';
+    //     };
+    //     console.debug('test');
+    //     window.onbeforeunload = null;
+    // });
+
+</script>
 </html>

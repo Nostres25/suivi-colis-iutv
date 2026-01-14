@@ -290,6 +290,21 @@ Pour arrêter le serveur local de développement, appuyez sur CTRL + C
 
 > ✅ Vous pouvez maintenant commencer le développement. Attention toutefois, travailler à plusieurs sur un même problème amène des problématiques qui peuvent faire perdre du temps de travail. Pour éviter tout problème, nous utilisons git avec github mais il faut également respecter une certaine organisation afin de garantir un développement fluide. Les détails de cette organisation sont ci-dessous.
 
+## Déploiement de l'application
+La mise en production de l'application nécessite une approche légèrement différente.
+
+> [!WARNING]
+> Cette partie n'a pas encore été rédigée. En l'absence d'une rédaction complète, vous trouverez les autres informations nécéssaires à la mise en production dans la partie précédente qui concerne la [mise en place de l'environnement](##mise-en-place-de-lenvironnement).
+
+### Page de connexion - Fonctionnement du CAS
+Cette application utilise la page de connexion de l'université Sorbonne Paris Nord utilisée par plusieurs services au sein de l'organisation.  
+Pour la manière dont l'application utilise cette page de connexion, aussi appellée CAS pour **C**entral **A**uthentication **S**ervice :
+- La redirection vers le CAS est à la charge du serveur web Apache2 de l'application grâce au module Apache `mod_auth_cas`
+- Les utilisateurs redirigés sur le site sont identifiés par la valeur du login à la clé `REMOTE_USER` des informations retournées par le CAS 
+- À cause de cette contrainte technique, les utilisateurs n'ont pas la possibilité de se déconnecter, c'est Apache2 qui définit le temps d'expiration de la connexion et qui redirigera une nouvelle fois automatiquement l'utilisateur vers le CAS
+- L'authentification par le CAS de l'université Sorbonne Paris Nord ne fonctionnera que si l'application est hébergé sur un serveur de l'université.
+- Le CAS doit retourner vers la racine du site ("/")
+
 ## Travailler avec git
 
 Étant donné que nous sommes plusieurs à travailler sur ce projet et qu'il n'y a pas de synchronisation automatique entre le dépôt local[^1] et le dépôt distant[^2], l'un d'entre nous pourrait avoir des modifications en cours pendant que vous travaillez sur le projet. Et ces modifications peuvent porter sur le même fichier voir le même bout de code. Ce qui peut causer des conflits, car vous avanceriez sur un projet non à jour et lorsque vous souhaiterez publier vos modifications, git ne saura pas choisir quelle modification est bonne à garder car les deux modifications sont incompatibles.

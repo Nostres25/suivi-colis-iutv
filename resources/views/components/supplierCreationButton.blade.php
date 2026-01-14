@@ -1,7 +1,7 @@
 @use(\Database\Seeders\PermissionValue)
 
 <!-- Bouton d'ajout de fournisseur -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFournisseurModal">
+<button type="button" class="btn btn-primary erasure-alert" data-bs-toggle="modal" data-bs-target="#addFournisseurModal">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
          viewBox="0 0 16 16">
         <path

@@ -10,7 +10,6 @@ use Illuminate\Support\Collection;
 
 class Role extends Model
 {
-    use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     /**
      * Retourne un dictionnaire des permissions de l'association de plusieurs rôles déjà chargés

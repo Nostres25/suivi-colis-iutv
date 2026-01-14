@@ -1,7 +1,7 @@
 @use(Database\Seeders\Status)
     <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" style="display: table-row" data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop">
+<button type="button" class="btn btn-primary erasure-alert" style="display: table-row" data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop" id="createOrderButton">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
          viewBox="0 0 16 16">
         <path
@@ -208,6 +208,7 @@
 </div>
 
 <script>
+
     const suppliers = {!! json_encode($validSupplierNames) !!};
 
     const supplierInputs = document.getElementById("supplierInput");
