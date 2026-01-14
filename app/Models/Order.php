@@ -12,6 +12,10 @@ class Order extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
+
+
+    public $timestamps = false;
+
     protected $fillable = [
         'label',
         'description',
@@ -21,6 +25,16 @@ class Order extends Model
         'path_purchase_order',
         'path_delivery_note',
         'states',
+    ];
+
+    public const STATES = [
+        'DEVIS_SIGNE',
+        'BC_REDIGE',
+        'BC_SIGNE',
+        'BC_ENVOYE',
+        'LIVREE',
+        'PAYEE',
+        'ANNULEE',
     ];
 
     /**

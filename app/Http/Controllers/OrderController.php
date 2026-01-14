@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use App\Models\User;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+
 
 class OrderController extends Controller
 {
     // TODO Annotation pour utiliser la fonction auth() de AuthController pour chaque page
-    public function viewOrders(Request $request): View
+  public function viewOrders(Request $request): View
     {
 
         // Connexion de l'utilisateur
@@ -129,4 +131,48 @@ class OrderController extends Controller
 
         return $this->viewOrders($request);
     }
+
+    public function serviceFinancier(): View
+{
+
+     $orders = Order::all();
+    return view('service_financier', compact('orders'));
+
+}
+
+public function changeState(Request $request, $id)
+{
+   $order = Order::findOrFail($id);
+
+    // On met à jour la colonne "states"
+    $order->states = $request->states;
+
+    $order->save();
+
+    return redirect()->back()->with('success', 'État mis à jour avec succès.');
+
+}
+
+
+public function uploadQuote(Request $request, $id)
+{
+    $order = Order::findOrFail($id);
+
+    $order->path_quote = 'TEST_OK';
+    $order->save();
+
+    dd(
+        'saved',
+        $order->id,
+        $order->path_quote,
+        $order->getConnectionName(),
+        config('database.connections.'.config('database.default').'.database')
+    );
+}
+
+
+
+
+
+
 }

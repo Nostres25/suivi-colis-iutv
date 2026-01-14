@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CASController;
+use App\Http\Controllers\OrderController;
 
 
 Route::get('login', [\App\Http\Controllers\AuthController::class, 'auth']);
@@ -20,3 +21,11 @@ Route::get('/about', [\App\Http\Controllers\AboutController::class, 'about']);
 // Only for tests:
 // Route::get('/', [\App\Http\Controllers\HomeController::class, 'home']);
 Route::get('/Supplier', [\App\Http\Controllers\SupplierController::class, 'Supplier']);
+
+Route::get('/service-financier', [OrderController::class, 'serviceFinancier'])->name('service.financier');
+
+
+Route::put('/orders/{id}/state', [OrderController::class, 'changeState'])->name('orders.changeState');
+
+Route::post('/orders/{id}/upload-quote', [OrderController::class, 'uploadQuote'])
+    ->name('orders.uploadQuote');

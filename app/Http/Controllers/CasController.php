@@ -9,7 +9,7 @@ class CASController extends Controller
 {
     public function casLogin()
     {
-        // simulation CAS en local
+        // simulation CAS en local et sera ignoré en production
          if (app()->environment('local')&& !isset($_SERVER['REMOTE_USER'])) {
             $_SERVER['REMOTE_USER'] = 'etudiant.test';
             $_SERVER['HTTP_CAS_DISPLAYNAME'] = 'Etudiant Test';
