@@ -156,18 +156,21 @@ public function changeState(Request $request, $id)
 
 public function uploadQuote(Request $request, $id)
 {
+    $request->validate([
+        'quote' => 'required|mimes:pdf|max:5000',
+    ]);
+
     $order = Order::findOrFail($id);
 
-    $order->path_quote = 'TEST_OK';
-    $order->save();
+    // Stockage du fichier dans storage/app/public/quotes
+    $path = $request->file('quote')->store('quotes', 'public');
 
-    dd(
-        'saved',
-        $order->id,
-        $order->path_quote,
-        $order->getConnectionName(),
-        config('database.connections.'.config('database.default').'.database')
-    );
+    // Sauvegarde du chemin en base
+    $order->update([
+        'path_quote' => $path,
+    ]);
+
+    return redirect()->back()->with('success', 'Le devis a été ajouté avec succès.');
 }
 
 
