@@ -88,10 +88,10 @@ abstract class BaseController extends Controller
 
                         // Rôle que l'utilisateur de test doit avoir (mettre null pour pas de rôle en particulier)
                         // Choix du rôle de l'utilisateur : Service financier, Directeur IUT, Département Info, Département SD, Département RT
-                        $roleToHave = 'Département Indo';
+                        $roleToHave = 'Département Info';
 
                         // Nombre de rôles que l'utilisateur de test doit avoir
-                        $roleNumber = 2;
+                        $roleNumber = 1;
 
                         return (is_null($roleToHave) || $roles->first((fn (Role $role) => $role->getName() == $roleToHave))) && $roles->count() == $roleNumber;
 
@@ -139,7 +139,8 @@ abstract class BaseController extends Controller
     public function callAction($method, $parameters)
     {
         // Charger l'utilisateur connecté pour être recupérable avec `Auth::user()`
-        // S'il y a une erreur dans le processus d'authentification, retourner pour afficher la vue d'erreur
+        // S'il y a une erreur dans le processus d'authentification, retourner pour afficher la vue d'erreur    
+        
         $result = $this->auth($parameters[0]);
         if (! $result['success']) {
             return $result['response'];

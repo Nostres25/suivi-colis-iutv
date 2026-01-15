@@ -1,6 +1,7 @@
 @extends('base')
 
 @section('content')
+@use(\App\Models\Order)
 
 {{-- EN-TÊTE --}}
 <div class="service-financier-header">
@@ -149,7 +150,7 @@
                             @method('PUT')
 
                             <select name="states" class="form-select form-select-sm mb-1">
-                                @foreach(\App\Models\Order::STATES as $states)
+                                @foreach(Order::STATES as $states)
                                     <option value="{{ $states }}" @selected($commande->states === $states)>
                                         {{ $states }}
                                     </option>

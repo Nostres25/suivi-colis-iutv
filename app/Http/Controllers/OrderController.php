@@ -71,11 +71,14 @@ class OrderController extends BaseController
         return $this->viewOrders($request);
     }
 
-    public function serviceFinancier(): View
+    public function serviceFinancier(Request $request): View
 {
-
+    $user = Auth::user();
      $orders = Order::all();
-    return view('service_financier', compact('orders'));
+    return view('service_financier', [
+        'orders' => $orders, 
+        'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$user->getRoles()->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}",
+    ]);
 
 }
 
