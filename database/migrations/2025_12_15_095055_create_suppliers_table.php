@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // TODO pas d'adresse ?
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
             $table->string('company_name')
@@ -22,6 +23,9 @@ return new class extends Migration
             $table->string('contact_name')
                 ->nullable()
                 ->comment('Nom du contact dans l\'entreprise fournisseur');
+            $table->string('speciality')
+                ->nullable()
+                ->comment("Domaine d'expertise du fournisseur");
             $table->text('note')->nullable();
             $table->boolean('is_valid')
                 ->default(false)

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->tinyText('description');
+            $table->boolean('is_department')
+                ->comment('Si le rôle est un département qui peut créer des commandes');
             $table->timestamps();
         });
 
@@ -31,7 +33,7 @@ return new class extends Migration
 
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->string('label')->unique();
+            $table->string('name')->unique();
             $table->timestamps();
         });
 

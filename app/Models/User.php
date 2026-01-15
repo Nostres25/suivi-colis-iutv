@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
+use Database\Seeders\PermissionValue;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,10 +14,9 @@ use Illuminate\Support\Collection;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    public $timestamps = false;
     /**
      * The attributes that are mass assignable.
      *
@@ -29,7 +30,25 @@ class User extends Authenticatable
         'phone_number',
     ];
 
-    // protected $roles =
+    /**
+     * Retourne le prénom de l'utilisateur
+     *
+     * @return string prénom de l'utilisateur
+     */
+    public function getFirstName(): string
+    {
+        return $this->attributes['first_name'];
+    }
+
+    /**
+     * Retourne le nom de famille de l'utilisateur
+     *
+     * @return string nom de famille de l'utilisateur
+     */
+    public function getLastName(): string
+    {
+        return $this->attributes['last_name'];
+    }
 
     /**
      * Retourne le nom complet de l'utilisateur
@@ -39,14 +58,58 @@ class User extends Authenticatable
      */
     public function getFullName(): string
     {
-        return $this->first_name.' '.$this->last_name;
+        return $this->getFirstName().' '.$this->getLastName();
+    }
+
+    /**
+     * Retourne la liste des rôles de l'utilisateur
+     *
+     * @return Collection // Collection (liste) des rôles de l'utilisateur
+     */
+    public function getRoles(): Collection
+    {
+        // TODO peut-être faire un cache ?
+        return $this->roles()->getResults();
+    }
+
+    /**
+     * Retourne true si l'utilisateur a un rôle en particulier, false sinon.
+     *
+     * @param  Role  $role  le rôle à vérifier
+     * @return bool // Si l'utilisateur a le rôle $role
+     */
+    public function hasRole(Role $role): bool
+    {
+        // TODO peut-être faire un cache ?
+        return $this->getRoles()->contains($role);
+    }
+
+    /**
+     * Retourne la liste des départements auxquels appartient l'utilisateur
+     *
+     * @return Collection // Collection (liste) des départements de l'utilisateur
+     */
+    public function getDepartments(): Collection
+    {
+        // TODO peut-être faire un cache ?
+        return $this->getRoles()->filter(fn (Role $role) => $role->isDepartment());
+    }
+
+    /**
+     * Retourne un dictionnaire des permissions de l'utilisateur
+     *
+     * @return array // Dictionnaire des permissions de l'utilisateur
+     */
+    public function getPermissionsAsDict(): array
+    {
+        return Role::getPermissionsAsDict($this->getRoles());
     }
 
     /**
      * Définit le prénom de l'utilisateur en covertissant la chaîne en miniscule
      * puis en mettant la première lettre en majuscule avant de l'assigner.
      *
-     * @return bool true si l'enregistrement du fichier a fonctionné, false sinon
+     * @return void true si l'enregistrement du fichier a fonctionné, false sinon
      */
     public function setFirstName(string $firstName): void
     {
@@ -96,11 +159,11 @@ class User extends Authenticatable
     /**
      * Vérifie si un utilisateur a la permission "$permission"
      *
-     * @param   \Database\Seeders\Permission    $permission Permission à vérifier
-     * @param bool $strict Si retourne toujours true avec la permission administrateur (à false par défaut)
-     * @return  bool        // true si l'utilisateur a un rôle avec la permission "$permission", false sinon
+     * @param  PermissionValue  $permission  Permission à vérifier
+     * @param  bool  $strict  Si ne retourne pas true avec la permission administrateur (à false par défaut)
+     * @return bool // true si l'utilisateur a un rôle avec la permission "$permission", false sinon
      */
-    public function hasPermission(\Database\Seeders\Permission $permission, bool $strict = false): bool
+    public function hasPermission(PermissionValue $permission, bool $strict = false): bool
     {
         // TODO pour des questions de performances charger au préalable les permissions de l'utilisateur dans le "constructeur" (voir comment faire avec laravel)
         foreach ($this->roles()->getResults() as $role) {
@@ -108,17 +171,8 @@ class User extends Authenticatable
                 return true;
             }
         }
-        return false;
-    }
 
-    /**
-     * Retoune la liste des rôles de l'utilisateur
-     *
-     * @return  Collection      // Collection (liste) des rôles de l'utilisateur
-     */
-    public function getRoles(): Collection
-    {
-        return $this->roles()->getResults();
+        return false;
     }
     // public function hasRole(): bool {}
 }

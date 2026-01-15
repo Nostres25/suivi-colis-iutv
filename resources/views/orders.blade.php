@@ -1,474 +1,224 @@
 @extends('base')
 
-@section('css')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-<style>
-    body {
-        background-color: #f8f9fa;
-    }
-
-    .orders-page-header {
-        background-color: #3170A8;
-        padding: 50px 0;
-        color: white;
-        margin-bottom: 40px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .orders-page-header h1 {
-        margin: 0;
-        font-size: 2.2rem;
-        font-weight: 400;
-    }
-
-    .orders-page-header .subtitle {
-        margin-top: 8px;
-        font-size: 1rem;
-        opacity: 0.9;
-    }
-
-    #orders {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 20px 40px 20px;
-    }
-
-    .orders-action-bar {
-        background: white;
-        padding: 20px 25px;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        margin-bottom: 25px;
-    }
-
-    .orders-search-container {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 20px;
-        justify-content: center;
-    }
-
-    .orders-search-wrapper {
-        position: relative;
-        flex: 1;
-        max-width: 600px;
-    }
-
-    .orders-search-input {
-        width: 100%;
-        height: 42px;
-        border-radius: 6px;
-        padding: 0 16px 0 40px !important;
-        border: 1px solid #ddd !important;
-        font-size: 0.9rem;
-    }
-
-    .orders-search-input:focus {
-        outline: none;
-        border-color: #3170A8 !important;
-        box-shadow: 0 0 0 3px rgba(49, 112, 168, 0.1) !important;
-    }
-
-    .orders-search-icon {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #999;
-    }
-
-    #search-filter {
-        background: white;
-        border: 1px solid #3170A8;
-        color: #3170A8;
-        padding: 10px 22px;
-        border-radius: 6px;
-        font-weight: 500;
-        transition: all 0.2s;
-        height: 42px;
-    }
-
-    #search-filter:hover {
-        background: #3170A8;
-        color: white;
-    }
-
-    .orders-btn-primary {
-        background-color: #3170A8 !important;
-        border-color: #3170A8 !important;
-        color: white !important;
-    }
-
-    .orders-btn-primary:hover {
-        background-color: #255a85 !important;
-        border-color: #255a85 !important;
-    }
-
-    .orders-section {
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        margin-top: 30px;
-    }
-
-    .orders-table-header {
-        padding: 20px 25px;
-        background: #f8f9fa;
-        border-bottom: 3px solid #3170A8;
-    }
-
-    .orders-table-header h2 {
-        margin: 0;
-        font-size: 1.3rem;
-        font-weight: 500;
-        color: #333;
-    }
-
-    .orders-table-header p {
-        margin: 5px 0 0 0;
-        font-size: 0.9rem;
-        color: #666;
-    }
-
-    .orders-section table {
-        margin-bottom: 0;
-    }
-
-    .orders-section table caption {
-        caption-side: bottom;
-        padding: 15px 25px;
-        font-size: 0.85rem;
-        color: #6c757d;
-        text-align: left;
-    }
-
-    .orders-section thead {
-        background-color: #3170A8;
-        color: white;
-    }
-
-    .orders-section thead th {
-        padding: 14px 16px;
-        font-weight: 500;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        border: none;
-    }
-
-    .orders-section tbody tr {
-        border-bottom: 1px solid #e9ecef;
-        transition: background-color 0.15s;
-    }
-
-    .orders-section tbody tr:hover {
-        background-color: #f8f9fa;
-    }
-
-    .orders-section tbody tr:last-child {
-        border-bottom: none;
-    }
-
-    .orders-section tbody th {
-        font-weight: 600;
-        color: #3170A8;
-    }
-
-    .orders-status-badge {
-        display: inline-block;
-        padding: 5px 12px;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        background-color: #FFA726;
-        color: white;
-    }
-
-    .orders-action-buttons {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .orders-btn-action {
-        padding: 7px 12px;
-        border-radius: 4px;
-        border: none;
-        font-size: 0.8rem;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        transition: all 0.2s;
-        font-weight: 500;
-        text-decoration: none;
-    }
-
-    .orders-btn-upload {
-        background-color: #3170A8;
-        color: white;
-    }
-
-    .orders-btn-upload:hover {
-        background-color: #255a85;
-    }
-
-    .orders-btn-details {
-        background-color: #f1f3f5;
-        color: #495057;
-        border: 1px solid #dee2e6;
-    }
-
-    .orders-btn-details:hover {
-        background-color: #e9ecef;
-    }
-
-    .orders-btn-edit {
-        background-color: white;
-        color: #3170A8;
-        border: 1px solid #3170A8;
-    }
-
-    .orders-btn-edit:hover {
-        background-color: #3170A8;
-        color: white;
-    }
-
-    .orders-btn-more {
-        background-color: white;
-        color: #6c757d;
-        border: 1px solid #dee2e6;
-    }
-
-    .orders-btn-more:hover {
-        background-color: #f8f9fa;
-    }
-
-    @media (max-width: 768px) {
-        .orders-search-container {
-            flex-direction: column;
-        }
-
-        .orders-search-wrapper {
-            max-width: 100%;
-        }
-    }
-</style>
+@section('alert')
+    <x-alert :alertMessage="$alertMessage"></x-alert>
 @endsection
 
-@section('content') 
-
-<!-- Bannière bleue -->
-<div class="orders-page-header">
+@section('header')
     <div class="container">
-        <h1><i class="fas fa-box"></i> Mon Espace - Commandes</h1>
-        <div class="subtitle">Liste et gestion des commandes</div>
+        <h1 class="h1"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-box-seam-fill" preserveAspectRatio="xMidYMid meet" width="32" height="32" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15.528 2.973a.75.75 0 0 1 .472.696v8.662a.75.75 0 0 1-.472.696l-7.25 2.9a.75.75 0 0 1-.557 0l-7.25-2.9A.75.75 0 0 1 0 12.331V3.669a.75.75 0 0 1 .471-.696L7.443.184l.01-.003.268-.108a.75.75 0 0 1 .558 0l.269.108.01.003zM10.404 2 4.25 4.461 1.846 3.5 1 3.839v.4l6.5 2.6v7.922l.5.2.5-.2V6.84l6.5-2.6v-.4l-.846-.339L8 5.961 5.596 5l6.154-2.461z"/>
+            </svg> Mon Espace - Commandes</h1>
+        <p class="mb-0 opacity-75">Liste et gestion des commandes</p>
     </div>
-</div>
+@endsection
 
-<x-alert></x-alert>
+@section('content')
+    @use(Database\Seeders\Status)
+    @use(Database\Seeders\PermissionValue)
+    @use(App\Models\Role)
+    @use(App\Models\Order)
 
-<div id="orders">
-    <div class="orders-action-bar">
-        <div class="row justify-content-center">
-            <div class="orders-search-container">
-                <div class="orders-search-wrapper">
-                    <i class="fas fa-search orders-search-icon"></i>
-                    <input type="text" class="form-control orders-search-input" placeholder="Rechercher une commande...">
-                </div>
-                <button id="search-filter"><i class="fas fa-filter"></i> Filtres</button>
+<section>
+    <div class="row justify-content-center">
+        <div class="search-container flex-column flex-sm-row">
+            <div class="search-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search search-icon" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+                <input type="text" class="form-control search-input" placeholder="Rechercher une commande...">
             </div>
+            <button id="search-filter" class="btn btn-outline-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
+                    <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z"/>
+                </svg> Filtres
+            </button>
         </div>
     </div>
+</section>
 
-    {{-- TODO Remplir le tableau avec la base de données --}}
-    {{-- TODO Peut-être afficher un aperçu de ce qu'il y a dans la commande (colis) --}}
+{{-- TODO Peut-être afficher un aperçu de ce qu'il y a dans la commande (colis) --}}
+{{-- TODO format mobile : afficher les commandes comme la solution 1 ou 2 mais juste cliquer dessus ça fonctionne donc pas prioritaire : https://www.behance.net/gallery/95240691/Responsive-Data-Table-Designs# --}}
+<section class="table-section table-responsive">
 
-    <!-- Button trigger modal -->
-    <button type="button" class="btn orders-btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        <i class="fas fa-plus-circle"></i> Ajouter une commande
-    </button>
+    {{--Pour pouvoir créer une commande il faut appartenir à un département et avoir la permission de créer une commande--}}
+    @if ($userPermissions[PermissionValue::CREER_COMMANDES->value] && !empty($userDepartments))
+        <x-orderCreationButton :user="$user" :userDepartments="$userDepartments" :validSupplierNames="$validSupplierNames"/>
+    @endif
 
-
-    <!-- Modal de création de commande -->
-    {{-- TODO: Ne pas valider s'il n'y a pas de numéro de commande, de fournisseur et de label. Voir https://getbootstrap.com/docs/5.3/forms/validation/ --}}
-    {{-- TODO ajouter la petite étoile rouge pour les champs obligatoires (attention le submit est en dehors du formulaire, il faut utiliser l'id) --}}
-    {{-- TODO ajouter un message d'avertissement de validation de formulaire --}}
-    {{-- TODO si on appuie sur la croix ça garde en brouillon le contenu du formulaire pour la personne (si elle réappuie sur le bouton, elle retrouve ce qu'elle avait précédemment écrit) 
-              par contre si on appuie sur "annuler" ça retire bien tout --}}
-
-
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Création d'une commande</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="createOrderForm" class="needs-validation" novalidate>
-                        <div class="mb-4">
-                            <label for="order-label" class="col-form-label fs-5">Titre de la commande <span title="champ requis" class="text-danger" >*</span></label>
-                            <input type="text" class="form-control" id="order-label" placeholder="Ex: Câblage réseau" maxlength="255" required>
-                            <div class="invalid-feedback">
-                                Le titre est obligatoire. Veuillez renseigner un titre descriptif concis.
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="order-num" class="col-form-label fs-5">Numéro de la commande <span title="champ requis" class="text-danger" >*</span></label>
-                            <input type="text" class="form-control" id="order-num" placeholder="Ex: 4500161828" maxlength="255" required>
-                            <div class="invalid-feedback">
-                                Le numéro de la commande est obligatoire. Veuillez renseigner le numéro de la commande associé au devis ou au bon de commande (numéro en provenance de chorus).
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="order-description" class="col-form-label fs-5">Description:</label>
-                            <dl class="fw-light">Ajoutez des détails sur la commmande et son contenu (facultatif).</dl>
-                            <textarea class="form-control" id="order-description"></textarea>
-                        </div>
-                        <div class="mb-4">
-                            <label for="selectState" class="col-form-label fs-5">Colis</label>
-                            {{-- TODO probablement de trop, autant modifier la commande après l'avoir crée si la commande à une étape avancée. À la première étape de la commande, cette option ne devrait pas exister
-                            <div class="mb-3">
-                              <input class="form-check-input" type="checkbox" value="" id="checkboxBonDeCommandeSigne">
-                              <label class="form-check-label" for="checkboxBonDeCommandeSigne">
-                                Marquer les colis comme livrés 
-                              </label>
-                            </div> --}}
-                            {{-- TODO ajouter les colis progressivement quand on clique sur le bouton avec possibilité de définir : titre, cout, date_prevu_livraison et date_reception --}}
-                            <div class="newPackages"><p>à suivre</p></div>
-                            <div class="input-group mb-3">
-                                <button type="button" class="btn btn-outline-primary" disabled>+ Ajoute un colis</button>
-                            </div>
-
-                            {{-- TODO ne devrait apparaîte que si on défini les colis comme livrés --}}
-                            {{-- <div class="input-group mb-3">
-                                <label class="input-group-text" for="inputFichierBonDeLivraison"><strong>Bon de livraison</strong></label>
-                                <input type="file" class="form-control" id="inputFichierBonDeLivraison">
-                            </div> --}}
-                        </div>
-                        <div class="mb-3">
-                            <label for="order-input-fichiers" class="col-form-label fs-5">Fichiers:</label>
-                            <dl class="fw-light">
-                                Ajoutez <strong>au format pdf</strong> un devis, un bon de commande ou un bon de livraison si ces documents existent déjà (facultatif)</br>
-                                Le contenu présent dans certains fichiers peut permettre de remplir certains champs vides (experimental)
-                            </dl>
-                            <div id="order-input-fichiers">
-                                <div class="input-group mb-3">
-                                    <label class="input-group-text" for="inputFichierDevis"><strong>Devis</strong></label>
-                                    <input type="file" class="form-control" id="inputFichierDevis">
-                                </div>
-                                <hr/>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="selectState" class="col-form-label fs-5">État de la commande</label>
-                            <select id="selectState" class="form-select">
-                                @foreach ($orderStates as $orderState)
-                                    <option {{ $orderState === $defaultOrderState ? 'selected="selected"' : '' }}>{{$orderState}}</option>
-                                @endforeach 
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label for="advancedInputs" class="col-form-label"><a class="" data-bs-toggle="collapse" href="#advancedInputs" role="button" aria-expanded="false" aria-controls="collapseExample">Avancé ></a></label>
-                            <div class="collapse" id="advancedInputs">
-                                <label for="selectState" class="col-form-label fs-5">Bon de commande</label>
-                                <div id="inputsBonDeCommande">
-                                    <div class="input-group mb-3">
-                                        <label class="input-group-text" for="input-group-bon_de_commande"><strong>Bon de commande</strong></label>
-                                        <input type="file" class="form-control" id="inputFichierBonDeCommande">
-                                    </div>
-                                    {{-- TODO Devrait n'apparaîte que si on met un bon de commande (avec bootstrap : https://getbootstrap.com/docs/5.3/utilities/display/#how-it-works (classes d-none et d-block ?)) --}}
-                                    <div class="mb-3">
-                                        <input class="form-check-input" type="checkbox" value="" id="checkboxBonDeCommandeSigne">
-                                        <label class="form-check-label" for="checkboxBonDeCommandeSigne">
-                                            Bon de commande signé par le directeur de l'IUT 
-                                        </label>
-                                    </div> 
-                                    <label for="inputCost" class="col-form-label fs-5">Coût total</label>
-                                    <dl class="fw-light">
-                                        Coût total de la commande en euros (€)
-                                    </dl>
-                                    {{-- On peut mettre un form group pour indiquer que c'est en € --}}
-                                    <input type="number" class="form-control" id="inputCost" maxlength="255">
-                                </div>
-                            </div>
-                        </div>
-                        {{-- obselette <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
-                            <label class="form-check-label" for="flexSwitchCheckChecked">Créer en tant que brouillon</label>
-                        </div> --}}
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" form="createOrderForm" class="btn orders-btn-primary">Valider</button>
-                </div>
-            </div>
-        </div>
+    <div class="table-header mt-4">
+        <h2 class="h3"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-list-ul" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+            </svg> Commandes</h2>
+        <p>Devis et bons de commandes</p>
     </div>
 
-    {{-- TODO format mobile : 4 colonne max  (actions en appuyant desssus ?) --}}
-    <section class="orders-section mx-4">
-        <div class="orders-table-header">
-            <h2><i class="fas fa-list"></i> Commandes</h2>
-            <p>Devis et bons de commandes</p>
-        </div>
-
-        <table class="table">
-            <caption>
-                {{-- TODO Si c'est un département (ex: CRIT) : mettre "liste des commandes du département CRIT" --}}
-                Liste des commandes à l'IUT de Villetaneuse
-            </caption>
-            <thead>
+    <table class="table table-striped mb-0">
+        {{ $orders->links()}}
+        <caption>
+            @if ($userPermissions[PermissionValue::CONSULTER_TOUTES_COMMANDES->value])
+                Liste des commandes
+            @else
+                Liste des commandes {{($userDepartments->count() > 1 ? "de : " : "du  ").implode(', ', $userDepartments->map(fn (Role $department) => $department->getName())->toArray()).' '}}
+            @endif
+            à l'IUT de Villetaneuse
+        </caption>
+        <thead>
+            <tr>
+                {{-- TODO Pouvoir trier les différentes colonnes --}}
+                {{-- TODO mettre les différentes explications sur les colonnes (quand on survole  avec la souris par exemple) --}}
+                <th scope="col">N°</th>
+                <th scope="col" class="d-none d-sm-table-cell">Département&nbsp<span title="Explications, différents départements" class="d-none d-md-inline">(?)</span></th>
+                <th scope="col" class="ps-0 pe-0">Désignation&nbsp<span title="Explications" class="d-none d-md-inline">(?)</span></th>
+                <th scope="col">Statut&nbsp<span title="{{Status::getDescriptions()}}" class="d-none d-md-inline">(?)</span></th>
+                <th scope="col" class="d-none d-sm-table-cell">Actions&nbsp<span title="Les actions peuvent dépendre de votre rôle" class="d-none d-md-inline">(?)</span></th>
+                <th scope="col" class="d-none d-md-table-cell">Date création&nbsp<span title="Explications" class="d-none d-md-inline">(?)</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($orders as $order)
+                {{-- TODO Pouvoir cliquer sur les commandes pour les détails --}}
+                {{-- TODO Pouvoir faire un clique droit sur un élément pour plus d'options --}}
                 <tr>
-                    {{-- TODO Pouvoir trier les différentes colonnes --}}
-                    <th scope="col">Numéro</th>
-                    <th scope="col">Département <span title="Explications, differents départements">(?)</span></th>
-                    <th scope="col">Désignation  <span title="Explications">(?)</span></th>
-                    <th scope="col">État  <span title="Explications, differents états possibles">(?)</span></th>
-                    <th scope="col">Date création  <span title="Explications">(?)</span></th>
-                    <th scope="col">Actions <span title="Les actions peuvent dépendre de votre rôle">(?)</span></th>
+                    <th scope="row" class="text-break">
+                        #{{ $order['order_num'] }}<br/>
+                    </th>
+                    <td class="d-none d-sm-table-cell"><strong>{{ $order->getDepartment()->getName() }}</strong><br></td>
+                    <td class="ps-0 pe-0">{{ $order->getTitle() }} <span class="d-table-cell d-sm-none">({{$order->getDepartment()->getName()}})</span></td>
+                    <td>
+                            <span class="orders-status-badge" title="{{$order->getStatus()->getDescription()}}">{{ $order->getStatus() }}</span><br>
+                    </td>
+                    {{-- Mettre des petties icones --}}
+                    <td class="d-none d-sm-table-cell">
+                        <div>
+{{--                            TODO faire fonctionner tous les boutons d'actions--}}
+                            {{-- TODO optimiser tout ça notamment avec un switch par status et après seulement vérifier les rôles + cache pour éviter que la vérification de permissions envoie pleins de requêtes--}}
+                            @if($order->getStatus() == Status::BON_DE_COMMANDE_NON_SIGNE && ($userPermissions[PermissionValue::SIGNER_BONS_DE_COMMANDES->value] || $userPermissions[PermissionValue::GERER_BONS_DE_COMMANDES->value]))
+                                <button class="btn btn-success btn-action mb-2" title="Déposer un bon de commande signé">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
+                                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                                        <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
+                                    </svg> Déposer un bon signé
+                                </button>
+                                <button class="btn btn-danger btn-action mb-2" title="Marquer comme signature refusée">
+                                    Signature refusée
+                                </button>
+                            @endif
+{{--                            @if(($order->getStatus() == Status::COMMANDE || $order->getStatus() == Status::PARTIELLEMENT_LIVRE) && $userPermissions[PermissionValue::GERER_COLIS_LIVRES->value])--}}
+{{--                                TODO juste rediriger vers les commentaires qui sont normalement visible quand on clique sur la commande, non prioritaire--}}
+{{--                                <button class="btn btn-primary btn-action mb-2" title="Commenter l'arrivée d'un colis">--}}
+{{--                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">--}}
+{{--                                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>--}}
+{{--                                        <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>--}}
+{{--                                    </svg> Commenter l'arrivée d'un colis--}}
+{{--                                </button>--}}
+{{--                            @endif--}}
+                            @if($userPermissions[PermissionValue::GERER_BONS_DE_COMMANDES->value])
+                                @if($order->getStatus() == Status::DEVIS)
+                                    <button class="btn btn-success btn-action mb-2" title="Déposer un bon de commande">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
+                                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                                            <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
+                                        </svg> Déposer un bon
+                                    </button>
+                                    <button class="btn btn-danger btn-action mb-2" title="Refuser la demande de bon de commande">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                        </svg> Refuser
+                                    </button>
+                                @elseif($order->getStatus() == Status::SERVICE_FAIT)
+                                    <button class="btn btn-success btn-action mb-2" title="Marquer la commande comme payée">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-euro" viewBox="0 0 16 16">
+                                            <path d="M4 9.42h1.063C5.4 12.323 7.317 14 10.34 14c.622 0 1.167-.068 1.659-.185v-1.3c-.484.119-1.045.17-1.659.17-2.1 0-3.455-1.198-3.775-3.264h4.017v-.928H6.497v-.936q-.002-.165.008-.329h4.078v-.927H6.618c.388-1.898 1.719-2.985 3.723-2.985.614 0 1.175.05 1.659.177V2.194A6.6 6.6 0 0 0 10.341 2c-2.928 0-4.82 1.569-5.244 4.3H4v.928h1.01v1.265H4v.928z"/>
+                                        </svg> Payé
+                                    </button>
+                                @endif
+                            @elseif($userDepartments->contains($order->getDepartment()))
+                                    @if($order->getStatus() == Status::COMMANDE)
+                                        <button class="btn btn-primary btn-action mb-2" title="Ajouter un délai de livraison">
+                                            + Ajouter un délai de livraison
+                                        </button>
+                                        <button class="btn btn-danger btn-action mb-2" title="Marquer la commande comme refusée par le fournisseur">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                            </svg> Refus du fournisseur
+                                        </button>
+                                    @endif
+
+                                    @if($order->getStatus() == Status::BON_DE_COMMANDE_SIGNE)
+                                        <button class="btn btn-success btn-action mb-2" title="Marquer le bon de commande comme envoyé au fournisseur">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                            </svg> Bon envoyé au fournisseur
+                                        </button>
+                                    @elseif($order->getStatus() == Status::COMMANDE || $order->getStatus() == Status::COMMANDE_AVEC_REPONSE)
+                                        <button class="btn btn-success btn-action mb-2" title="Marquer un colis comme livré">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                            </svg> Colis&nbsplivré(s)
+                                        </button>
+                                        <button class="btn btn-success mb-2 btn-action" title="Déposer un bon de livraison">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
+                                                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                                                <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
+                                            </svg> Service fait
+                                        </button>
+                                    @elseif($order->getStatus() == Status::DEVIS_REFUSE || $order->getStatus() == Status::BON_DE_COMMANDE_REFUSE || $order->getStatus() == Status::COMMANDE_AVEC_REPONSE || $order->getStatus() == Status::COMMANDE_REFUSEE)
+                                        <button class="btn btn-primary btn-action mb-2" title="Voir raison du refus">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+                                            </svg> Raison du refus
+                                        </button>
+                                        <button class="btn btn-secondary btn-action mb-2" title="Rectifier la commande">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                            </svg>Rectifier la commande
+                                        </button>
+                                    @else
+                                        <button class="btn btn-secondary btn-action mb-2" title="Modifier la commande">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                            </svg>
+                                        </button>
+                                    @endif()
+                            @endif
+{{--                                TODO De trop. Cliquer sur la commande où les petits points suffisent. Quand on voit les détails on aura un bouton pour modifier--}}
+{{--                                <button class="btn btn-secondary mb-0" title="Voir les détails">--}}
+{{--                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">--}}
+{{--                                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>--}}
+{{--                                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>--}}
+{{--                                    </svg>--}}
+{{--                                </button>--}}
+{{--                                <button class="btn btn-outline-primary orders-btn-edit" title="Modifier">--}}
+{{--                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">--}}
+{{--                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>--}}
+{{--                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>--}}
+{{--                                    </svg> Modifier--}}
+{{--                                </button>--}}
+{{--                                <button class="btn btn-light orders-btn-more" title="Plus d'options">--}}
+{{--                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">--}}
+{{--                                        <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>--}}
+{{--                                    </svg>--}}
+{{--                                </button>--}}
+                        </div>
+                        <small class="d-none d-lg-inline">Dernière modification: {{ $order->getLastUpdateDate() }}</small>
+                    </td>
+                    <td class="d-none d-md-table-cell">{{ $order->getCreationDate() }}</td>
+                    <td class="ps-0 pe-0">
+                        <button class="btn btn-light btn-more-options">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                            </svg>
+                        </button>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {{-- TODO remplir avec les donnée en base de données --}}
-                {{-- TODO les couleurs peuvent être mises en fonction de l'état de la commande: https://getbootstrap.com/docs/4.0/content/tables/#contextual-classes --}}
-                @foreach ($orders as $order)
-                    <tr>
-                        <th scope="row">#{{ $order['id'] }}</th>
-                        <td><strong>{{ $order['department'] }}</strong><br>({{ $order['author'] }})</td>
-                        <td>{{ $order['title'] }}</td>
-                        <td>
-                            <span class="orders-status-badge">{{ $order['state'] }}</span><br>
-                            <small style="color: #6c757d;">{{ $order['stateChangedAt'] }}</small>
-                        </td>
-                        <td>{{ $order['createdAt'] }}</td>
-                        {{-- Mettre des petties icones --}}
-                        <td>
-                            <div class="orders-action-buttons">
-                                <button class="orders-btn-action orders-btn-upload" title="Déposer un bon de commande">
-                                    <i class="fas fa-upload"></i> <strong>Bon</strong>
-                                </button>
-                                <button class="orders-btn-action orders-btn-details" title="Voir les détails">
-                                    <i class="fas fa-eye"></i> Détails
-                                </button>
-                                <button class="orders-btn-action orders-btn-edit" title="Modifier">
-                                    <i class="fas fa-edit"></i> Modifier
-                                </button>
-                                <button class="orders-btn-action orders-btn-more" title="Plus d'options">
-                                    <i class="fas fa-ellipsis-h"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach 
-            </tbody>
-        </table>
-    </section>
-</div> 
+            @endforeach
+        </tbody>
+    </table>
+    {{ $orders->links()}}
+</section>
 
 @endsection
