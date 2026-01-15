@@ -9,11 +9,10 @@ return [
     // Langues OCR
     'tesseract_languages' => ['fra', 'eng'],
 
-    // Dossier de stockage temporaire TODO créer le dossier automatiquement
+    // Dossier de stockage temporaire des images prétraitées
     'temp_storage_path' => storage_path('framework/cache/data/ocr'),
 
-    // Dossier des étiquettes uploadées TODO penser à créer les dossiers sinon ça ne marche pas (je crois)
-    'etiquettes_storage_path' => public_path('uploads/etiquettes'),
+    // Dossier des étiquettes uploadées par les utilisateurs
 
     // Seuil de confiance minimum (%)
     'confidence_threshold' => 60,
