@@ -1,3 +1,3 @@
-<div class="alert alert-success">
-    Mon message d'alerte (c'est un composant)
+<div class="alert alert-success mb-0">
+    {{$alertMessage}}
 </div>

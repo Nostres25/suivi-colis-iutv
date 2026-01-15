@@ -25,6 +25,27 @@ class Supplier extends Model
     ];
 
     /**
+     * Retourne le nom de l'entreprise du fournisseur.
+     *
+     * @return string // Nom d'entreprise du fournisseur
+     */
+    public function getCompanyName(): string
+    {
+        return $this->attributes['company_name'];
+    }
+
+    /**
+     * Retourne true si le fournisseur est considéré comme valide, false sinon.
+     * Un fournisseur valide est un fournisseur auprès duquel il est possible de commander.
+     *
+     * @return bool // Si le fournisseur est valide
+     */
+    public function isValid(): bool
+    {
+        return $this->attributes['is_valid'];
+    }
+
+    /**
      * Retourne la liste des commandes du fournisseur
      *
      * @return HasMany // Liste des commandes du fournisseur

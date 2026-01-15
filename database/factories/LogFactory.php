@@ -17,7 +17,7 @@ class LogFactory extends Factory
     public function definition(): array
     {
         return [
-            'text' => fake()->sentences(rand(1, 4)),
+            'text' => fake()->sentences(rand(1, 4), true),
         ];
     }
 }

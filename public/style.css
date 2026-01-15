@@ -1,0 +1,293 @@
+
+/*Correction d'un bug bootsrap qui décale les éléments en fond avec des modals "larges" avec peu d'éléments */
+
+.modal-open {
+    padding-right: 0 !important;
+}
+
+html {
+    overflow-y: scroll !important;
+}
+
+:root {
+    --primary-color: #3170A8; !important;
+    --secondary-color: #f8f9fa !important;
+    [data-bs-theme=light] {
+        --bs-primary-rgb: var(--primary-color); !important;
+        --bs-primary: var(--primary-color); !important;
+    }
+}
+
+ /*Boutons*/
+.btn-primary {
+    background: var(--primary-color); !important;
+    border-color: var(--primary-color); !important;
+}
+
+.btn-primary:hover {
+    background: var(--primary-color); !important;
+    border-color: var(--primary-color); !important;
+}
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-outline-primary:active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn:active {
+    box-shadow: inset 4px 4px black;
+}
+
+.btn-more-options {
+    background-color: unset;
+    border: unset;
+}
+
+.btn-action {
+    padding: 7px 12px;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.8rem;
+    cursor: progress;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* Fonds */
+.bg-primary {
+    background-color: var(--primary-color); !important;
+}
+
+
+/* Pages */
+body {
+    background-color: var(--secondary-color);
+}
+
+.page-header {
+    background-color: var(--primary-color);
+    padding: 50px 0;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+/*.page-header .subtitle {
+    margin-top: 8px;
+    font-size: 1rem;
+    opacity: 0.9;
+}/*
+
+/*Sections*/
+section {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 20px 25px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 8px;
+    /*overflow: scroll; j'ai préféré utiliser la classe "table-striped" */
+}
+
+.table-section {
+    margin-top: 30px;
+}
+
+.table-section thead th {
+    padding: 14px 16px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.table-section tbody tr {
+    transition: background-color 0.15s;
+    /*box-shadow: 5px 2.5px 2.5px #0a0a0a;*/
+}
+
+.table-section tbody tr:hover {
+    cursor: pointer;
+}
+
+
+.table-section tbody tr:hover {
+    background-color: var(--secondary-color);
+    border-left: solid;
+    border-color: var(--primary-color)
+}
+
+/*.table-section tbody tr:last-child {*/
+/*    border-bottom: none;*/
+/*}*/
+
+.table-section tbody th {
+    background-color: unset;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.table-section tbody td {
+    /*border-bottom: 1px solid #e9ecef;*/
+    background-color: unset;
+}
+
+/*Table header*/
+.table-header {
+    padding: 20px 25px;
+    background: var(--secondary-color);
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.table-header h2 {
+    margin: 0;
+    font-weight: 500;
+    color: #333;
+}
+
+.table-header p {
+    margin: 5px 0 0 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/*Status commandes */
+.orders-status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background-color: #FFA726;
+    color: white;
+}
+
+
+
+
+/* Search container */
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.search-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 600px;
+}
+
+.search-input {
+    width: 100%;
+    height: 42px;
+    border-radius: 6px;
+    padding: 0 16px 0 40px !important;
+    border: 1px solid #ddd !important;
+    font-size: 0.9rem;
+}
+
+/* Seulement si on veut vraiment personnaliser le contour lors d'un input
+.search-input:focus {
+    outline: none;
+    border-color: #3170A8 !important;
+    box-shadow: 0 0 0 3px rgba(49, 112, 168, 0.1) !important;
+}*/
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+#search-filter {
+    padding: 0 22px;
+    font-weight: 500;
+    height: 42px;
+}
+
+.orders-btn-upload {
+    background-color: #3170A8;
+    color: white;
+}
+
+.orders-btn-upload:hover {
+    background-color: #255a85;
+}
+
+.orders-btn-details {
+    background-color: #f1f3f5;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+.orders-btn-details:hover {
+    background-color: #e9ecef;
+}
+
+.orders-btn-edit {
+    background-color: white;
+    color: #3170A8;
+    border: 1px solid #3170A8;
+}
+
+.orders-btn-edit:hover {
+    background-color: #3170A8;
+    color: white;
+}
+.orders-btn-more:hover {
+    background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+    .orders-search-container {
+        flex-direction: column;
+    }
+
+    .orders-search-wrapper {
+        max-width: 100%;
+    }
+}
+
+/*Fournisseurs*/
+.fournisseurs-badge-valid {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background-color: #66BB6A;
+    color: white;
+}
+
+.fournisseurs-badge-invalid {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background-color: #EF5350;
+    color: white;
+}
+

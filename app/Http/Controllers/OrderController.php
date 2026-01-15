@@ -2,118 +2,59 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\Role;
 use App\Models\Supplier;
 use App\Models\User;
+use Database\Seeders\PermissionValue;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Controller;
+use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
-class OrderController extends Controller
+class OrderController extends BaseController
 {
     // TODO Annotation pour utiliser la fonction auth() de AuthController pour chaque page
-    public function viewOrders(Request $request): View
+    public function viewOrders(Request $request): View|Response|RedirectResponse|Redirector
     {
 
-        // Connexion de l'utilisateur
-        if (! app()->isLocal()) {
-            // M.Butelle a dit que l'information NOM Prénom était récupérable à l'aide de $_SERVER['HTTP_CAS_DISPLAYNAME'] et le login à l'aide de $_SERVER['REMOTE_USER']
-            // Voir si $request->server('REMOTE_USER') fonctionne
-            session()->put('user', User::where('login', $request->server('REMOTE_USER'))->first());
+        // TODO réduire le nombre de requêtes et voir à propos du cache (je pense qu'on ne fera pas de cache mais on opti les requêtes)
+        // TODO factoriser avec un déctorateur le code pour l'utilisateur et si possible factoriser l'envoi des variables courantes (ex: $suerPermissions)
+        /* @var User $user */
+        $user = Auth::user();
+        $userRoles = $user->getRoles(); // Récupération des rôles en base de données
+        $userPermissions = Role::getPermissionsAsDict($userRoles); // Récupération d'un dictionnaire des permissions pour simplifier la vérification de permissions
 
-        } else {
+        $userDepartments = $userRoles->filter(fn (Role $role) => $role->isDepartment()); // Filtre des rôles qui sont des départements
 
-            // En local, on utilise un utilisateur de test
-            // session()->put('user', User::where('role', 'Administrateur BD')->first());
+        // Récupération uniquement des commandes dont l'utilisateur a accès
+        $orders =
+            $userPermissions[PermissionValue::ADMIN->value] || $userPermissions[PermissionValue::CONSULTER_TOUTES_COMMANDES->value]
+                ? Order::paginate(20)
+                : Order::where(function (Builder $query) use ($userDepartments, $userPermissions) {
+                    $userDepartments->each(function (Role $department) use ($query, $userPermissions) {
+                        if ($userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value]) {
+                            $query->orWhere('department_id', $department->getId());
+                        }
+                    });
+                })
+                    ->paginate(20);
 
-        }
+        $suppliers = Supplier::all(['id', 'company_name', 'is_valid']); // Récupération uniquement des informations utiles à propos des fournisseurs
 
-        $supplier = Supplier::all()->first();
-
-        if (is_null($supplier)) {
-            $supplier = new Supplier(
-                [
-                    'company_name' => 'S.C.I.E Câblage',
-                    'siret' => '37865039400042',
-                    'email' => 'info@scie.fr',
-                    'phone_number' => '0148923756',
-                    'contact_name' => 'Geoffrey Delacourt',
-                    'note' => 'Fournisseur sérieux, respectant les délais annoncés. À ne pas facher avec des délais de paiement trop élevés',
-                    'is_valid' => true,
-                ]);
-
-        }
-
-        $supplier->save();
-
-        // $order = new \App\Models\Order;
-        // $order->order_num = '4500161828'; // présent dans le nom du fichier du bon de commande et devis, et dans le bon de commande lui-même
-        // $order->label = 'Cablage salle blanche'; // désignation de la commande dans bon de commande et nom du projet dans devis (différents)
-        // $order->description = 'Cablage electrique de la salle blanche du CRIT';
-        // $order->supplier_id = 1;
-        // $order->quote_num = 'd2509123';
-        // $order->states = 'BROUILLON';
-        // $order->
-
-        // $order->save();
-        $orders = [
-            [
-                'id' => '1',
-                'department' => 'CRIT',
-                'author' => 'Franck BUTELLE',
-                'title' => 'Cablage salle blanche',
-                'state' => 'En attente d’un bon de commande',
-                'stateChangedAt' => '06/11/2025 à 12:33',
-                'createdAt' => '01/11/2025 à 00:01',
-            ],
-            [
-                'id' => '2',
-                'department' => 'R&T',
-                'author' => 'John DOE',
-                'title' => 'Rasbery PI',
-                'state' => 'Commande en attente de livraison',
-                'stateChangedAt' => 'Depuis le 25/10/2025 à 14:12',
-                'createdAt' => '01/11/2025 à 00:01',
-            ],
-            [
-                'id' => '3',
-                'department' => 'R&T',
-                'author' => 'John DOE',
-                'title' => 'Rasbery PI',
-                'state' => 'Commande en attente de livraison',
-                'stateChangedAt' => 'Depuis le 25/10/2025 à 14:12',
-                'createdAt' => '01/11/2025 à 00:01',
-            ],
-        ];
-
+        // TODO flash messages: redirect('urls.create')->with('success', 'URL has been added');
         return view('orders', [
+            'user' => $user,
             'orders' => $orders,
-            'orderStates' => [
-                'BROUILLON', // enregistré à l'état de brouillon. Affiché seulement pour le demandeur
-
-                'ANNULE', // La commande a été annulée par le demandeur à n'importe quelle étape
-
-                'DEVIS_REFUSE', // à l'état de devis ; l'éditeur de bon de commande a refusé de faire un bon de commande
-
-                'DEVIS', // à l'état de devis ; en attente d'un bon de commande (première étape)
-
-                'BON_DE_COMMANDE_REFUSE', // à l'état de bon de commande ; le directeur a refusé de signer
-
-                'BON_DE_COMMANDE_NON_SIGNE', // à l'état de bon de commande ; doit être signé par le directeur
-
-                'BON_DE_COMMANDE_SIGNE', // à l'état de bon de commande signé ; en attente d'envoi du bon signé de commande au fournisseur
-
-                'COMMANDE_REFUSEE', // à l'état de bon de commande signé ; commande refusée par le fournisseur
-
-                'COMMANDE', // à l'état de bon de commande signé ; commmandé sans réponse, en attente de réponse du fournisseur
-
-                'COMMANDE_AVEC_REPONSE', // à l'état de bon de commande signé ; le fournisseur a répondu favorablement à la commande. (Peut fournir le délai de livraison)
-
-                'PARTIELLEMENT_LIVRE', // le demandeur à signalé que certains colis ont été livrés, et que d'autres sont manquants.
-
-                'SERVICE_FAIT', // = terme utilisé par le demandeur pour signaler que la commande a été totalement livrée ; en attente de paiment par le service financier
-
-                'LIVRE_ET_PAYE', // commande payée par le service financié (dernière étape)
-            ],
-            'defaultOrderState' => 'BROUILLON',
+            'validSupplierNames' => $suppliers->where('is_valid', true)->map(fn (Supplier $supplier) => $supplier->getCompanyName())->values()->toArray(),
+            'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$userRoles->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}",
+            'userPermissions' => $userPermissions,
+            'userRoles' => $userRoles,
+            'userDepartments' => $userDepartments,
         ]);
     }
 
