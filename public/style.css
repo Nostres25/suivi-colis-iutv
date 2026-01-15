@@ -10,23 +10,23 @@ html {
 }
 
 :root {
-    --primary-color: #3170A8; !important;
+    --primary-color: #293358 !important;
     --secondary-color: #f8f9fa !important;
     [data-bs-theme=light] {
-        --bs-primary-rgb: var(--primary-color); !important;
-        --bs-primary: var(--primary-color); !important;
+        --bs-primary-rgb: var(--primary-color); 
+        --bs-primary: var(--primary-color) !important;
     }
 }
 
  /*Boutons*/
 .btn-primary {
-    background: var(--primary-color); !important;
-    border-color: var(--primary-color); !important;
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
 }
 
 .btn-primary:hover {
-    background: var(--primary-color); !important;
-    border-color: var(--primary-color); !important;
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
 }
 .btn-outline-primary {
     color: var(--primary-color);
@@ -74,7 +74,7 @@ html {
 
 /* Fonds */
 .bg-primary {
-    background-color: var(--primary-color); !important;
+    background-color: var(--primary-color) !important;
 }
 
 
@@ -228,12 +228,12 @@ section {
 }
 
 .orders-btn-upload {
-    background-color: #3170A8;
+    background-color: #293358;
     color: white;
 }
 
 .orders-btn-upload:hover {
-    background-color: #255a85;
+    background-color: #293358;
 }
 
 .orders-btn-details {
@@ -248,12 +248,12 @@ section {
 
 .orders-btn-edit {
     background-color: white;
-    color: #3170A8;
-    border: 1px solid #3170A8;
+    color: #293358;
+    border: 1px solid #293358;
 }
 
 .orders-btn-edit:hover {
-    background-color: #3170A8;
+    background-color: #293358;
     color: white;
 }
 .orders-btn-more:hover {
