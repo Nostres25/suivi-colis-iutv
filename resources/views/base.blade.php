@@ -15,9 +15,14 @@
     @yield('alert')
 
     {{--Bannière bleue--}}
-    <div class="page-header">
-        @yield('header')
+<div class="page-header">
+    <div class="container d-flex flex-row-reverse align-items-center justify-content-between">
+        <img src="{{ asset('276.png') }}" alt="Logo Sorbonne" style="height: 120px; width: auto; margin-left: 20px;">
+        <div>
+            @yield('header')
+        </div>
     </div>
+</div>
 </header>
 <main>
     @yield('content')
