@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 // Projet abandonné car ça ne trouve pas l'enum qui est ici (sans doute conflit d'importation avec le model ?)
@@ -25,8 +26,6 @@ use Illuminate\Support\Facades\Storage;
 class Order extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-
-
 
     public $timestamps = false;
 
@@ -50,6 +49,16 @@ class Order extends Model
         'PAYEE',
         'ANNULEE',
     ];
+
+    /**
+     * Retourne l'identifiant de la commande
+     *
+     * @return string // identifiant de la commande
+     */
+    public function getId(): string
+    {
+        return $this->attributes['id'];
+    }
 
     /**
      * Retourne le titre/la désignation de la commande
@@ -289,11 +298,11 @@ class Order extends Model
     /**
      * Définir le status de la commande.
      *
-     * @param  Status  $status  Status de commande à définir
+     * @param  Status|string  $status  Status de commande à définir
      */
-    public function setStatus(Status $status): void
+    public function setStatus(Status|string $status): void
     {
-        $this->setAttribute('description', $status->value);
+        $this->setAttribute('status', is_string($status) ? $status : $status->value);
     }
 
     /**
@@ -317,6 +326,7 @@ class Order extends Model
     }
 
     // TODO peut-être un peut factoriser l'upload des fichiers mais... plus tard
+
     /**
      * Enregistrer le fichier du devis
      *
@@ -326,23 +336,31 @@ class Order extends Model
     public function uploadQuote(Request $request): bool
     {
         $request->validate([
-            'file' => 'required|mimes:pdf,doc,docx|max:10240', // Max 10MB
+            'quote' => 'required|mimes:pdf,doc,docx|max:10240', // Max 10MB
         ]);
 
-        if ($request->file()) {
+        /* @var UploadedFile $file */
+        $file = $request->file('quote');
+        if ($file) {
 
             try {
-                $originalName = $request->file->getOriginalName();
 
-                if (! stripos($originalName, 'devis')) {
-                    $fileName = 'Devis'.$originalName;
+                $fileName = $file->getOriginalName();
+
+                if (! stripos($fileName, 'devis')) {
+                    $fileName = 'Devis'.$fileName;
                 }
 
-                $this->path_quote = $request->file('file')->storeAs('uploads/orders/'.$this->order_num, $fileName, 'public'); // public -> a disk ?
+                $path_quote = $file->storeAs('uploads/orders/'.$this->getOrderNumber(), $fileName, 'public'); // public -> le dossier
 
-                return ! is_null($this->path_quote);
+                if ($path_quote) {
+                    $this->setAttribute('path_quote', $path_quote);
+
+                    return true;
+                }
+
             } catch (\Throwable $th) {
-                error_log("Une erreur est survenue lors de l'enregistrement d'un bon de livraison : \n".$th->getMessage());
+                error_log("Une erreur est survenue lors de l'enregistrement d'un devis : \n".$th->getMessage());
                 report($th);
 
                 return false;
@@ -363,28 +381,38 @@ class Order extends Model
     public function uploadPurchaseOrder(Request $request, bool $is_signed = false): bool
     {
         $request->validate([
-            'file' => 'required|mimes:pdf,doc,docx|max:10240', // Max 10MB
+            'purchase_order' => 'required|mimes:pdf,doc,docx|max:10240', // Max 10MB
         ]);
 
-        if ($request->file()) {
+        /* @var UploadedFile $file */
+        $file = $request->file('purchase_order');
+        if ($file) {
 
             try {
-                $originalName = $request->file->getOriginalName();
 
-                if (! stripos($originalName, 'BonDeCommande')) {
-                    $fileName = 'BonDeCommande'.$originalName;
+                $fileName = $file->getOriginalName();
+
+                if (! stripos($fileName, 'BonDeCommande')) {
+                    $fileName = 'BonDeCommande'.$fileName;
                 }
 
-                $fileName = $originalName;
                 if ($is_signed) {
                     $ext = $request->file('file')->getExtension();
-                    $fileName = str_replace('.'.$ext, '(signe).'.$ext, $originalName);
+                    $fileName = str_replace('.'.$ext, '(signe).'.$ext, $fileName);
                 }
 
-                $this->path_purchase_order = $request->file('file')->storeAs('uploads/orders/'.$this->order_num, $fileName, 'public'); // public -> a disk ?
+                $purchase_order = $file->storeAs('uploads/orders/'.$this->getOrderNumber(), $fileName, 'public'); // public -> le dossier
 
-                return ! is_null($this->path_purchase_order);
+                if ($purchase_order) {
+                    $this->setAttribute('path_purchase_order', $purchase_order);
+
+                    return true;
+                }
+
             } catch (\Throwable $th) {
+                error_log("Une erreur est survenue lors de l'enregistrement d'un bon de commande : \n".$th->getMessage());
+                report($th);
+
                 return false;
             }
 
@@ -402,21 +430,29 @@ class Order extends Model
     public function uploadDeliveryNote(Request $request): bool
     {
         $request->validate([
-            'file' => 'required|mimes:pdf,doc,docx|max:10240', // Max 10MB
+            'delivery_note' => 'required|mimes:pdf,doc,docx|max:10240', // Max 10MB
         ]);
 
-        if ($request->file()) {
+        /* @var UploadedFile $file */
+        $file = $request->file('delivery_note');
+        if ($file) {
 
             try {
-                $originalName = $request->file->getOriginalName();
 
-                if (! stripos($originalName, 'BonDeLivraison')) {
-                    $fileName = 'BonDeLivraison'.$originalName;
+                $fileName = $file->getOriginalName();
+
+                if (! stripos($fileName, 'BonDeLivraison')) {
+                    $fileName = 'BonDeLivraison'.$fileName;
                 }
 
-                $this->path_delivery_note = $request->file('file')->storeAs('uploads/orders/'.$this->order_num, $fileName, 'public'); // public -> a disk ?
+                $path_delivery_note = $file->storeAs('uploads/orders/'.$this->getOrderNumber(), $fileName, 'public'); // public -> le dossier
 
-                return ! is_null($this->path_delivery_note);
+                if ($path_delivery_note) {
+                    $this->setAttribute('path_delivery_note', $path_delivery_note);
+
+                    return true;
+                }
+
             } catch (\Throwable $th) {
                 error_log("Une erreur est survenue lors de l'enregistrement d'un bon de livraison : \n".$th->getMessage());
                 report($th);
