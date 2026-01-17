@@ -10,23 +10,64 @@ class Log extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     /**
+     * Retourne l'identifiant du log
+     *
+     * @return string // identifiant du log
+     */
+    public function getId(): string
+    {
+        return $this->attributes['id'];
+    }
+
+    /**
+     * Retourne l'identifiant de la commande du log
+     *
+     * @return string // identifiant de la commande du log
+     */
+    public function getOrderId(): string
+    {
+        return $this->attributes['order_id'];
+    }
+
+    /**
+     * Retourne le contenu du log
+     *
+     * @return string // contenu du log
+     */
+    public function getContent(): string
+    {
+        return $this->attributes['content'];
+    }
+
+    /**
      * Retourne l'auteur de l'action, l'utilisateur associé au log
      *
      * @return User // Utilisateur auteur de l'action / associé au log
      */
     public function getAuthor(): User
     {
-        return $this->author()->getResults();
+        return $this->getAttribute('author');
     }
 
     /**
      * Retourne la commande dont appartient le log
      *
-     * @return BelongsTo // Commande du log
+     * @return Order // Commande du log
      */
-    public function order(): BelongsTo
+    public function getOrder(): Order
     {
-        return $this->belongsTo(Order::class);
+        return $this->getAttribute('order');
+    }
+
+
+    /**
+     * Retourne la date de création du colis
+     *
+     * @return string // date
+     */
+    public function getCreationDate(): string
+    {
+        return $this->attributes[$this->getCreatedAtColumn()];
     }
 
     /**
@@ -37,5 +78,15 @@ class Log extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    /**
+     * Retourne la commande dont appartient le log
+     *
+     * @return BelongsTo // Commande du log
+     */
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
     }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->autoIncrement();
             $table->foreignId('order_id')->constrained('orders', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->text('text');
+            $table->text('content');
             $table->foreignId('author_id')->nullable()->constrained('users', 'id')->nullOnDelete();
             $table->timestamps();
 

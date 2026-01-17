@@ -17,6 +17,86 @@ class Package extends Model
     ];
 
     /**
+     * Retourne l'identifiant du colis
+     *
+     * @return string // identifiant du colis
+     */
+    public function getId(): string
+    {
+        return $this->attributes['id'];
+    }
+
+    /**
+     * Retourne l'identifiant de la commande du colis
+     *
+     * @return string // identifiant de la commande du colis
+     */
+    public function getOrderId(): string
+    {
+        return $this->attributes['order_id'];
+    }
+
+    /**
+     * Retourne le nom du colis
+     *
+     * @return string // nom du colis
+     */
+    public function getName(): string
+    {
+        return $this->attributes['name'];
+    }
+
+    /**
+     * Retourne le coût unitaire du colis
+     *
+     * @return ?int // coût unitaire du colis
+     */
+    public function getCout(): ?int
+    {
+        return $this->attributes['cost'];
+    }
+
+    /**
+     * Retourne le délai prévu de livraison si cela a été communiqué par le fournisseur après l'envoi du bon de commande
+     *
+     * @return ?string // délai prévu de livraison
+     */
+    public function getExpectedDeliveryTime(): ?string
+    {
+        return $this->attributes['expected_delivery_time'];
+    }
+
+    /**
+     * Retourne la date prévue de livraison si le colis est livré
+     *
+     * @return ?string // Date de livraison si le colis est livré, null sinon
+     */
+    public function getShippingDate(): ?string
+    {
+        return $this->attributes['shipping_date'];
+    }
+
+    /**
+     * Retourne la date de la dernière modification du colis
+     *
+     * @return ?string // date
+     */
+    public function getLastUpdateDate(): ?string
+    {
+        return $this->attributes[$this->getUpdatedAtColumn()];
+    }
+
+    /**
+     * Retourne la date de création du colis
+     *
+     * @return string // date
+     */
+    public function getCreationDate(): string
+    {
+        return $this->attributes[$this->getCreatedAtColumn()];
+    }
+
+    /**
      * Retourne la commande dont appartient le colis
      *
      * @return BelongsTo // Commande associée au colis

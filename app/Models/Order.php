@@ -15,8 +15,6 @@ class Order extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'titre',
         'description',
@@ -40,7 +38,6 @@ class Order extends Model
 
     /**
      * Retourne l'identifiant de la commande
-     *f
      *
      * @return string // identifiant de la commande
      */
@@ -184,9 +181,9 @@ class Order extends Model
     /**
      * Retourne la date de la dernière modification de la commande
      *
-     * @return string // date
+     * @return ?string // date
      */
-    public function getLastUpdateDate(): string
+    public function getLastUpdateDate(): ?string
     {
         return $this->attributes[$this->getUpdatedAtColumn()];
     }
@@ -202,13 +199,24 @@ class Order extends Model
     }
 
     /**
+     * Retourne les colis de la commande
+     *
+     * @param  bool  $foreRefresh  garantir de récupérer les informations depuis la base de données en toutes circonstances
+     * @return Collection // Colis
+     */
+    public function getPackages(bool $foreRefresh = false): Collection
+    {
+        return $foreRefresh ? $this->packages()->getResults() : $this->getAttribute('packages');
+    }
+
+    /**
      * Retourne le fournisseur de la commande
      *
      * @return Supplier // Fournisseur de la commande
      */
     public function getSupplier(): Supplier
     {
-        return $this->supplier()->getResults();
+        return $this->getAttribute('supplier');
     }
 
     /**
@@ -288,10 +296,16 @@ class Order extends Model
      * Définir le status de la commande.
      *
      * @param  Status|string  $status  Status de commande à définir
+     * @param  bool  $save  : si la fonction sauvegarde en base de données (true par défaut)
      */
-    public function setStatus(Status|string $status): void
+    public function setStatus(Status|string $status, bool $save = true): void
     {
-        $this->setAttribute('status', is_string($status) ? $status : $status->value);
+        if ($save) {
+            $this->setAttribute('status', is_string($status) ? $status : $status->value);
+        } else {
+            $this->attributes['status'] = $status;
+        }
+
     }
 
     /**
@@ -404,6 +418,7 @@ class Order extends Model
                     } else {
                         $this->attributes['path_purchase_order'] = $purchase_order;
                     }
+
                     return true;
                 }
 

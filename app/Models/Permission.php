@@ -7,7 +7,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Permission extends Model
 {
-    use \Illuminate\Database\Eloquent\Factories\HasFactory;
+
+    /**
+     * Retourne l'identifiant de la permission
+     *
+     * @return string // identifiant de la permission
+     */
+    public function getId(): string
+    {
+        return $this->attributes['id'];
+    }
 
     /**
      * Retourne le nom de la permission
@@ -17,6 +26,26 @@ class Permission extends Model
     public function getName(): string
     {
         return $this->attributes['name'];
+    }
+
+    /**
+     * Retourne la date de la dernière modification de la permission
+     *
+     * @return ?string // date
+     */
+    public function getLastUpdateDate(): ?string
+    {
+        return $this->attributes[$this->getUpdatedAtColumn()];
+    }
+
+    /**
+     * Retourne la date de création de la permission
+     *
+     * @return string // date
+     */
+    public function getCreationDate(): string
+    {
+        return $this->attributes[$this->getCreatedAtColumn()];
     }
 
     /**

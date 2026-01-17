@@ -12,24 +12,6 @@ class Role extends Model
 {
 
     /**
-     * Retourne un dictionnaire des permissions de l'association de plusieurs rôles déjà chargés
-     *
-     * @param  Collection  $roles  Collection de rôles (modèle Role)
-     * @return array // Dictionnaire des permissions
-     */
-    public static function getPermissionsAsDict(Collection $roles): array
-    {
-        $permissions = PermissionValue::getDict();
-        foreach ($roles as $role) {
-            foreach ($role->getPermissionsAsIds() as $permission) {
-                $permissions[$permission] = true;
-            }
-        }
-
-        return $permissions;
-    }
-
-    /**
      * Retourne l'identifiant rôle
      *
      * @return string // identifiant du rôle
@@ -57,6 +39,26 @@ class Role extends Model
     public function isDepartment(): bool
     {
         return $this->attributes['is_department'];
+    }
+
+    /**
+     * Retourne un dictionnaire des permissions de l'association de plusieurs rôles déjà chargés
+     *
+     * @param  Collection  $roles  Collection de rôles (modèle Role)
+     * @return array // Dictionnaire des permissions
+     */
+    public static function getPermissionsAsDict(Collection $roles): array
+    {
+        $permissions = PermissionValue::getDict();
+
+        /* @var Role $role */
+        foreach ($roles as $role) {
+            foreach ($role->getPermissionsAsIds() as $permission) {
+                $permissions[$permission] = true;
+            }
+        }
+
+        return $permissions;
     }
 
     /**
@@ -107,14 +109,53 @@ class Role extends Model
     }
 
     /**
+     * Retourne la date de la dernière modification du rôle
+     *
+     * @return ?string // date
+     */
+    public function getLastUpdateDate(): ?string
+    {
+        return $this->attributes[$this->getUpdatedAtColumn()];
+    }
+
+    /**
+     * Retourne la date de création du rôle
+     *
+     * @return string // date
+     */
+    public function getCreationDate(): string
+    {
+        return $this->attributes[$this->getCreatedAtColumn()];
+    }
+
+    /**
      * Retourne la liste des utilisateurs qui possèdent le rôle
      *
      * @return Collection // Collection (liste) des utilisateurs ayant le rôle
      */
     public function getUsers(): Collection
     {
-        // TODO peut-être faire un cache ?
-        return $this->users()->getResults();
+        return $this->getAttribute('users');
+    }
+
+    /**
+     * Retourne la liste des permissions du rôle
+     *
+     * @return Collection // Collection (liste) permissions du rôle
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->getAttribute('permissions');
+    }
+
+    /**
+     * Retourne la liste des permissions du rôle
+     *
+     * @return Collection // Collection (liste) permissions du rôle
+     */
+    public function getOrders(): Collection
+    {
+        return $this->getAttribute('permissions');
     }
 
     /**

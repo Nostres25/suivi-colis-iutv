@@ -31,6 +31,23 @@ class User extends Authenticatable
     ];
 
     /**
+     * Permissions de l'utilisateur à l'issu de ses rôles.
+     *
+     * @var array
+     */
+    private $permissions = null;
+
+    /**
+     * Retourne l'identifiant de l'utilisateur
+     *
+     * @return string // identifiant de l'utilisateur
+     */
+    public function getId(): string
+    {
+        return $this->attributes['id'];
+    }
+
+    /**
      * Retourne le prénom de l'utilisateur
      *
      * @return string prénom de l'utilisateur
@@ -54,11 +71,31 @@ class User extends Authenticatable
      * Retourne le nom complet de l'utilisateur
      * en concaténant le prénom et le nom séparés par un espace.
      *
-     * @return string le nom complet de l'utilisateur
+     * @return ?string le nom complet de l'utilisateur
      */
-    public function getFullName(): string
+    public function getFullName(): ?string
     {
         return $this->getFirstName().' '.$this->getLastName();
+    }
+
+    /**
+     * Retourne l'adresse email de l'utilisateur
+     *
+     * @return ?string l'adresse email de l'utilisateur
+     */
+    public function getEmail(): ?string
+    {
+        return $this->attributes['email'];
+    }
+
+    /**
+     * Retourne le numéro de téléphone de l'utilisateur
+     *
+     * @return ?string numéro de téléphone de l'utilisateur
+     */
+    public function getPhoneNumber(): ?string
+    {
+        return $this->attributes['phone_number'];
     }
 
     /**
@@ -68,8 +105,7 @@ class User extends Authenticatable
      */
     public function getRoles(): Collection
     {
-        // TODO peut-être faire un cache ?
-        return $this->roles()->getResults();
+        return $this->getAttribute('roles');
     }
 
     /**
@@ -80,7 +116,6 @@ class User extends Authenticatable
      */
     public function hasRole(Role $role): bool
     {
-        // TODO peut-être faire un cache ?
         return $this->getRoles()->contains($role);
     }
 
@@ -91,8 +126,57 @@ class User extends Authenticatable
      */
     public function getDepartments(): Collection
     {
-        // TODO peut-être faire un cache ?
         return $this->getRoles()->filter(fn (Role $role) => $role->isDepartment());
+    }
+
+    /**
+     * Retourne true si l'utilisateur a un rôle en particulier, false sinon.
+     *
+     * @param  bool  $forceLoad  Si la fonction force la récupération des informations depuis la base de données plutôt que du cache du modèle
+     * @return array // Si l'utilisateur a le rôle $role
+     */
+    public function getPermissions(bool $forceLoad = false): array
+    {
+        if ($forceLoad || ! $this->permissions) {
+            $this->permissions = Role::getPermissionsAsDict($this->getRoles());
+        }
+
+        return $this->permissions;
+    }
+
+    /**
+     * Vérifie si un utilisateur a la permission "$permission"
+     *
+     * @param  PermissionValue|string  $permission  Permission à vérifier
+     * @param  bool  $strict  Si ne retourne pas true avec la permission administrateur (à false par défaut)
+     * @param  bool  $forceLoad  Si la fonction force la récupération des informations depuis la base de données plutôt que du cache du modèle
+     * @return bool // true si l'utilisateur a un rôle avec la permission "$permission", false sinon
+     */
+    public function hasPermission(PermissionValue|string $permission, bool $strict = false, bool $forceLoad = false): bool
+    {
+        $permissions = $this->getPermissions($forceLoad);
+
+        return (! $strict && $permissions[PermissionValue::ADMIN->value]) || $permissions[is_string($permission) ? $permission : $permission->value];
+    }
+
+    /**
+     * Retourne la liste actions de l'utilisateur
+     *
+     * @return Collection // Liste des actions de l'utilisateur
+     */
+    public function getLogs(): Collection
+    {
+        return $this->getAttribute('logs');
+    }
+
+    /**
+     * Retourne la liste des commentaires écrits par l'utilisateur
+     *
+     * @return Collection // commentaires écrits par l'utilisateur
+     */
+    public function getComments(): Collection
+    {
+        return $this->getAttribute('comments');
     }
 
     /**
@@ -103,6 +187,26 @@ class User extends Authenticatable
     public function getPermissionsAsDict(): array
     {
         return Role::getPermissionsAsDict($this->getRoles());
+    }
+
+    /**
+     * Retourne la date de la dernière modification de l'utilisateur
+     *
+     * @return ?string // date
+     */
+    public function getLastUpdateDate(): ?string
+    {
+        return $this->attributes[$this->getUpdatedAtColumn()];
+    }
+
+    /**
+     * Retourne la date de création de l'utilisateur
+     *
+     * @return string // date
+     */
+    public function getCreationDate(): string
+    {
+        return $this->attributes[$this->getCreatedAtColumn()];
     }
 
     /**
@@ -156,23 +260,5 @@ class User extends Authenticatable
         return $this->HasMany(Log::class);
     }
 
-    /**
-     * Vérifie si un utilisateur a la permission "$permission"
-     *
-     * @param  PermissionValue  $permission  Permission à vérifier
-     * @param  bool  $strict  Si ne retourne pas true avec la permission administrateur (à false par défaut)
-     * @return bool // true si l'utilisateur a un rôle avec la permission "$permission", false sinon
-     */
-    public function hasPermission(PermissionValue $permission, bool $strict = false): bool
-    {
-        // TODO pour des questions de performances charger au préalable les permissions de l'utilisateur dans le "constructeur" (voir comment faire avec laravel)
-        foreach ($this->roles()->getResults() as $role) {
-            if ($role->hasPermission($permission, $strict)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
     // public function hasRole(): bool {}
 }

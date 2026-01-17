@@ -10,6 +10,75 @@ class Comment extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     /**
+     * Retourne l'identifiant du commentaire
+     *
+     * @return string // identifiant du commentaire
+     */
+    public function getId(): string
+    {
+        return $this->attributes['id'];
+    }
+
+    /**
+     * Retourne l'identifiant de la commande du commentaire
+     *
+     * @return string // identifiant de la commande du commentaire
+     */
+    public function getOrderId(): string
+    {
+        return $this->attributes['order_id'];
+    }
+
+    /**
+     * Retourne le contenu du commentaire
+     *
+     * @return string // contenu du commentaire
+     */
+    public function getContent(): string
+    {
+        return $this->attributes['content'];
+    }
+
+    /**
+     * Retourne la date de la dernière modification du commentaire
+     *
+     * @return ?string // date
+     */
+    public function getLastUpdateDate(): ?string
+    {
+        return $this->attributes[$this->getUpdatedAtColumn()];
+    }
+
+    /**
+     * Retourne la date de création du commentaire
+     *
+     * @return string // date
+     */
+    public function getCreationDate(): string
+    {
+        return $this->attributes[$this->getCreatedAtColumn()];
+    }
+    /**
+     * Retourne l'auteur de l'action, l'utilisateur associé au commentaire
+     *
+     * @return User // Utilisateur auteur de l'action / associé au commentaire
+     */
+    public function getAuthor(): User
+    {
+        return $this->getAttribute('author');
+    }
+
+    /**
+     * Retourne la commande dont appartient le commentaire
+     *
+     * @return Order // Commande du commentaire
+     */
+    public function getOrder(): Order
+    {
+        return $this->getAttribute('order');
+    }
+
+    /**
      * Retourne l'utilisateur, auteur de la commande
      *
      * @return BelongsTo // Utilisateur, auteur de la commande

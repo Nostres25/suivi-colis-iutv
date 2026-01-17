@@ -27,9 +27,9 @@ class SupplierController extends BaseController
         $suppliers = Supplier::paginate(10); // Récupération uniquement des informations utiles à propos des fournisseurs
 
         return view('suppliers', [
+            'user' => $user,
             'suppliers' => $suppliers,
-            'userPermissions' => $userPermissions,
-            '$userRoles' => $userRoles,
+            'modalToOpen' => null,
             'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$userRoles->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}",
         ]);
     }

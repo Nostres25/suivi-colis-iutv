@@ -89,9 +89,11 @@ class LocalTestSeeder extends Seeder
                 $order->save();
             })
             ->each(function (Order $order) use ($users_can_access_all_orders) {
-                Package::factory(rand(0, 5))
+                Package::factory(rand(1, 5))
                     ->make()
                     ->each(function (Package $package) use ($order) {
+                        // TODO on peut rendre cohérente la date de livraison en accord avec le statut du colis
+                        // TODO on peut rendre cohérent le délai de livraison en accord avec le statut
                         $package->order()->associate($order);
                         $package->save();
                     });
