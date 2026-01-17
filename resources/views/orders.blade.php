@@ -43,7 +43,16 @@
 
     {{--Pour pouvoir créer une commande il faut appartenir à un département et avoir la permission de créer une commande--}}
     @if ($userPermissions[PermissionValue::CREER_COMMANDES->value] && !empty($userDepartments))
-        <x-orderCreationButton :user="$user" :userDepartments="$userDepartments" :validSupplierNames="$validSupplierNames"/>
+        <button type="button" class="btn btn-primary erasure-alert" style="display: table-row" data-bs-toggle="modal"
+                data-bs-target="#createOrderModal" id="createOrderButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
+                 viewBox="0 0 16 16">
+                <path
+                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+            </svg>
+            Ajouter une commande
+        </button>
+        <x-orderCreationModal :user="$user" :userDepartments="$userDepartments" :validSupplierNames="$validSupplierNames"/>
     @endif
 
     <div class="table-header mt-4">
@@ -94,12 +103,13 @@
 {{--                            TODO faire fonctionner tous les boutons d'actions--}}
                             {{-- TODO optimiser tout ça notamment avec un switch par status et après seulement vérifier les rôles + cache pour éviter que la vérification de permissions envoie pleins de requêtes--}}
                             @if($order->getStatus() == Status::BON_DE_COMMANDE_NON_SIGNE && ($userPermissions[PermissionValue::SIGNER_BONS_DE_COMMANDES->value] || $userPermissions[PermissionValue::GERER_BONS_DE_COMMANDES->value]))
-                                <button class="btn btn-success btn-action mb-2" title="Déposer un bon de commande signé">
+                                <button class="btn btn-success btn-action mb-2" title="Déposer un bon de commande signé" type="button" data-bs-toggle="modal" data-bs-target="#addPurchaseOrderModal-{{$order->getId()}}" id="addPurchaseOrderButton-{{$order->getId()}}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
                                         <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
                                         <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
                                     </svg> Déposer un bon signé
                                 </button>
+                                <x-addPurchaseOrderModal :openPurchaseOrderModal="$openPurchaseOrderModal" :orderId="$order->getId()" :orderStatus="$order->getStatus()"  :canSign="$userPermissions[PermissionValue::SIGNER_BONS_DE_COMMANDES->value]"></x-addPurchaseOrderModal>
                                 <button class="btn btn-danger btn-action mb-2" title="Marquer comme signature refusée">
                                     Signature refusée
                                 </button>
@@ -115,12 +125,13 @@
 {{--                            @endif--}}
                             @if($userPermissions[PermissionValue::GERER_BONS_DE_COMMANDES->value])
                                 @if($order->getStatus() == Status::DEVIS)
-                                    <button class="btn btn-success btn-action mb-2" title="Déposer un bon de commande">
+                                    <button class="btn btn-success btn-action mb-2" title="Déposer un bon de commande" type="button" data-bs-toggle="modal" data-bs-target="#addPurchaseOrderModal-{{$order->getId()}}" id="addPurchaseOrderButton-{{$order->getId()}}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
                                             <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
                                             <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
                                         </svg> Déposer un bon
                                     </button>
+                                    <x-addPurchaseOrderModal :orderId="$order->getId()" :orderStatus="$order->getStatus()" :canSign="$userPermissions[PermissionValue::SIGNER_BONS_DE_COMMANDES->value]"></x-addPurchaseOrderModal>
                                     <button class="btn btn-danger btn-action mb-2" title="Refuser la demande de bon de commande">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
                                             <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>

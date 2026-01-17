@@ -1,30 +1,21 @@
 @use(Database\Seeders\Status)
-    <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary erasure-alert" style="display: table-row" data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop" id="createOrderButton">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
-         viewBox="0 0 16 16">
-        <path
-            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-    </svg>
-    Ajouter une commande
-</button>
 
 <!-- Modal de création de commande -->
 {{-- TODO ajouter un message d'avertissement de validation de formulaire --}}
 {{--TODO: Il n'est pas possible de définir une langue par défaut bootstrap mais on peut changer la valeur des attribtuts (notamment pour le message qui apparaît quand on valide sans remplir les champs requis : https://stackoverflow.com/questions/23731862/how-can-i-set-bootstrap-language-manually--}}
 {{--TODO pour traduire le message "champ requis", la solution de l'attribut "oninvalid="this.setCustomValidity('Veuillez remplir un titre de commande avant de valider !')" sur l'input ne fonctionne pas. Peut-être trouver une solution (pas prioritaire)--}}
 
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="createOrderModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="createOrderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Création d'une commande</h5>
+                <h5 class="modal-title" id="createOrderModalLabel">Création d'une commande</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="createOrderForm" class="needs-validation" autocomplete="off">
+                @csrf
                     <div class="mb-4">
                         <label for="order-label" class="col-form-label fs-5">Titre de la commande <span
                                 title="champ requis" class="text-danger">*</span></label>
@@ -54,7 +45,7 @@
                                     Veuillez d'abord, <strong>demander l'ajout du fournisseur en question</strong>.<br/>
                                     À la validation, la commande sera sauvegardée à l'état de brouillon. C'est seulement
                                     lorsque le fournisseur sera validé que vous pourrez la passer à l'état de devis</p>
-                                <input class="form-check-input" type="checkbox" value="" id="askToAddSupplierCheckBox">
+                                <input class="form-check-input" type="checkbox" id="askToAddSupplierCheckBox">
                                 <label class="form-check-label" for="askToAddSupplierCheckBox">
                                     Demander l'ajout du fournisseur
                                 </label>
@@ -102,7 +93,7 @@
                                                                        class="text-danger">*</span></label>
                         {{-- TODO probablement de trop, autant modifier la commande après l'avoir crée si la commande à une étape avancée. À la première étape de la commande, cette option ne devrait pas exister
                         <div class="mb-3">
-                          <input class="form-check-input" type="checkbox" value="" id="checkboxBonDeCommandeSigne">
+                          <input class="form-check-input" type="checkbox" id="checkboxBonDeCommandeSigne">
                           <label class="form-check-label" for="checkboxBonDeCommandeSigne">
                             Marquer les colis comme livrés
                           </label>
@@ -168,7 +159,7 @@
                                 <input type="file" class="form-control mb-3" id="inputFichierBonDeCommande">
                                 {{-- TODO Devrait n'apparaîte que si on met un bon de commande (avec bootstrap : https://getbootstrap.com/docs/5.3/utilities/display/#how-it-works (classes d-none et d-block ?)) --}}
                                 <div class="mb-3 d-flex justify-content-start">
-                                    <input class="form-check-input me-2" type="checkbox" value=""
+                                    <input class="form-check-input me-2" type="checkbox"
                                            id="checkboxBonDeCommandeSigne">
                                     <label class="form-check-label" for="checkboxBonDeCommandeSigne">
                                         Bon de commande signé par le directeur de l'IUT
@@ -190,7 +181,7 @@
             </div>
             <div class="modal-footer justify-content-between">
                 <div class="d-flex justify-content-start" title="{{Status::BROUILLON->getDescription()}}">
-                    <input class="form-check-input me-2" type="checkbox" value=""
+                    <input class="form-check-input me-2" type="checkbox"
                            id="checkboxDraft" form="createOrderForm">
                     <label class="form-check-label" for="checkboxDraft">
                         Enregistrer comme brouillon

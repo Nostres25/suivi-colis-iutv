@@ -1,26 +1,16 @@
 @use(\Database\Seeders\PermissionValue)
-
-<!-- Bouton d'ajout de fournisseur -->
-<button type="button" class="btn btn-primary erasure-alert" data-bs-toggle="modal" data-bs-target="#addFournisseurModal">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
-         viewBox="0 0 16 16">
-        <path
-            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-    </svg>
-    Ajouter un fournisseur
-</button>
-
 <!-- Modal d'ajout de fournisseur -->
-<div class="modal fade" id="addFournisseurModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-     aria-labelledby="addFournisseurModalLabel" aria-hidden="true">
+<div class="modal fade" id="addSupplierModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="addSupplierModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addFournisseurModalLabel">Ajouter un fournisseur</h5>
+                <h5 class="modal-title" id="addSupplierModalLabel">Ajouter un fournisseur</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addFournisseurForm" class="needs-validation" novalidate>
+                <form id="addSupplierForm" class="needs-validation" novalidate>
+                @csrf
                     <div class="mb-3">
                         <label for="company-name" class="form-label">Nom de l'entreprise <span title="champ requis"
                                                                                                class="text-danger">*</span></label>
@@ -67,7 +57,7 @@
                     <div class="d-flex justify-content-start"
                          title="Marquer qu'il est possible de passer commande avec ce fournisseur">
                         <input class="form-check-input me-2" type="checkbox"
-                               id="checkboxValidate" form="addFournisseurForm" checked>
+                               id="checkboxValidate" form="addSupplierForm" checked>
                         <label class="form-check-label" for="checkboxValidate">
                             Valider le fournisseur
                         </label>
@@ -79,11 +69,11 @@
                     </div>
                 @endif
                 <div class="d-inline">
-                    <button type="reset" class="btn btn-secondary me-1" form="addFournisseurForm"
+                    <button type="reset" class="btn btn-secondary me-1" form="addSupplierForm"
                             data-bs-dismiss="modal">
                         Annuler
                     </button>
-                    <button type="submit" form="addFournisseurForm" class="btn btn-primary">Ajouter</button>
+                    <button type="submit" form="addSupplierForm" class="btn btn-primary">Ajouter</button>
                 </div>
             </div>
         </div>

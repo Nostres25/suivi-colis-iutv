@@ -20,6 +20,10 @@ Route::get('/service-financier', [OrderController::class, 'serviceFinancier'])->
 
 Route::put('/orders/{id}/state', [OrderController::class, 'changeState'])->name('orders.changeState');
 
+
+Route::post('/', [OrderController::class, 'actionUploadPurchaseOrder'])
+    ->name('orders.uploadPurchaseOrder');
+
 Route::post('/orders/{id}/upload-quote', [OrderController::class, 'uploadQuote'])
     ->name('orders.uploadQuote');
 

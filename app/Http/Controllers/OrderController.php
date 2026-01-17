@@ -7,19 +7,20 @@ use App\Models\Role;
 use App\Models\Supplier;
 use App\Models\User;
 use Database\Seeders\PermissionValue;
+use Database\Seeders\Status;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class OrderController extends BaseController
 {
     // TODO Annotation pour utiliser la fonction auth() de AuthController pour chaque page
-    public function viewOrders(Request $request): View|Response|RedirectResponse|Redirector
+    public function viewOrders(Request $request, ?string $alertMsg = null): View|Response|RedirectResponse|Redirector
     {
 
         // TODO réduire le nombre de requêtes et voir à propos du cache (je pense qu'on ne fera pas de cache mais on opti les requêtes)
@@ -46,15 +47,22 @@ class OrderController extends BaseController
 
         $suppliers = Supplier::all(['id', 'company_name', 'is_valid']); // Récupération uniquement des informations utiles à propos des fournisseurs
 
-        // TODO flash messages: redirect('urls.create')->with('success', 'URL has been added');
+        // TODO flash messages: redirect('urls.create')->with('success', 'URL has been added'); - j'ai pas compris comment ça marche
+        if (! $alertMsg) {
+            $alertMsg = "Connecté en tant que {$user->getFullName()} avec les rôles {$userRoles->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}";
+        }
+
+        $openPurchaseOrderModal = $request['openPurchaseOrderModal'];
+
         return view('orders', [
             'user' => $user,
             'orders' => $orders,
             'validSupplierNames' => $suppliers->where('is_valid', true)->map(fn (Supplier $supplier) => $supplier->getCompanyName())->values()->toArray(),
-            'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$userRoles->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}",
+            'alertMessage' => $alertMsg,
             'userPermissions' => $userPermissions,
             'userRoles' => $userRoles,
             'userDepartments' => $userDepartments,
+            'openPurchaseOrderModal' => $openPurchaseOrderModal,
         ]);
     }
 
@@ -65,59 +73,64 @@ class OrderController extends BaseController
 
     public function submitNewOrder(Request $request): View
     {
-        // TODO Do something to save the new order by the post form
-        // Send a flash message
+
+        // TODO valider les données
+        // TODO utiliser les setters pour mettre en base
 
         return $this->viewOrders($request);
     }
 
     public function serviceFinancier(Request $request): View
-{
-    $user = Auth::user();
-     $orders = Order::all();
-    return view('service_financier', [
-        'orders' => $orders, 
-        'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$user->getRoles()->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}",
-    ]);
+    {
+        $user = Auth::user();
+        $orders = Order::all();
 
-}
+        return view('service_financier', [
+            'orders' => $orders,
+            'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$user->getRoles()->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}",
+        ]);
 
-public function changeState(Request $request, $id)
-{
-   $order = Order::findOrFail($id);
+    }
 
-    // On met à jour la colonne "states"
-    $order->states = $request->states;
+    public function changeState(Request $request, $id)
+    {
+        /* @var Order $order */
+        $order = Order::findOrFail($id);
 
-    $order->save();
+        // On met à jour la colonne "status"
+        // $order->states = $request->states;
+        $order->setStatus($request['status']);
 
-    return redirect()->back()->with('success', 'État mis à jour avec succès.');
+        // Plus besoin de save de setter
+        // $order->save();
 
-}
+        return $this->viewOrders($request, 'Statut de la commande '.$order->getOrderNumber().' changé avec succès ! ');
 
+    }
 
-public function uploadQuote(Request $request, $id)
-{
-    $request->validate([
-        'quote' => 'required|mimes:pdf|max:5000',
-    ]);
+    public function actionUploadPurchaseOrder(Request $request)
+    {
+        $id = $request['id'];
 
-    $order = Order::findOrFail($id);
+        /* @var Order $order */
+        $order = Order::findOrFail($id);
 
-    // Stockage du fichier dans storage/app/public/quotes
-    $path = $request->file('quote')->store('quotes', 'public');
+        $nextStep = $request['nextStep'];
+        $isSigned = $request['signed'];
 
-    // Sauvegarde du chemin en base
-    $order->update([
-        'path_quote' => $path,
-    ]);
+        // Stockage du fichier dans storage/app/public/quotes
+        $success = $order->uploadPurchaseOrder($request, $isSigned, false);
+        if (! $success) {
+            $request['openPurchaseOrderModal'] = true;
+            return back()->withErrors("Une erreur est survenue à l'enregistrement du bon de commande");
+        }
 
-    return redirect()->back()->with('success', 'Le devis a été ajouté avec succès.');
-}
+        if ($nextStep) {
+            $order->setStatus($isSigned ? Status::BON_DE_COMMANDE_SIGNE : Status::BON_DE_COMMANDE_NON_SIGNE);
+        }
 
+        $order->save();
 
-
-
-
-
+        return $this->viewOrders($request, 'Le bon de commande a été ajouté avec succès.');
+    }
 }

@@ -11,18 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-// Projet abandonné car ça ne trouve pas l'enum qui est ici (sans doute conflit d'importation avec le model ?)
-// enum OrderAttributes: string {
-//    case TITLE = 'title';
-//    case ORDER_NUM = 'order_num';
-//    case DESCRIPTION = 'description';
-//    case COST = 'cost';
-//    case QUOTE_NUM = 'quote_num';
-//    case PATH_QUOTE = 'path_quote';
-//    case PATH_PURCHASE_ORDER = 'path_purchase_order';
-//    case PATH_DELIVERY_NOTE = 'path_delivery_note';
-//    case STATUS = 'status';
-// }
 class Order extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -52,6 +40,7 @@ class Order extends Model
 
     /**
      * Retourne l'identifiant de la commande
+     *f
      *
      * @return string // identifiant de la commande
      */
@@ -331,9 +320,10 @@ class Order extends Model
      * Enregistrer le fichier du devis
      *
      * @param  Request  $request  : la requête HTTP issue du controlleur contenant le fichier à uploader
+     * @param  bool  $save  : si la fonction sauvegarde en base de données (true par défaut)
      * @return bool true si l'enregistrement du fichier a fonctionné, false sinon
      */
-    public function uploadQuote(Request $request): bool
+    public function uploadQuote(Request $request, bool $save = true): bool
     {
         $request->validate([
             'quote' => 'required|mimes:pdf,doc,docx|max:10240', // Max 10MB
@@ -354,7 +344,11 @@ class Order extends Model
                 $path_quote = $file->storeAs('uploads/orders/'.$this->getOrderNumber(), $fileName, 'public'); // public -> le dossier
 
                 if ($path_quote) {
-                    $this->setAttribute('path_quote', $path_quote);
+                    if ($save) {
+                        $this->setAttribute('$path_quote', $path_quote);
+                    } else {
+                        $this->attributes['$path_quote'] = $path_quote;
+                    }
 
                     return true;
                 }
@@ -376,9 +370,10 @@ class Order extends Model
      *
      * @param  Request  $request  : la requête HTTP issue du controlleur contenant le fichier à uploader
      * @param  bool  $is_signed  : indique si le devis est signé ou non
+     * @param  bool  $save  : si la fonction sauvegarde en base de données (true par défaut)
      * @return bool true si l'enregistrement du fichier a fonctionné, false sinon
      */
-    public function uploadPurchaseOrder(Request $request, bool $is_signed = false): bool
+    public function uploadPurchaseOrder(Request $request, bool $is_signed = false, bool $save = true): bool
     {
         $request->validate([
             'purchase_order' => 'required|mimes:pdf,doc,docx|max:10240', // Max 10MB
@@ -390,22 +385,25 @@ class Order extends Model
 
             try {
 
-                $fileName = $file->getOriginalName();
+                $fileName = $file->getClientOriginalName();
 
                 if (! stripos($fileName, 'BonDeCommande')) {
                     $fileName = 'BonDeCommande'.$fileName;
                 }
 
                 if ($is_signed) {
-                    $ext = $request->file('file')->getExtension();
+                    $ext = $file->getExtension();
                     $fileName = str_replace('.'.$ext, '(signe).'.$ext, $fileName);
                 }
 
                 $purchase_order = $file->storeAs('uploads/orders/'.$this->getOrderNumber(), $fileName, 'public'); // public -> le dossier
 
                 if ($purchase_order) {
-                    $this->setAttribute('path_purchase_order', $purchase_order);
-
+                    if ($save) {
+                        $this->setAttribute('path_purchase_order', $purchase_order);
+                    } else {
+                        $this->attributes['path_purchase_order'] = $purchase_order;
+                    }
                     return true;
                 }
 
@@ -425,9 +423,10 @@ class Order extends Model
      * Enregistrer le fichier du bon de livraison
      *
      * @param  Request  $request  : la requête HTTP issue du controlleur contenant le fichier à uploader
+     * @param  bool  $save  : si la fonction sauvegarde en base de données (true par défaut)
      * @return bool true si l'enregistrement du fichier a fonctionné, false sinon
      */
-    public function uploadDeliveryNote(Request $request): bool
+    public function uploadDeliveryNote(Request $request, bool $save = true): bool
     {
         $request->validate([
             'delivery_note' => 'required|mimes:pdf,doc,docx|max:10240', // Max 10MB
@@ -448,7 +447,11 @@ class Order extends Model
                 $path_delivery_note = $file->storeAs('uploads/orders/'.$this->getOrderNumber(), $fileName, 'public'); // public -> le dossier
 
                 if ($path_delivery_note) {
-                    $this->setAttribute('path_delivery_note', $path_delivery_note);
+                    if ($save) {
+                        $this->setAttribute('$path_delivery_note', $path_delivery_note);
+                    } else {
+                        $this->attributes['$path_delivery_note'] = $path_delivery_note;
+                    }
 
                     return true;
                 }
