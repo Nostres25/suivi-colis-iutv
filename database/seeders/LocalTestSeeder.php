@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Comment;
 use App\Models\Log;
 use App\Models\Order;
+use App\Models\Package;
 use App\Models\Role;
 use App\Models\Supplier;
 use App\Models\User;
@@ -88,6 +89,13 @@ class LocalTestSeeder extends Seeder
                 $order->save();
             })
             ->each(function (Order $order) use ($users_can_access_all_orders) {
+                Package::factory(rand(0, 5))
+                    ->make()
+                    ->each(function (Package $package) use ($order) {
+                        $package->order()->associate($order);
+                        $package->save();
+                    });
+
                 $department = $order->getDepartment();
                 $users_same_department = $department->getUsers();
 
