@@ -1,15 +1,13 @@
-@if ($errors->any())
+@if (session()->exists('error'))
     <div class="alert alert-danger mb-0">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+        {{session('error')}}
     </div>
 @endif
 
+@if (session()->exists('success'))
 <div class="alert alert-success mb-0">
-    {{$alertMessage}}
+    {{session('success')}}
 </div>
+@endif
 
 

@@ -53,7 +53,7 @@
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
-                @if($userPermissions[PermissionValue::GERER_FOURNISSEURS->value])
+                @if($user->hasPermission(PermissionValue::GERER_FOURNISSEURS))
                     <div class="d-flex justify-content-start"
                          title="Marquer qu'il est possible de passer commande avec ce fournisseur">
                         <input class="form-check-input me-2" type="checkbox"

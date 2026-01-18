@@ -127,7 +127,7 @@
                         <label for="advancedInputs" class="col-form-label"><a class="" data-bs-toggle="collapse"
                                                                               href="#advancedInputs" role="button"
                                                                               aria-expanded="false"
-                                                                              aria-controls="collapseExample">Avancé
+                                                                              aria-controls="advancedInputs">Avancé
                                 ></a></label>
                         <div class="collapse" id="advancedInputs">
                             <p>Les options avancées servent lorsque vous souhaitez créer une commande qui est déjà à une

@@ -12,6 +12,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class BaseController extends Controller
 {
+    public static function getSuccessModal(string $message)
+    {
+        return view('components.successModal', [
+            'message' => $message,
+        ]);
+    }
+
     /**
      * Procède à l'authentification de l'utilisateur.
      * S'il est déjà connecté, rien ne se passe
@@ -74,7 +81,7 @@ abstract class BaseController extends Controller
                         $roles = $user->getRoles();
 
                         // Rôle que l'utilisateur de test doit avoir (mettre null pour pas de rôle en particulier)
-                        // Choix du rôle de l'utilisateur : Service financier, Directeur IUT, Département Info, Département SD, Département RT
+                        // Choix du rôle de l'utilisateur : Service financier, Directeur IUT, Département Info, Département SD, Département RT, Administrateur BD
                         $roleToHave = 'Directeur IUT';
 
                         // Nombre de rôles que l'utilisateur de test doit avoir
@@ -111,7 +118,19 @@ abstract class BaseController extends Controller
             return ['success' => false, 'response' => response($response_content, 403)];
         }
 
+        // Charger les permissions de l'utilisateur
+        // TODO en changeant de page, les variables du modèle se déchargent.
+        //  Malgré le stockage de l'utilisateur avec l'authentification (et peut-être même malgré la session)
+        //  Pour optimiser plus de sorte à ce que le chargement de permissions ne se fait pas à chaque chargement de page
+        //  il faudrait faire un cache pour stocker les utilisateurs qui se sont connectés
+        $user->getPermissions(true);
+
         Auth::login($user);
+
+        session()->flash(
+            'success',
+            "Connecté en tant que {$user->getFullName()} avec les rôles {$user->getRoles()->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}"
+        );
 
         return ['success' => true];
     }
@@ -128,7 +147,7 @@ abstract class BaseController extends Controller
         // Charger l'utilisateur connecté pour être recupérable avec `Auth::user()`
         // S'il y a une erreur dans le processus d'authentification, retourner pour afficher la vue d'erreur
 
-        $result = $this->auth($parameters[0]);
+        $result = $this->auth(request());
         if (! $result['success']) {
             return $result['response'];
         }

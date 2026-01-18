@@ -1,6 +1,5 @@
 @extends('base')
 
-
 @section('header')
     <div class="container">
         <h1 class="h1">
@@ -13,10 +12,6 @@
         </h1>
         <p class="mb-0 opacity-75">Liste et gestion des fournisseurs</p>
     </div>
-@endsection
-
-@section('alert')
-    <x-alert :alertMessage="$alertMessage"></x-alert>
 @endsection
 
 @section('content')
@@ -51,7 +46,7 @@
     <!-- Tableau des fournisseurs -->
     <section class="table-section table-responsive">
         {{--Pour pouvoir ajouter un fournisseur il faut avoir la permission de demander l'ajout d'un fournisseur ou de gérer les fournisseur--}}
-        @if ($userPermissions[PermissionValue::GERER_FOURNISSEURS->value] || $userPermissions[PermissionValue::DEMANDER_AJOUT_FOURNISSEUR->value] )
+        @if ($user->hasPermission(PermissionValue::GERER_FOURNISSEURS) || $user->hasPermission(PermissionValue::DEMANDER_AJOUT_FOURNISSEUR) )
             <button type="button" class="btn btn-primary erasure-alert" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
                      viewBox="0 0 16 16">
@@ -60,7 +55,7 @@
                 </svg>
                 Ajouter un fournisseur
             </button>
-            <x-supplierCreationModal :userPermissions="$userPermissions"/>
+            <x-supplierCreationModal :user="$user"/>
         @endif
         <div class="table-header mt-4">
             <h2 class="h3">

@@ -315,8 +315,9 @@ class Order extends Model
      */
     public function setStatus(Status|string $status, bool $save = true): void
     {
+        $status = is_string($status) ? $status : $status->value;
         if ($save) {
-            $this->setAttribute('status', is_string($status) ? $status : $status->value);
+            $this->setAttribute('status', $status);
         } else {
             $this->attributes['status'] = $status;
         }
@@ -441,7 +442,7 @@ class Order extends Model
      * @param  bool  $save  : si la fonction sauvegarde en base de données (true par défaut)
      * @return bool true si l'enregistrement du fichier a fonctionné, false sinon
      */
-    public function uploadPurchaseOrder(Request $request, bool $is_signed = false, bool $save = true): bool
+    public function uploadPurchaseOrder(Request $request, ?bool $is_signed = false, bool $save = true): bool
     {
         $request->validate([
             'purchase_order' => 'required|mimes:pdf,doc,docx|max:10240', // Max 10MB
