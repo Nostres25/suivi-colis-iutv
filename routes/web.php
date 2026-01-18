@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Cookie;
+
 
 Route::get('/', [\App\Http\Controllers\OrderController::class, 'viewOrders']);
 
@@ -27,3 +30,7 @@ Route::get('/logout', function (Request $request) {
 
     dd($request->cookie());
 });
+
+// Affiche la page de profil et permet de modifier les informations de l'utilisateur
+Route::get('/account/profile', [ProfileController::class, 'show'])->name('profile.show');
+Route::post('/account/profile', [ProfileController::class, 'update'])->name('profile.update');

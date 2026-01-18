@@ -77,7 +77,7 @@
                         <span class="visually-hidden">Options du compte</span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-lg-right">
-                        <a class="dropdown-item" href="/account#profile">Mon profil</a>
+                        <a class="dropdown-item" href="/account/profile">Mon profil</a>
                         <a class="dropdown-item" href="/account#settings">Mes paramètres</a>
                         <a class="dropdown-item" href="/account#email">Gérer mon email</a>
                         <div class="dropdown-divider"></div>

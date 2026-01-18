@@ -28,8 +28,9 @@ class User extends Authenticatable
         'first_name',
         'email',
         'phone_number',
+        'campus',
     ];
-
+ 
     /**
      * Retourne le prénom de l'utilisateur
      *

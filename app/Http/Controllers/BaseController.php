@@ -88,10 +88,10 @@ abstract class BaseController extends Controller
 
                         // Rôle que l'utilisateur de test doit avoir (mettre null pour pas de rôle en particulier)
                         // Choix du rôle de l'utilisateur : Service financier, Directeur IUT, Département Info, Département SD, Département RT
-                        $roleToHave = 'Département Indo';
+                        $roleToHave = 'Département Info';
 
                         // Nombre de rôles que l'utilisateur de test doit avoir
-                        $roleNumber = 2;
+                        $roleNumber = 1;
 
                         return (is_null($roleToHave) || $roles->first((fn (Role $role) => $role->getName() == $roleToHave))) && $roles->count() == $roleNumber;
 
@@ -125,7 +125,7 @@ abstract class BaseController extends Controller
         }
 
         Auth::login($user);
-
+        $request->session()->flash('login_alert', "Connecté en tant que {$user->getFullName()}");
         return ['success' => true];
     }
 
