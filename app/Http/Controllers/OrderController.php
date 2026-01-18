@@ -36,18 +36,103 @@ class OrderController extends BaseController
         $userDepartments = $userRoles->filter(fn (Role $role) => $role->isDepartment()); // Filtre des rôles qui sont des départements
 
         // Récupération uniquement des commandes dont l'utilisateur a accès
-        /* @var Paginator $orders */
-        $orders =
-            $user->hasPermission(PermissionValue::CONSULTER_TOUTES_COMMANDES)
-                ? Order::paginate(20)
-                : Order::where(function (Builder $query) use ($userDepartments, $userPermissions) {
-                    $userDepartments->each(function (Role $department) use ($query, $userPermissions) {
-                        if ($userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value]) {
-                            $query->orWhere('department_id', $department->getId());
-                        }
-                    });
-                })
-                    ->paginate(20);
+        $userId = $user->getId();
+
+        // 1. On initialise la Query de base
+        $query = Order::query();
+
+        // 2. Filtrage des accès (Ta logique existante conservée)
+        if (! $user->hasPermission(PermissionValue::CONSULTER_TOUTES_COMMANDES)) {
+            $query->where(function (Builder $q) use ($userDepartments, $userPermissions) {
+                $userDepartments->each(function (Role $department) use ($q, $userPermissions) {
+                    if ($userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value]) {
+                        $q->orWhere('department_id', $department->getId());
+                    }
+                });
+            });
+        }
+
+        // 3. Application du Tri Intelligent (La nouveauté)
+
+        // On détermine le type de rôle dominant pour le tri
+        // Note : Un utilisateur peut avoir plusieurs rôles, ici on priorise la logique la plus spécifique
+        $isDirecteur = $user->hasPermission(PermissionValue::SIGNER_BONS_DE_COMMANDES);
+        $isFinancier = $user->hasPermission(PermissionValue::GERER_PAIEMENT_FOURNISSEURS);
+        $isResponsableColis = $user->getRoles()->contains('id', 2); // ID 2 = Responsable colis
+        $isDepartement = $userDepartments->isNotEmpty();
+
+        if ($isDirecteur) {
+            // LE DIRECTEUR
+            // Priorité 1 : Les bons de commandes à signer (Action principale)
+            // Priorité 2 : Les commandes au stade Devis (Pour intervenir si le service financier tarde)
+            // Priorité 3 : Le reste (Historique, etc.)
+
+            $sqlSort = "CASE
+        WHEN status = 'BON_DE_COMMANDE_NON_SIGNE' THEN 1
+        WHEN status = 'DEVIS' THEN 2
+        ELSE 3
+    END";
+
+            $query->orderByRaw($sqlSort);
+
+        } elseif ($isFinancier) {
+            // LE SERVICE FINANCIER
+            // Priorité : Devis à transformer, BC à envoyer, Factures à payer
+            $sqlSort = "CASE
+        WHEN status = 'DEVIS' THEN 1
+        WHEN status = 'BON_DE_COMMANDE_SIGNE' THEN 1
+        WHEN status = 'SERVICE_FAIT' THEN 1
+        ELSE 2
+    END";
+            $query->orderByRaw($sqlSort);
+
+        } elseif ($isResponsableColis) {
+            // RESPONSABLE COLIS
+            // Priorité : Commandes en attente de livraison ou partiellement livrées
+            $sqlSort = "CASE
+        WHEN status = 'COMMANDE_AVEC_REPONSE' THEN 1
+        WHEN status = 'PARTIELLEMENT_LIVRE' THEN 1
+        ELSE 2
+    END";
+            $query->orderByRaw($sqlSort);
+
+        } elseif ($isDepartement) {
+            // LES DEPARTEMENTS
+            // Priorité 1 : Mes brouillons (Author = Moi ET Status = Brouillon)
+            // Priorité 2 : Les problèmes (Refus)
+            // Priorité 3 : Commandes en cours (Pas livrées/payées et Pas brouillon des autres)
+            // Priorité 4 : Archives (Livré et payé)
+
+            $sqlSort = "CASE
+        WHEN status = 'BROUILLON' AND author_id = ? THEN 1
+        WHEN status IN ('DEVIS_REFUSE', 'BON_DE_COMMANDE_REFUSE', 'COMMANDE_REFUSEE') THEN 2
+        WHEN status NOT IN ('LIVRE_ET_PAYE', 'BROUILLON') THEN 3
+        ELSE 4
+    END";
+
+            // On passe l'ID utilisateur pour la condition 'author_id = ?'
+            $query->orderByRaw($sqlSort, [$userId]);
+        }
+
+        // 4. Tri Secondaire (Tie-breaker)
+        // "plus une commande reste non modifiée depuis longtemps plus elle est prioritaire"
+        // Donc on trie par date de mise à jour ASC (les plus vieilles dates en premier)
+        $query->orderBy('updated_at', 'asc');
+
+        // 5. Pagination et Récupération
+        $orders = $query->paginate(20);
+        //        /* @var Paginator $orders */
+        //        $orders =
+        //            $user->hasPermission(PermissionValue::CONSULTER_TOUTES_COMMANDES)
+        //                ? Order::paginate(20)
+        //                : Order::where(function (Builder $query) use ($userDepartments, $userPermissions) {
+        //                    $userDepartments->each(function (Role $department) use ($query, $userPermissions) {
+        //                        if ($userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value]) {
+        //                            $query->orWhere('department_id', $department->getId());
+        //                        }
+        //                    });
+        //                })
+        //                    ->paginate(20);
         $suppliers = Supplier::all(['id', 'company_name', 'is_valid']); // Récupération uniquement des informations utiles à propos des fournisseurs
 
         //        /* @var Package $package */
@@ -95,7 +180,6 @@ class OrderController extends BaseController
             $order->setStatus($isSigned ? Status::BON_DE_COMMANDE_SIGNE : Status::BON_DE_COMMANDE_NON_SIGNE, false);
         }
 
-
         $sucessToSave = $order->save();
         if (! $sucessToSave) {
             session()->flash('purchaseOrderError-'.$id, 'Une erreur est survenue à la sauvegarde de la commande !');
@@ -129,7 +213,8 @@ class OrderController extends BaseController
 
     public function modalRefuseToSign($id) {}
 
-    public function modalRefuse($id) {
+    public function modalRefuse($id)
+    {
         $request = request();
         $about = $request['about'];
 
@@ -137,27 +222,15 @@ class OrderController extends BaseController
 
     public function modalPaid($id) {}
 
-    public function modalUploadDeliveryNote($id) {
+    public function modalUploadDeliveryNote($id) {}
 
-    }
+    public function modalSentToSupplier($id) {}
 
-    public function modalSentToSupplier($id) {
+    public function modalDeliveredPackage($id) {}
 
-    }
+    public function modalDeliveredAll(string $id) {}
 
-    public function modalDeliveredPackage($id) {
-
-    }
-
-    public function modalDeliveredAll(string $id)
-    {
-
-    }
-
-    public function modalViewDetails(string $id)
-    {
-
-    }
+    public function modalViewDetails(string $id) {}
 
     public function sendAutoMail(Request $request)
     {

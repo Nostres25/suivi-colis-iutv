@@ -98,6 +98,7 @@
                         <div>
 {{--                            TODO faire fonctionner tous les boutons d'actions--}}
                             {{-- TODO optimiser tout ça notamment avec un switch par status et après seulement vérifier les rôles + cache pour éviter que la vérification de permissions envoie pleins de requêtes--}}
+                            {{-- TODO ajouter le bouton bon de commande signé du DIRECTEUR IUT pour le statut devis aussi --}}
                             @if($order->getStatus() == Status::BON_DE_COMMANDE_NON_SIGNE && ($user->hasPermission(PermissionValue::SIGNER_BONS_DE_COMMANDES) || $user->hasPermission(PermissionValue::GERER_BONS_DE_COMMANDES)))
                                 <button class="btn btn-success btn-action mb-2 btn-load-modal" title="Déposer un bon de commande signé" type="button" data-url="{{ route('orders.modal.uploadPurchaseOrder', ['id' => $order->getId(), 'sign' => true]) }}">
 {{--                                    data-bs-toggle="modal" data-bs-target="#addPurchaseOrderModal-{{$order->getId()}}" id="addPurchaseOrderButton-{{$order->getId()}}"--}}
