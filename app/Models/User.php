@@ -210,24 +210,68 @@ class User extends Authenticatable
     }
 
     /**
-     * Définit le prénom de l'utilisateur en covertissant la chaîne en miniscule
-     * puis en mettant la première lettre en majuscule avant de l'assigner.
+     * Définit le prénom de l'utilisateur
+     * Le prénom est d'abord mis en minuscule
+     * puis la première lettre est mise en majuscule.
      *
-     * @return void true si l'enregistrement du fichier a fonctionné, false sinon
+     * @param  string  $firstName  prénom de l'utilisateur
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
      */
-    public function setFirstName(string $firstName): void
+    public function setFirstName(string $firstName, bool $save = true): void
     {
-        $lowerFirstName = mb_strtolower($firstName, 'UTF-8');
-        $properFirstName = ucfirst($lowerFirstName);
-        $this->first_name = $properFirstName;
-
+        $firstName = ucfirst(strtolower($firstName, 'UTF-8'));
+        if ($save) {
+            $this->setAttribute('first_name', $firstName);
+        } else {
+            $this->attributes['first_name'] = $firstName;
+        }
     }
 
-    public function setLastName(string $lastName): void
+    /**
+     * Définit le nom de l'utilisateur
+     * Le nom est d'abord mis en majuscule
+     *
+     * @param  string  $lastName  nom de l'utilisateur
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
+     */
+    public function setLastName(string $lastName, bool $save = true): void
     {
-        $lowerLastName = mb_strtolower($lastName, 'UTF-8');
-        $properLastName = ucfirst($lowerLastName);
-        $this->last_name = $properLastName;
+        $lastName = strtoupper($lastName, 'UTF-8');
+        if ($save) {
+            $this->setAttribute('last_name', $lastName);
+        } else {
+            $this->attributes['last_name'] = $lastName;
+        }
+    }
+
+    /**
+     * Définit le numéro de téléphone de l'utilisateur
+     *
+     * @param  string  $phoneNumber  numéro de téléphone de l'utilisateur
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
+     */
+    public function setPhoneNumber(string $phoneNumber, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('phone_number', $phoneNumber);
+        } else {
+            $this->attributes['phone_number'] = $phoneNumber;
+        }
+    }
+
+    /**
+     * Définit l'adresse email de l'utilisateur
+     *
+     * @param  string  $emailAdress  adresse email de l'utilisateur
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
+     */
+    public function setEmail(string $emailAdress, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('email', $emailAdress);
+        } else {
+            $this->attributes['email'] = $emailAdress;
+        }
     }
 
     /**

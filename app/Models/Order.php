@@ -265,31 +265,46 @@ class Order extends Model
      * Définir le titre d'une commande. Cela va automatiquement passer la première lettre en majuscule
      *
      * @param  string  $title  Titre à définir qui doit décrire la commande de manière assez concise (taille max de 255)
+     * @param  bool  $save  : si la fonction sauvegarde en base de données
      */
-    public function setTitle(string $title): void
+    public function setTitle(string $title, bool $save = true): void
     {
-        // TODO Vérifier si cette solution sauvegarde correctement. Sinon faire en sorte que ça sauvegarde
-        $this->setAttribute('title', ucfirst($title));
+        $title = ucfirst($title);
+        if ($save) {
+            $this->setAttribute('title', $title);
+        } else {
+            $this->attributes['title'] = $title;
+        }
     }
 
     /**
      * Définir le numéro d'une commande.
      *
      * @param  string  $order_num  Numéro de commande à définir
+     * @param  bool  $save  : si la fonction sauvegarde en base de données
      */
-    public function setOrderNumber(string $order_num): void
+    public function setOrderNumber(string $order_num, bool $save = true): void
     {
-        $this->setAttribute('order_num', $order_num);
+        if ($save) {
+            $this->setAttribute('order_num', $order_num);
+        } else {
+            $this->attributes['order_num'] = $order_num;
+        }
     }
 
     /**
      * Définir la déscription longue de la commande.
      *
      * @param  string  $description  Description de commande à définir
+     * @param  bool  $save  : si la fonction sauvegarde en base de données
      */
-    public function setDescription(string $description): void
+    public function setDescription(string $description, bool $save = true): void
     {
-        $this->setAttribute('description', $description);
+        if ($save) {
+            $this->setAttribute('description', $description);
+        } else {
+            $this->attributes['description'] = $description;
+        }
     }
 
     /**
@@ -312,20 +327,59 @@ class Order extends Model
      * Définir le coût en euros total de la commande.
      *
      * @param  float  $cost  Coût de la commande à définir
+     * @param  bool  $save  : si la fonction sauvegarde en base de données
      */
-    public function setCost(float $cost): void
+    public function setCost(float $cost, bool $save = true): void
     {
-        $this->setAttribute('cost', $cost);
+        if ($save) {
+            $this->setAttribute('cost', $cost);
+        } else {
+            $this->attributes['cost'] = $cost;
+        }
     }
 
     /**
      * Définir le numéro du devis la commande.
      *
-     * @param  string  $quote_num  Coût de la commande à définir
+     * @param  string  $quote_num  Coût de la commande à définir.
+     * @param  bool  $save  : si la fonction sauvegarde en base de données
      */
-    public function setQuoteNumber(string $quote_num): void
+    public function setQuoteNumber(string $quote_num, bool $save = true): void
     {
-        $this->setAttribute('quote_num', $quote_num);
+        if ($save) {
+            $this->setAttribute('quote_num', $quote_num);
+        } else {
+            $this->attributes['quote_num'] = $quote_num;
+        }
+
+    }
+
+    // TODO : Autre moyen de récupérer l'url d'un fichier (à tester)
+    public function getUrlQuoteAlt(): ?string
+    {
+        if (is_null($this->path_quote)) {
+            return null;
+        }
+
+        return asset('storage/'.$this->path_quote);
+    }
+
+    public function getUrlPurchaseOrderAlt(): ?string
+    {
+        if (is_null($this->path_purchase_order)) {
+            return null;
+        }
+
+        return asset('storage/'.$this->path_purchase_order);
+    }
+
+    public function getUrlDeliveryNoteAlt(): ?string
+    {
+        if (is_null($this->path_delivery_note)) {
+            return null;
+        }
+
+        return asset('storage/'.$this->path_delivery_note);
     }
 
     // TODO peut-être un peut factoriser l'upload des fichiers mais... plus tard
@@ -349,7 +403,7 @@ class Order extends Model
 
             try {
 
-                $fileName = $file->getOriginalName();
+                $fileName = $file->getClientOriginalName();
 
                 if (! stripos($fileName, 'devis')) {
                     $fileName = 'Devis'.$fileName;
@@ -453,7 +507,7 @@ class Order extends Model
 
             try {
 
-                $fileName = $file->getOriginalName();
+                $fileName = $file->getClientOriginalName();
 
                 if (! stripos($fileName, 'BonDeLivraison')) {
                     $fileName = 'BonDeLivraison'.$fileName;
@@ -481,34 +535,6 @@ class Order extends Model
         }
 
         return false;
-    }
-
-    // TODO : Autre moyen de récupérer l'url d'un fichier (à tester)
-    public function getUrlQuoteAlt(): ?string
-    {
-        if (is_null($this->path_quote)) {
-            return null;
-        }
-
-        return asset('storage/'.$this->path_quote);
-    }
-
-    public function getUrlPurchaseOrderAlt(): ?string
-    {
-        if (is_null($this->path_purchase_order)) {
-            return null;
-        }
-
-        return asset('storage/'.$this->path_purchase_order);
-    }
-
-    public function getUrlDeliveryNoteAlt(): ?string
-    {
-        if (is_null($this->path_delivery_note)) {
-            return null;
-        }
-
-        return asset('storage/'.$this->path_delivery_note);
     }
 
     /**

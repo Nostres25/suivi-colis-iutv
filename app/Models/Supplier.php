@@ -117,6 +117,127 @@ class Supplier extends Model
     }
 
     /**
+     * Définit le nom de l'entreprise du fournisseur
+     *
+     * @param  string  $companyName  nom de l'entreprise fournisseur
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
+     */
+    public function setCompanyName(string $companyName, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('company_name', $companyName);
+        } else {
+            $this->attributes['company_name'] = $companyName;
+        }
+    }
+
+    /**
+     * Définit le SIRET de l'entreprise du fournisseur
+     *
+     * @param  string  $siret  SIRET de l'entreprise fournisseur
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
+     */
+    public function setSiret(string $siret, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('siret', $siret);
+        } else {
+            $this->attributes['siret'] = $siret;
+        }
+    }
+
+    /**
+     * Définit l'email de contact du fournisseur.
+     *
+     * @param  string  $email  email de contact du fournisseur
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
+     */
+    public function setEmail(string $email, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('email', $email);
+        } else {
+            $this->attributes['email'] = $email;
+        }
+    }
+
+    /**
+     * Définit le numéro de téléphone de contact du fournisseur.
+     *
+     * @param  string  $phone_number  numéro de téléphone de contact du fournisseur
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
+     */
+    public function setPhoneNumber(string $phone_number, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('phone_number', $phone_number);
+        } else {
+            $this->attributes['phone_number'] = $phone_number;
+        }
+    }
+
+    /**
+     * Définit le nom du contact dans l'entreprise fournisseur.
+     *
+     * @param  string  $contact_name  nom du contact dans l'entreprise fournisseur
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
+     */
+    public function setContactName(string $contact_name, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('contact_name', $contact_name);
+        } else {
+            $this->attributes['contact_name'] = $contact_name;
+        }
+    }
+
+    /**
+     * Définit la description des spécialités de l'entreprise fournisseur.
+     *
+     * @param  string  $speciality  description des spécialités de l'entreprise fournisseur.
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
+     */
+    public function setSpeciality(string $speciality, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('speciality', $speciality);
+        } else {
+            $this->attributes['speciality'] = $speciality;
+        }
+    }
+
+    /**
+     * Définit le texte des notes sur le fournisseur.
+     *
+     * @param  string  $note  texte des notes sur le fournisseur.
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
+     */
+    public function setNote(string $note, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('note', $note);
+        } else {
+            $this->attributes['note'] = $note;
+        }
+    }
+
+    /**
+     * Définit si le fournisseur est considéré comme valide, false sinon.
+     * Un fournisseur valide est un fournisseur auprès duquel il est possible de commander.
+     *
+     * @param  bool  $is_valid  true si le fournisseur est considéré comme valide, false sinon.
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données
+     */
+    public function setValidity(bool $is_valid, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('is_valid', $is_valid);
+        } else {
+            $this->attributes['is_valid'] = $is_valid;
+        }
+    }
+
+    /**
      * Retourne la date de la dernière modification du fournisseur
      *
      * @return ?string // date

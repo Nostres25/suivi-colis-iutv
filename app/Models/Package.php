@@ -77,6 +77,68 @@ class Package extends Model
     }
 
     /**
+     * Définit le nom du colis
+     *
+     * @param  string  $name  nom du colis.
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données.
+     */
+    public function setName(string $name, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('name', $name);
+        } else {
+            $this->attributes['name'] = $name;
+        }
+    }
+
+    /**
+     * Définit le coût unitaire du colis
+     *
+     * @param  int  $cost  coût unitaire du colis.
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données.
+     */
+    public function setCout(int $cost, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('cost', $cost);
+        } else {
+            $this->attributes['cost'] = $cost;
+        }
+    }
+
+    /**
+     * Définit le délai prévu de livraison
+     * Généralement lorsque cela a été communiqué par le fournisseur après l'envoi du bon de commande
+     *
+     * @param  string  $expected_delivery_time  délai prévu livraison
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données.
+     */
+    public function setExpectedDeliveryTime(string $expected_delivery_time, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('expected_delivery_time', $expected_delivery_time);
+        } else {
+            $this->attributes['expected_delivery_time'] = $expected_delivery_time;
+        }
+    }
+
+    /**
+     * Définit la date prévue de livraison
+     * Généralement lorsque le colis est livré
+     *
+     * @param  string  $shipping_date  date prévue de livraison
+     * @param  bool  $save  si la donnée doit directement être sauvegardée en base de données.
+     */
+    public function setShippingDate(string $shipping_date, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('shipping_date', $shipping_date);
+        } else {
+            $this->attributes['shipping_date'] = $shipping_date;
+        }
+    }
+
+    /**
      * Retourne la date de la dernière modification du colis
      *
      * @return ?string // date

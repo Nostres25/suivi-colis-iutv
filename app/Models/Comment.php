@@ -79,6 +79,21 @@ class Comment extends Model
     }
 
     /**
+     * Définit le contenu du commentaire
+     *
+     * @param  string  $content  contenu du commentaire.
+     * @param  bool  $save  : si la fonction sauvegarde en base de données
+     */
+    public function setContent(string $content, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('content', $content);
+        } else {
+            $this->attributes['content'] = $content;
+        }
+    }
+
+    /**
      * Retourne l'utilisateur, auteur de la commande
      *
      * @return BelongsTo // Utilisateur, auteur de la commande

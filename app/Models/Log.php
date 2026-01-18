@@ -59,7 +59,6 @@ class Log extends Model
         return $this->getAttribute('order');
     }
 
-
     /**
      * Retourne la date de création du colis
      *
@@ -68,6 +67,21 @@ class Log extends Model
     public function getCreationDate(): string
     {
         return $this->attributes[$this->getCreatedAtColumn()];
+    }
+
+    /**
+     * Définit le contenu du log
+     *
+     * @param  string  $content  contenu du log.
+     * @param  bool  $save  : si la fonction sauvegarde en base de données
+     */
+    public function setContent(string $content, bool $save = true): void
+    {
+        if ($save) {
+            $this->setAttribute('content', $content);
+        } else {
+            $this->attributes['content'] = $content;
+        }
     }
 
     /**
