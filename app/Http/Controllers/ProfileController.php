@@ -31,14 +31,12 @@ class ProfileController extends BaseController
         $validated = $request->validate([
             'email' => ['nullable', 'email', 'max:255'],
             'phone_number' => ['nullable', 'string', 'max:30'],
-            'campus' => ['nullable', 'in:Villetaneuse,Bobigny,Saint-Denis'],
         ]);
 
         // On garde l'ancien état pour comparer
         $before = [
             'email' => $user->email,
             'phone_number' => $user->phone_number,
-            'campus' => $user->campus,
         ];
 
         $user->fill($validated);
@@ -55,7 +53,7 @@ class ProfileController extends BaseController
         // Envoi d'un mail uniquement si on a une adresse email
         if (!empty($user->email)) {
             $changes = [];
-            foreach (['email', 'phone_number', 'campus'] as $field) {
+            foreach (['email', 'phone_number'] as $field) {
                 if (($before[$field] ?? null) !== ($user->$field ?? null)) {
                     $changes[$field] = ['before' => $before[$field] ?? '', 'after' => $user->$field ?? ''];
                 }
@@ -88,7 +86,6 @@ class ProfileController extends BaseController
             $label = match ($field) {
                 'email' => 'Email',
                 'phone_number' => 'Téléphone',
-                'campus' => 'Campus',
                 default => $field,
             };
             $lines[] = "- {$label} : \"{$diff['before']}\" → \"{$diff['after']}\"";

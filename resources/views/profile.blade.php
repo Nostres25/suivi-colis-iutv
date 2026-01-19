@@ -84,17 +84,6 @@
                     <input name="phone_number" type="text" class="form-control" value="{{ old('phone_number', $user->phone_number) }}">
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Campus</label>
-                    @php $selected = old('campus', $user->campus); @endphp
-                    <select name="campus" class="form-select">
-                        <option value="">— Sélectionner —</option>
-                        <option value="Villetaneuse" @selected($selected === 'Villetaneuse')>Villetaneuse</option>
-                        <option value="Bobigny" @selected($selected === 'Bobigny')>Bobigny</option>
-                        <option value="Saint-Denis" @selected($selected === 'Saint-Denis')>Saint-Denis</option>
-                    </select>
-                </div>
-
                 <button class="btn btn-primary">Enregistrer</button>
             </form>
         </div>
