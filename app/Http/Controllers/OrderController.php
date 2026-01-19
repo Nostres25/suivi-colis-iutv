@@ -20,33 +20,43 @@ class OrderController extends BaseController
 {
     // TODO Annotation pour utiliser la fonction auth() de AuthController pour chaque page
     public function viewOrders(Request $request): View|Response|RedirectResponse|Redirector
-    {
-
+    { 
         // TODO réduire le nombre de requêtes et voir à propos du cache (je pense qu'on ne fera pas de cache mais on opti les requêtes)
         // TODO factoriser avec un déctorateur le code pour l'utilisateur et si possible factoriser l'envoi des variables courantes (ex: $suerPermissions)
         /* @var User $user */
         $user = Auth::user();
-        $userRoles = $user->getRoles(); // Récupération des rôles en base de données
-        $userPermissions = Role::getPermissionsAsDict($userRoles); // Récupération d'un dictionnaire des permissions pour simplifier la vérification de permissions
+        $userRoles = $user->getRoles(); 
+        $userPermissions = Role::getPermissionsAsDict($userRoles); 
+        $userDepartments = $userRoles->filter(fn (Role $role) => $role->isDepartment()); 
 
-        $userDepartments = $userRoles->filter(fn (Role $role) => $role->isDepartment()); // Filtre des rôles qui sont des départements
+        // --- LOGIQUE DE RECHERCHE ---
+        $search = $request->input('search');
+        $query = Order::query();
 
-        // Récupération uniquement des commandes dont l'utilisateur a accès
-        $orders =
-            $userPermissions[PermissionValue::ADMIN->value] || $userPermissions[PermissionValue::CONSULTER_TOUTES_COMMANDES->value]
-                ? Order::paginate(20)
-                : Order::where(function (Builder $query) use ($userDepartments, $userPermissions) {
-                    $userDepartments->each(function (Role $department) use ($query, $userPermissions) {
-                        if ($userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value]) {
-                            $query->orWhere('department_id', $department->getId());
-                        }
-                    });
-                })
-                    ->paginate(20);
+        // 1. Filtre de sécurité (Permissions/Départements)
+        if (!($userPermissions[PermissionValue::ADMIN->value] || $userPermissions[PermissionValue::CONSULTER_TOUTES_COMMANDES->value])) {
+            $query->where(function (Builder $q) use ($userDepartments, $userPermissions) {
+                $userDepartments->each(function (Role $department) use ($q, $userPermissions) {
+                    if ($userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value]) {
+                        $q->orWhere('department_id', $department->getId());
+                    }
+                });
+            });
+        }
 
-        $suppliers = Supplier::all(['id', 'company_name', 'is_valid']); // Récupération uniquement des informations utiles à propos des fournisseurs
+        // 2. Filtre de recherche (si rempli)
+        if ($search) {
+            $query->where(function (Builder $q) use ($search) {
+                $q->where('order_num', 'LIKE', "%{$search}%")
+                  ->orWhere('title', 'LIKE', "%{$search}%");
+            });
+        }
 
-        // TODO flash messages: redirect('urls.create')->with('success', 'URL has been added');
+        $orders = $query->paginate(20)->withQueryString();
+        // ----------------------------
+
+        $suppliers = Supplier::all(['id', 'company_name', 'is_valid']); 
+
         return view('orders', [
             'user' => $user,
             'orders' => $orders,
@@ -55,6 +65,7 @@ class OrderController extends BaseController
             'userPermissions' => $userPermissions,
             'userRoles' => $userRoles,
             'userDepartments' => $userDepartments,
+            'search' => $search, // Variable pour la vue
         ]);
     }
 
@@ -64,10 +75,9 @@ class OrderController extends BaseController
     }
 
     public function submitNewOrder(Request $request): View
-    {
+    { 
         // TODO Do something to save the new order by the post form
         // Send a flash message
-
         return $this->viewOrders($request);
     }
 }
