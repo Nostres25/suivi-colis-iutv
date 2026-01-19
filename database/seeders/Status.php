@@ -38,7 +38,7 @@ enum Status: string
     public static function getDescriptions(): string
     {
         return "
-        - BROUILLON : Commande enregistrée à l'état de brouillon. Visible seulement par les membres du département qui a crée la commande.
+        - BROUILLON : Commande enregistrée à l'état de brouillon. Mis en avant seulement pour l'auteur de la commande.
         - DEVIS : Commande à l'état de devis. En attente d'un bon de commande (première étape).
         - DEVIS_REFUSE : À l'état de devis. Le service financier a refusé de faire un bon de commande.
         - BON_DE_COMMANDE_NON_SIGNE : À l'état de bon de commande non signé. Le bon de commande réalisé par le service financier doit être signé par le directeur.
@@ -56,7 +56,7 @@ enum Status: string
     public static function getDescriptionsDict(): array
     {
         return [
-            Status::BROUILLON->value => "Commande enregistrée à l'état de brouillon. Visible seulement par les membres du département qui a crée la commande.",
+            Status::BROUILLON->value => "Commande enregistrée à l'état de brouillon. Mis en avant seulement pour l'auteur de la commande.",
             Status::DEVIS->value => "Commande à l'état de devis. En attente d'un bon de commande (première étape).",
             Status::DEVIS_REFUSE->value => "À l'état de devis. Le service financier a refusé de faire un bon de commande.",
             Status::BON_DE_COMMANDE_NON_SIGNE->value => "À l'état de bon de commande non signé. Le bon de commande réalisé par le service financier doit être signé par le directeur.",

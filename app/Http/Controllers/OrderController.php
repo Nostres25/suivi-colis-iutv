@@ -37,12 +37,9 @@ class OrderController extends BaseController
 
         // Récupération uniquement des commandes dont l'utilisateur a accès
         $userId = $user->getId();
-
-        // 1. On initialise la Query de base
+        // Initialisation de la requête
         $query = Order::query();
-
-        // 2. Filtrage des accès (Ta logique existante conservée)
-        if (! $user->hasPermission(PermissionValue::CONSULTER_TOUTES_COMMANDES)) {
+        if (!$user->hasPermission(PermissionValue::CONSULTER_TOUTES_COMMANDES)) {
             $query->where(function (Builder $q) use ($userDepartments, $userPermissions) {
                 $userDepartments->each(function (Role $department) use ($q, $userPermissions) {
                     if ($userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value]) {
@@ -52,75 +49,97 @@ class OrderController extends BaseController
             });
         }
 
-        // 3. Application du Tri Intelligent (La nouveauté)
+        // --- 2. TRI INTELLIGENT AVEC ENUMS ---
 
-        // On détermine le type de rôle dominant pour le tri
-        // Note : Un utilisateur peut avoir plusieurs rôles, ici on priorise la logique la plus spécifique
+        // Définition des rôles
         $isDirecteur = $user->hasPermission(PermissionValue::SIGNER_BONS_DE_COMMANDES);
         $isFinancier = $user->hasPermission(PermissionValue::GERER_PAIEMENT_FOURNISSEURS);
-        $isResponsableColis = $user->getRoles()->contains('id', 2); // ID 2 = Responsable colis
+        // On identifie le responsable colis par son ID de rôle (2) car ses permissions sont assez génériques
+        $isResponsableColis = $userRoles->contains('id', 2);
         $isDepartement = $userDepartments->isNotEmpty();
 
         if ($isDirecteur) {
-            // LE DIRECTEUR
-            // Priorité 1 : Les bons de commandes à signer (Action principale)
-            // Priorité 2 : Les commandes au stade Devis (Pour intervenir si le service financier tarde)
-            // Priorité 3 : Le reste (Historique, etc.)
+            // TRI DIRECTEUR
+            $bcNonSigne = Status::BON_DE_COMMANDE_NON_SIGNE->value;
+            $devis = Status::DEVIS->value;
 
-            $sqlSort = "CASE
-        WHEN status = 'BON_DE_COMMANDE_NON_SIGNE' THEN 1
-        WHEN status = 'DEVIS' THEN 2
-        ELSE 3
-    END";
-
-            $query->orderByRaw($sqlSort);
+            $query->orderByRaw("CASE
+            WHEN status = '$bcNonSigne' THEN 1
+            WHEN status = '$devis' THEN 2
+            ELSE 3
+        END");
 
         } elseif ($isFinancier) {
-            // LE SERVICE FINANCIER
-            // Priorité : Devis à transformer, BC à envoyer, Factures à payer
-            $sqlSort = "CASE
-        WHEN status = 'DEVIS' THEN 1
-        WHEN status = 'BON_DE_COMMANDE_SIGNE' THEN 1
-        WHEN status = 'SERVICE_FAIT' THEN 1
-        ELSE 2
-    END";
-            $query->orderByRaw($sqlSort);
+            // TRI FINANCIER
+            $p1 = Status::SERVICE_FAIT->value;
+            $p2 = Status::DEVIS->value;
+            $p3 = Status::BON_DE_COMMANDE_NON_SIGNE->value;
+            $p4 = Status::BON_DE_COMMANDE_REFUSE->value;
+            $p5 = Status::LIVRE_ET_PAYE->value;
+
+            $query->orderByRaw("CASE
+            WHEN status = '$p1' THEN 1
+            WHEN status = '$p2' THEN 2
+            WHEN status = '$p3' THEN 3
+            WHEN status = '$p4' THEN 4
+            WHEN status = '$p5' THEN 5
+            ELSE 6
+        END");
 
         } elseif ($isResponsableColis) {
-            // RESPONSABLE COLIS
-            // Priorité : Commandes en attente de livraison ou partiellement livrées
-            $sqlSort = "CASE
-        WHEN status = 'COMMANDE_AVEC_REPONSE' THEN 1
-        WHEN status = 'PARTIELLEMENT_LIVRE' THEN 1
-        ELSE 2
-    END";
-            $query->orderByRaw($sqlSort);
+            // TRI RESPONSABLE COLIS
+            // 1. En attente de livraison (Réponse reçue ou Partiel)
+            // 2. Commande envoyée (Potentiellement en attente)
+            // 3. Le reste
+
+            $p1_Colis = implode("','", [
+                Status::COMMANDE_AVEC_REPONSE->value,
+                Status::PARTIELLEMENT_LIVRE->value
+            ]);
+
+            $p2_Colis = Status::COMMANDE->value;
+
+            $query->orderByRaw("CASE
+            WHEN status IN ('$p1_Colis') THEN 1
+            WHEN status = '$p2_Colis' THEN 2
+            ELSE 3
+        END");
 
         } elseif ($isDepartement) {
-            // LES DEPARTEMENTS
-            // Priorité 1 : Mes brouillons (Author = Moi ET Status = Brouillon)
-            // Priorité 2 : Les problèmes (Refus)
-            // Priorité 3 : Commandes en cours (Pas livrées/payées et Pas brouillon des autres)
-            // Priorité 4 : Archives (Livré et payé)
+            // TRI DEPARTEMENTS
+            $brouillon = Status::BROUILLON->value;
+
+            $refusals = implode("','", [
+                Status::DEVIS_REFUSE->value,
+                Status::BON_DE_COMMANDE_REFUSE->value,
+                Status::COMMANDE_REFUSEE->value
+            ]);
+
+            $actionsRequises = implode("','", [
+                Status::BON_DE_COMMANDE_SIGNE->value,
+                Status::COMMANDE->value,
+                Status::COMMANDE_AVEC_REPONSE->value,
+                Status::PARTIELLEMENT_LIVRE->value
+            ]);
 
             $sqlSort = "CASE
-        WHEN status = 'BROUILLON' AND author_id = ? THEN 1
-        WHEN status IN ('DEVIS_REFUSE', 'BON_DE_COMMANDE_REFUSE', 'COMMANDE_REFUSEE') THEN 2
-        WHEN status NOT IN ('LIVRE_ET_PAYE', 'BROUILLON') THEN 3
-        ELSE 4
-    END";
+            WHEN status = '$brouillon' AND author_id = ? THEN 1
+            WHEN status IN ('$refusals') THEN 2
+            WHEN status IN ('$actionsRequises') THEN 3
+            ELSE 4
+        END";
 
-            // On passe l'ID utilisateur pour la condition 'author_id = ?'
-            $query->orderByRaw($sqlSort, [$userId]);
+            $query->orderByRaw($sqlSort, [$user->getId()]);
         }
 
-        // 4. Tri Secondaire (Tie-breaker)
-        // "plus une commande reste non modifiée depuis longtemps plus elle est prioritaire"
-        // Donc on trie par date de mise à jour ASC (les plus vieilles dates en premier)
+        // --- 3. TRI SECONDAIRE (Date) ---
+        // Les plus anciennes (date lointaine) en premier
         $query->orderBy('updated_at', 'asc');
 
-        // 5. Pagination et Récupération
+
+        // --- 4. EXECUTION ---
         $orders = $query->paginate(20);
+
         //        /* @var Paginator $orders */
         //        $orders =
         //            $user->hasPermission(PermissionValue::CONSULTER_TOUTES_COMMANDES)
