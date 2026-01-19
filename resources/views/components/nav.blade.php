@@ -70,7 +70,7 @@
                     Déposer un fichier
                 </button>
                 <div class="btn-group">
-                    <a class="btn btn-secondary" href="/account" role="button" aria-expanded="false">Mon compte</a>
+                    <a class="btn btn-secondary" href="/account/profile" role="button" aria-expanded="false">Mon compte</a>
                     {{-- TODO Problème avec le dropdown qui fait qu'on doit appuyer deux fois sur le bouton pour ouvrir le menu --}}
                     <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -78,8 +78,8 @@
                     </button>
                     <div class="dropdown-menu dropdown-menu-lg-right">
                         <a class="dropdown-item" href="/account/profile">Mon profil</a>
-                        <a class="dropdown-item" href="/account#settings">Mes paramètres</a>
-                        <a class="dropdown-item" href="/account#email">Gérer mon email</a>
+                        <a class="dropdown-item" href="/account/profile">Mes paramètres</a>
+                        <a class="dropdown-item" href="/account/profile">Gérer mon email</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item text-danger" href="/logout">Se déconnecter</a>
                     </div>
