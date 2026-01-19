@@ -177,5 +177,15 @@
         window.location.reload();
     });
 
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginAlert = document.getElementById('login-alert');
+        if (loginAlert) {
+            setTimeout(() => {
+            loginAlert.classList.add('d-none');
+            }, 6000); // 6 sec
+        }
+        });
+
+
 </script>
 </html>

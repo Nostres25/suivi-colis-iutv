@@ -28,8 +28,9 @@ class User extends Authenticatable
         'first_name',
         'email',
         'phone_number',
+        'campus',
     ];
-
+ 
     /**
      * Permissions de l'utilisateur à l'issu de ses rôles.
      *
