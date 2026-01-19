@@ -7,6 +7,7 @@
     <link href="{{asset('bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
     <script type="text/javascript" src="{{asset('bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <link href="{{asset('style.css')}}" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
 </head>
 <body>
 <header class="mb-5">
@@ -14,9 +15,14 @@
     <x-alert></x-alert>
 
     {{--Bannière bleue--}}
-    <div class="page-header">
-        @yield('header')
+<div class="page-header">
+    <div class="container d-flex flex-row-reverse align-items-center justify-content-between">
+        <img src="{{ asset('217.png') }}" alt="Logo Sorbonne" style="height: 70px; width: auto; margin-left: 20px;">
+        <div>
+            @yield('header')
+        </div>
     </div>
+</div>
 </header>
 <main>
     @yield('content')
