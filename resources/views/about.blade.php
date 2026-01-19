@@ -1,75 +1,123 @@
 @extends('base')
 
 @section('header')
-    <div class="container">
-        <h1 class="h1">À propos du projet</h1>
-        <p class="mb-0 opacity-75">Solution de suivi de colis développée au département Informatique de l'IUT à Villetaneuse</p>
-    </div>
+    <h1 class="fw-light mb-0">À propos du projet</h1>
+    <p class="mb-0 opacity-75">Solution de suivi de colis développée au département Informatique de l'IUT</p>
 @endsection
 
 @section('content')
 
-
-    {{-- TODO Écrire un vrai contenu qui présente réellement le projet (notamment choix de reflexions etc...) et l'équipe OU supprimer la page mais pas du texte en IA ça ne sert à rien--}}
-    {{-- TODO Créditer chaque membre des l'équipe --}}
-
-    <!-- Contenu -->
-    <!-- Objectif du Projet -->
-    <section class="mt-4">
-        <div class="flex items-center mb-4">
-            <div class="w-1 h-8 rounded mr-3" style="background-color: #3170A8;"></div>
-            <h2 class="text-2xl font-bold text-gray-800">Objectif du Projet</h2>
-        </div>
-
-        <p class="text-gray-700 leading-relaxed mb-6">
-            Ce projet SAE vise à développer une <strong style="color: #3170A8;">plateforme complète de gestion et de suivi de colis</strong> destinée à optimiser les interactions entre les fournisseurs externes et l'IUT de Villetaneuse.
-        </p>
-
-        <div class="grid md:grid-cols-2 gap-4">
-            <div class="bg-white p-5 rounded-lg shadow border-l-4" style="border-color: #3170A8;">
-                <h3 class="font-bold text-gray-800 mb-2">📦 Suivi en temps réel</h3>
-                <p class="text-gray-600 text-sm">
-                    Assurer une visibilité totale sur l'acheminement de chaque colis, de l'expédition à la réception finale.
-                </p>
-            </div>
-
-            <div class="bg-white p-5 rounded-lg shadow border-l-4" style="border-color: #3170A8;">
-                <h3 class="font-bold text-gray-800 mb-2">🔄 Gestion simplifiée</h3>
-                <p class="text-gray-600 text-sm">
-                    Centraliser et simplifier la gestion des commandes pour tous les acteurs impliqués.
-                </p>
-            </div>
-
-            <div class="bg-white p-5 rounded-lg shadow border-l-4" style="border-color: #3170A8;">
-                <h3 class="font-bold text-gray-800 mb-2">👥 Interface intuitive</h3>
-                <p class="text-gray-600 text-sm">
-                    Offrir une expérience utilisateur fluide et accessible à tous les profils d'utilisateurs.
-                </p>
-            </div>
-
-            <div class="bg-white p-5 rounded-lg shadow border-l-4" style="border-color: #3170A8;">
-                <h3 class="font-bold text-gray-800 mb-2">🎯 Solution professionnelle</h3>
-                <p class="text-gray-600 text-sm">
-                    Développer un outil robuste répondant aux exigences d'un environnement professionnel.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Équipe -->
     <section>
-        <div class="flex items-center mb-4">
-            <div class="w-1 h-8 rounded mr-3" style="background-color: #3170A8;"></div>
-            <h2 class="text-2xl font-bold text-gray-800">Notre Équipe</h2>
+        <div class="table-header">
+            <h2>Objectif du Projet</h2>
+            <p>Pourquoi ce projet existe</p>
         </div>
 
-        <div class="bg-blue-50 p-6 rounded-lg">
-            <p class="text-gray-700 leading-relaxed mb-3">
-                Nous sommes une équipe de <strong style="color: #3170A8;">six étudiants passionnés</strong> en BUT2 Informatique à l'IUT de Villetaneuse. Unis par notre intérêt commun pour le développement web et la gestion de projets, nous collaborons étroitement pour concevoir des solutions techniques innovantes et performantes.
+        <div class="p-4">
+            <p class="mb-4 fs-5">
+                Ce projet a été développé dans le cadre de la <strong>SAE 3.01</strong> pour répondre à un vrai problème rencontré par l'IUT : <strong>la perte et le mauvais suivi des colis</strong>. L'objectif est de simplifier la gestion des commandes et des livraisons pour tous les départements de l'établissement.
             </p>
-            <p class="text-gray-700 leading-relaxed">
-                Notre équipe combine des compétences variées en développement backend avec Laravel, design d'interfaces utilisateur, et gestion de bases de données. Cette diversité de talents nous permet d'aborder chaque aspect du projet avec expertise et créativité.
-            </p>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="bg-primary text-white p-4 rounded shadow h-100">
+                        <h5 class="fw-bold mb-3">Suivi en temps réel</h5>
+                        <p class="mb-0 opacity-90">
+                            Suivre chaque colis depuis la commande jusqu'à la réception finale pour éviter les pertes.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="bg-primary text-white p-4 rounded shadow h-100">
+                        <h5 class="fw-bold mb-3">Gestion centralisée</h5>
+                        <p class="mb-0 opacity-90">
+                            Regrouper toutes les informations sur les commandes au même endroit pour faciliter la coordination.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="bg-primary text-white p-4 rounded shadow h-100">
+                        <h5 class="fw-bold mb-3">Interface simple</h5>
+                        <p class="mb-0 opacity-90">
+                            Proposer un outil accessible à tous, quel que soit le niveau technique de l'utilisateur.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="bg-primary text-white p-4 rounded shadow h-100">
+                        <h5 class="fw-bold mb-3">Solution pratique</h5>
+                        <p class="mb-0 opacity-90">
+                            Créer un outil qui répond vraiment aux besoins quotidiens de l'IUT.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
+
+    <section>
+        <div class="table-header">
+            <h2>L'équipe</h2>
+            <p>Les développeurs du projet</p>
+        </div>
+
+        <div class="p-4">
+            <div class="alert alert-light border mb-4">
+                <p class="mb-3">
+                    Nous sommes <strong>six étudiants en BUT2 Informatique</strong> à l'IUT de Villetaneuse qui ont travaillé sur ce projet dans le cadre de la SAE 3.01. Le développement s'est fait avec <strong>Laravel</strong> pour le backend, <strong>Bootstrap</strong> pour l'interface, et <strong>MariaDB</strong> pour la base de données.
+                </p>
+                <p class="mb-0">
+                    Le projet a nécessité de la collaboration entre nous pour gérer la base de données, développer les fonctionnalités, et créer l'interface. 
+
+            <h5 class="mb-4 fw-bold">Membres de l'équipe</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card border shadow-sm">
+                        <div class="card-body text-center py-3">
+                            <h6 class="mb-0 fw-semibold">Soan MOREAU</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border shadow-sm">
+                        <div class="card-body text-center py-3">
+                            <h6 class="mb-0 fw-semibold">Weame EL MOUTTAQUI</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border shadow-sm">
+                        <div class="card-body text-center py-3">
+                            <h6 class="mb-0 fw-semibold">Yasmine AIT SALAH</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border shadow-sm">
+                        <div class="card-body text-center py-3">
+                            <h6 class="mb-0 fw-semibold">Myriam ABDELLAOUI</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border shadow-sm">
+                        <div class="card-body text-center py-3">
+                            <h6 class="mb-0 fw-semibold">Dimitar DIMITROV</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border shadow-sm">
+                        <div class="card-body text-center py-3">
+                            <h6 class="mb-0 fw-semibold">Megane MAZEKEM</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 @endsection
