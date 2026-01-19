@@ -27,7 +27,3 @@ Route::get('/logout', function (Request $request) {
 
     dd($request->cookie());
 });
-
-Route::get('/director', [\App\Http\Controllers\DirectorController::class, 'dashboard'])->name('director.dashboard');
-Route::post('/director/sign/{id}', [\App\Http\Controllers\DirectorController::class, 'signOrder'])->name('director.sign');
-Route::post('/director/refuse/{id}', [\App\Http\Controllers\DirectorController::class, 'refuseOrder'])->name('director.refuse');
