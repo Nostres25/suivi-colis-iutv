@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('header')
-    <div class="container">
+    <div class="container d-block">
         <h1 class="h1">À propos du projet</h1>
         <p class="mb-0 opacity-75">Solution de suivi de colis développée au département Informatique de l'IUT à Villetaneuse</p>
     </div>

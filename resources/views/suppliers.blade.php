@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('header')
-    <div class="container">
+    <div class="container d-block">
         <h1 class="h1">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-truck"
                  viewBox="0 0 16 16">

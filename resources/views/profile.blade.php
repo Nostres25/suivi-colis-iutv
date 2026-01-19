@@ -45,7 +45,7 @@
 @endsection
 
 @section('header')
-    <div class="container">
+    <div class="container d-block">
         <h1 class="h1">Mon Profil</h1>
         <p class="mb-0 opacity-75">Modifier email, téléphone et campus</p>
     </div>
