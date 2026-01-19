@@ -62,30 +62,16 @@ abstract class BaseController extends Controller
                 - d'une erreur au niveau du CAS de l'université qui provoque le non envoie des informations de connexions sous les noms de clés habituelles. Dans cette situation, c'est aux responsables du CAS de l'université de corriger le problème<br/><br/>
                 ";
 
-                report('Les informations normalement envoyées par le CAS ');
+                // TODO mettre une erreur en log aussi
 
                 return ['success' => false, 'response' => response($response_content, 403)];
             }
 
             $login = $_SERVER['REMOTE_USER'];
-            $displayName = $_SERVER['HTTP_CAS_DISPLAYNAME'] ?? null;
-
-            $prenom = null;
-            $nom = null;
-
-            if ($displayName) {
-                [$prenom, $nom] = explode(' ', $displayName, 2);
-            }
 
             // Création ou récupération de l'utilisateur
-            // TODO ne pas créer automatiquement l'utilisateur (raison -> discussion avec M.Butelle)
-            $user = User::firstOrCreate(
+            $user = User::first(
                 ['login' => $login],
-                [
-                    'first_name' => $prenom,
-                    'last_name' => $nom,
-                    'email' => strtolower($prenom).'.'.strtolower($nom).'@univ-paris13.fr',
-                ]
             );
         } else {
             // En local, on choisit un utilisateur de test
