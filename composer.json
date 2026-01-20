@@ -2,18 +2,17 @@
     "$schema": "https://getcomposer.org/schema.json",
     "name": "suivi-colis-iutv/laravel-app",
     "type": "project",
-    "description": "Application de suivi des colis à l'IUT de Villetaneuse.",
-    "keywords": [
-        "laravel",
-        "framework"
-    ],
+    "description": "Application de suivi des colis \u00e0 l'IUT de Villetaneuse.",
+    "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "filament/filament": "^3.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "twbs/bootstrap": "5.3.8",
-        "twbs/bootstrap-icons": "^1.13"
+        "twbs/bootstrap-icons": "^1.13",
+        "vrana/adminer": "^5.4"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.16",
@@ -57,7 +56,8 @@
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",

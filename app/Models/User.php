@@ -11,8 +11,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Filament\Panel;
+use Filament\Models\Contracts\FilamentUser;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -175,4 +177,21 @@ class User extends Authenticatable
         return false;
     }
     // public function hasRole(): bool {}
+
+    public function getFilamentName(): string
+    {
+        return $this->name;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+        //return in_array($this->role, ['Administrateur BD']);
+    }
+
+    
+    public function getNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
 }

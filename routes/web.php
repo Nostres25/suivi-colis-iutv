@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
+use OneCentLin\Adminer\Http\Controllers\AdminerController;
 
 Route::get('/', [\App\Http\Controllers\OrderController::class, 'viewOrders']);
 
@@ -26,4 +28,37 @@ Route::get('/logout', function (Request $request) {
     Auth::forgetUser();
 
     dd($request->cookie());
+
+    
 });
+Route::get('/login', function () {
+    $user = User::first();
+    
+    if ($user) {
+        Auth::login($user); 
+        return redirect('/admin');
+    }
+
+
+//Route::get('/login', function () {
+   
+   // return redirect('/');
+//})->name('login');
+    
+    return "Erreur : Aucun utilisateur trouvé.";
+})->name('login');
+
+Route::any('/adminer', function () {
+    
+    $adminerDir = base_path('vendor/vrana/adminer/adminer');
+    
+    if (is_dir($adminerDir)) {
+        
+        chdir($adminerDir);
+        
+        require 'index.php';
+        return;
+    }
+    
+    return "Erreur : Le paquet Composer 'vrana/adminer' n'est pas trouvé.";
+})->name('adminer');
