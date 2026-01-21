@@ -253,10 +253,127 @@ class OrderController extends BaseController
 
     public function modalDeliveredAll(string $id) {}
 
-    public function modalViewDetails(string $id) {}
+    public function modalViewDetails(string $id)
+    {
+        $user = Auth::user();
+        $request = request();
+
+        /* @var Order $order */
+        $order = Order::where('id', $id)->first();
+        $edit = $request['edit'];
+
+        if ($request->method() === 'POST') {
+            // TODO corriger le fait que le message erreur ou succès il apparaît seulement au bout de 2 actualisations, pas une.
+
+            if ($edit && (($user->hasPermission(PermissionValue::MODIFIER_COMMANDES_DEPARTEMENT) && $user->hasRole($order->getDepartment())) || $user->hasPermission(PermissionValue::MODIFIER_TOUTES_COMMANDES))) {
+                $title = $request['title'];
+                $orderNum = $request['order_num'];
+                $quoteNum = $request['quote_num'];
+                $description = $request['description'];
+                $cost = $request['cost'];
+                $status = $request['status'];
+                $quote = $request['quote'];
+                $purchaseOrder = $request['purchase_order'];
+                $deliveryNote = $request['delivery_note'];
+
+                if (isset($title)) {
+                    $order->setTitle($title, false);
+                }
+                if (isset($orderNum)) {
+                    $order->setOrderNumber($orderNum, false);
+                }
+                if (isset($quoteNum)) {
+                    $order->setQuoteNumber($quoteNum, false);
+                }
+
+                if (isset($description)) {
+                    $order->setDescription($description, false);
+                }
+
+                if (isset($cost)) {
+                    $order->setCost($cost, false);
+                }
+
+                if (isset($quote)) {
+                    $order->uploadQuote($quote, false);
+                }
+
+                if (isset($purchaseOrder)) {
+                    $order->uploadQuote($purchaseOrder, false);
+                }
+
+                if (isset($deliveryNote)) {
+                    $order->uploadQuote($deliveryNote, false);
+                }
+
+                $order->setStatus($status, false);
+
+                $order->save();
+
+                session()->flash('supplierSuccess', 'Fournisseur mis à jour !');
+            } else {
+                $edit = false;
+            }
+        }
+
+        return view('components.viewOrderModal', [
+            'user' => $user,
+            'order' => $order,
+            'orderId' => $order->getId(),
+            'edit' => $edit,
+            'userDepartments' => $user->getDepartments(),
+        ]);
+
+    }
 
     public function sendAutoMail(Request $request)
     {
         // TODO code pour envoyer un mail automatique
+    }
+
+    public function downloadDocument(string $id, string $type)
+    {
+        /* @var Order $order */
+        $order = Order::findOrFail($id);
+        $user = Auth::user();
+
+        // 1. VÉRIFICATION DES PERMISSIONS (Sécurité)
+        // Adaptez selon vos permissions existantes.
+        // Ici, je vérifie juste si l'user peut consulter la commande.
+
+        // Exemple basique basé sur votre logique actuelle :
+        $canView = $user->hasPermission(PermissionValue::CONSULTER_TOUTES_COMMANDES);
+
+        if (! $canView) {
+            // Vérification si membre du département
+            $userDepartments = $user->getRoles()->filter(fn (Role $role) => $role->isDepartment());
+            if ($userDepartments->contains($order->getDepartment())) {
+                $canView = $user->hasPermission(PermissionValue::MODIFIER_COMMANDES_DEPARTEMENT);
+            }
+        }
+
+        if (! $canView) {
+            abort(403, "Vous n'avez pas accès à ce document.");
+        }
+
+        // 2. RÉCUPÉRATION DU CHEMIN DU FICHIER
+        $path = match ($type) {
+            'quote' => $order->getAttribute('path_quote'), // On accède à l'attribut brut en BDD
+            'purchase_order' => $order->getAttribute('path_purchase_order'),
+            'delivery_note' => $order->getAttribute('path_delivery_note'),
+            default => null,
+        };
+
+        if (! $path || ! Storage::disk('public')->exists($path)) {
+            abort(404, "Le fichier n'existe pas ou a été déplacé.");
+        }
+
+        // 3. TÉLÉCHARGEMENT
+        // Storage::download(chemin_disque, nom_fichier_pour_l_utilisateur)
+        // Note: Comme vos fichiers sont dans storage/app/public, on utilise le disk 'public'
+        return Storage::disk('public')->download($path);
+
+        // Si vous préférez afficher le PDF dans le navigateur au lieu de forcer le téléchargement :
+        // return Storage::disk('public')->response($path);
     }
 }

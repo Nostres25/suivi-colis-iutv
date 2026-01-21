@@ -127,9 +127,10 @@ abstract class BaseController extends Controller
 
         Auth::login($user);
 
+        $rolesToStrring = implode(', ', $user->getRoles()->map(fn (Role $role) => $role->getName())->toArray());
         session()->flash(
             'success',
-            "Connecté en tant que {$user->getFullName()} avec les rôles {$user->getRoles()->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}"
+            "Connecté en tant que {$user->getFullName()} avec le(s) rôle(s) {$rolesToStrring}"
         );
 
         return ['success' => true];

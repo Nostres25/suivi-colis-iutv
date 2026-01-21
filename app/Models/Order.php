@@ -49,16 +49,6 @@ class Order extends Model
     /**
      * Retourne le numéro de la commande
      *
-     * @return string // Numéro de la commande
-     */
-    public function getNumero(): string
-    {
-        return $this->attributes['quote_num'];
-    }
-
-    /**
-     * Retourne le numéro de la commande
-     *
      * @return string // numéro de la commande
      */
     public function getOrderNumber(): string

@@ -96,7 +96,6 @@ class SupplierController extends BaseController
 
         if ($request->method() === 'POST') {
             // TODO corriger le fait que le message erreur ou succès il apparaît seulement au bout de 2 actualisations, pas une.
-            session()->flash('supplierSuccess', 'Note du fournisseur mise à jour !');
             if ($user->hasPermission(PermissionValue::NOTES_ET_COMMENTAIRES)) {
                 $note = $request['note'];
                 $supplier->setNote($note, false);
@@ -128,9 +127,6 @@ class SupplierController extends BaseController
                         $supplier->setSiret($siret, false);
                     }
                 }
-
-
-
                 $supplier->setValidity((bool) $isValid, false);
 
                 session()->flash('supplierSuccess', 'Fournisseur mis à jour !');

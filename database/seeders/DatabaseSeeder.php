@@ -55,6 +55,7 @@ class DatabaseSeeder extends Seeder
                     PermissionValue::GERER_FOURNISSEURS,
                     PermissionValue::CONSULTER_LISTE_FOURNISSEURS,
                     PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
+                    PermissionValue::MODIFIER_TOUTES_COMMANDES,
                 ],
                 'is_department' => false,
             ],
@@ -64,7 +65,7 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Membre du département informatique.',
                 'permissions' => [
                     PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
-                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::MODIFIER_COMMANDES_DEPARTEMENT,
                     PermissionValue::AJOUTER_BON_DE_LIVRAISON,
                     PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
                     PermissionValue::NOTES_ET_COMMENTAIRES,
@@ -78,7 +79,7 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Membre du département GEA.',
                 'permissions' => [
                     PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
-                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::MODIFIER_COMMANDES_DEPARTEMENT,
                     PermissionValue::AJOUTER_BON_DE_LIVRAISON,
                     PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
                     PermissionValue::NOTES_ET_COMMENTAIRES,
@@ -92,7 +93,7 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Membre du département CJ.',
                 'permissions' => [
                     PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
-                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::MODIFIER_COMMANDES_DEPARTEMENT,
                     PermissionValue::AJOUTER_BON_DE_LIVRAISON,
                     PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
                     PermissionValue::NOTES_ET_COMMENTAIRES,
@@ -106,7 +107,7 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Membre du département GEII.',
                 'permissions' => [
                     PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
-                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::MODIFIER_COMMANDES_DEPARTEMENT,
                     PermissionValue::AJOUTER_BON_DE_LIVRAISON,
                     PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
                     PermissionValue::NOTES_ET_COMMENTAIRES,
@@ -120,7 +121,7 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Membre du département réseaux et télécommunications.',
                 'permissions' => [
                     PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
-                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::MODIFIER_COMMANDES_DEPARTEMENT,
                     PermissionValue::AJOUTER_BON_DE_LIVRAISON,
                     PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
                     PermissionValue::NOTES_ET_COMMENTAIRES,
@@ -134,7 +135,7 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Membre du département sciences des données.',
                 'permissions' => [
                     PermissionValue::CONSULTER_COMMANDES_DEPARTMENT,
-                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::MODIFIER_COMMANDES_DEPARTEMENT,
                     PermissionValue::AJOUTER_BON_DE_LIVRAISON,
                     PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
                     PermissionValue::NOTES_ET_COMMENTAIRES,
@@ -148,7 +149,7 @@ class DatabaseSeeder extends Seeder
                 'description' => "Directeur de l'IUT. Son rôle est de signer les bons de commandes",
                 'permissions' => [
                     PermissionValue::CONSULTER_TOUTES_COMMANDES,
-                    PermissionValue::MODIFIER_COMMANDES,
+                    PermissionValue::MODIFIER_COMMANDES_DEPARTEMENT,
                     PermissionValue::AJOUTER_BON_DE_LIVRAISON,
                     PermissionValue::DEMANDER_AJOUT_FOURNISSEUR,
                     PermissionValue::NOTES_ET_COMMENTAIRES,

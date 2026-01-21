@@ -1,3 +1,5 @@
+@use(Database\Seeders\Status)
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -175,6 +177,167 @@
                         }
                     })
                     .catch(error => console.error('Erreur AJAX:', error));
+
+                // --- GESTION DYNAMIQUE DE LA CHECKBOX MAIL ---
+                // On écoute l'événement 'change' sur tout le conteneur du modal
+                modalContainer.addEventListener('change', function (e) {
+
+                    // 1. On vérifie si l'élément modifié est bien la checkbox "sendMail"
+                    if (e.target && e.target.name === 'sendMail') {
+                        const checkbox = e.target;
+
+                        // 2. On récupère l'ID de la commande à partir de l'ID de la checkbox
+                        // Format HTML : id="checkboxMail-123" -> On coupe au tiret pour avoir "123"
+                        const parts = checkbox.id.split('-');
+                        const orderId = parts[parts.length - 1]; // Prend le dernier morceau (l'ID numérique)
+
+                        // 3. On cible la div correspondante
+                        const targetDiv = document.getElementById('mailOptionsDiv-' + orderId);
+
+                        // 4. On applique la logique d'affichage
+                        if (targetDiv) {
+                            // Utilisation de .style.display (plus propre que .style = "...")
+                            targetDiv.style.display = checkbox.checked ? "block" : "none";
+                        }
+                    }
+                });
+            }
+        });
+
+        // -------------------------------------------------------------------------
+        // CONFIGURATION : Mapping des Enums PHP vers JS
+        // -------------------------------------------------------------------------
+        const STATUS = {
+            BROUILLON:                  "{{ Status::BROUILLON->value }}",
+            DEVIS:                      "{{ Status::DEVIS->value }}",
+            DEVIS_REFUSE:               "{{ Status::DEVIS_REFUSE->value }}",
+            BON_DE_COMMANDE_NON_SIGNE:  "{{ Status::BON_DE_COMMANDE_NON_SIGNE->value }}",
+            BON_DE_COMMANDE_REFUSE:     "{{ Status::BON_DE_COMMANDE_REFUSE->value }}",
+            BON_DE_COMMANDE_SIGNE:      "{{ Status::BON_DE_COMMANDE_SIGNE->value }}",
+            COMMANDE:                   "{{ Status::COMMANDE->value }}",
+            COMMANDE_REFUSEE:           "{{ Status::COMMANDE_REFUSEE->value }}",
+            COMMANDE_AVEC_REPONSE:      "{{ Status::COMMANDE_AVEC_REPONSE->value }}",
+            PARTIELLEMENT_LIVRE:        "{{ Status::PARTIELLEMENT_LIVRE->value }}",
+            SERVICE_FAIT:               "{{ Status::SERVICE_FAIT->value }}",
+            LIVRE_ET_PAYE:              "{{ Status::LIVRE_ET_PAYE->value }}",
+            ANNULE:                     "{{ Status::ANNULE->value }}",
+        };
+
+        // -------------------------------------------------------------------------
+        // LOGIQUE D'AUTOMATISATION
+        // -------------------------------------------------------------------------
+        modalContainer.addEventListener('change', function (e) {
+
+            // On ne s'intéresse qu'aux changements dans un formulaire d'édition
+            if (!e.target || !e.target.closest('form')) return;
+
+            const target = e.target;
+
+            // Extraction de l'ID de la commande (format "nom-123")
+            if (!target.id.includes('-')) return; // Sécurité
+            const parts = target.id.split('-');
+            const orderId = parts[parts.length - 1];
+
+            // Récupération des éléments du DOM liés à cette commande
+            const statusSelect = document.getElementById(`statusSelectOrder-${orderId}`);
+            const statusDesc = document.getElementById(`statusDescription-${orderId}`);
+            const autoMsg = document.getElementById(`autoStatusMsg-${orderId}`);
+            const checkboxSigned = document.getElementById(`checkboxSigned-${orderId}`);
+            const fileInputPO = document.getElementById(`inputPurchaseOrder-${orderId}`);
+
+            // Si le selecteur de statut n'existe pas, on n'est pas sur le bon modal
+            if (!statusSelect) return;
+
+            const currentStatus = statusSelect.value;
+            let newStatus = null;
+            let reason = "";
+
+            // =====================================================================
+            // CAS 1 & 2 : BON DE COMMANDE (Non signé ou Signé)
+            // =====================================================================
+            if (target.name === 'purchase_order' || target.name === 'signed') {
+
+                const isSigned = checkboxSigned ? checkboxSigned.checked : false;
+                const hasFile = fileInputPO && fileInputPO.files.length > 0;
+
+                // --- CAS 2 : Bon de commande SIGNE (Checkbox cochée) ---
+                if (isSigned) {
+                    // Statuts éligibles pour passer en BC_SIGNE
+                    const allowedStatuses = [
+                        STATUS.BROUILLON,
+                        STATUS.DEVIS,
+                        STATUS.DEVIS_REFUSE,
+                        STATUS.BON_DE_COMMANDE_NON_SIGNE,
+                        STATUS.BON_DE_COMMANDE_REFUSE
+                    ];
+
+                    if (allowedStatuses.includes(currentStatus)) {
+                        newStatus = STATUS.BON_DE_COMMANDE_SIGNE;
+                        reason = "Statut suggéré suite à la validation du bon de commande signé.";
+                    }
+                }
+                // --- CAS 1 : Bon de commande NON SIGNE (Fichier ajouté mais pas coché) ---
+                else if (hasFile) {
+                    // Statuts éligibles pour passer en BC_NON_SIGNE
+                    const allowedStatuses = [
+                        STATUS.BROUILLON,
+                        STATUS.DEVIS,
+                        STATUS.DEVIS_REFUSE
+                    ];
+
+                    if (allowedStatuses.includes(currentStatus)) {
+                        newStatus = STATUS.BON_DE_COMMANDE_NON_SIGNE;
+                        reason = "Statut suggéré suite à l'ajout du bon de commande.";
+                    }
+                }
+            }
+
+            // =====================================================================
+            // CAS 3 : BON DE LIVRAISON
+            // =====================================================================
+            if (target.name === 'delivery_note' && target.files.length > 0) {
+
+                // On exclut les statuts finaux ou annulés
+                const excludedStatuses = [
+                    STATUS.LIVRE_ET_PAYE,
+                    STATUS.ANNULE,
+                    STATUS.SERVICE_FAIT
+                ];
+
+                // Si le statut actuel n'est PAS dans les exclus, on propose SERVICE_FAIT
+                if (!excludedStatuses.includes(currentStatus)) {
+                    newStatus = STATUS.SERVICE_FAIT;
+                    reason = "Statut suggéré suite à l'ajout du bon de livraison.";
+                }
+            }
+
+            // =====================================================================
+            // APPLICATION DES CHANGEMENTS
+            // =====================================================================
+            if (newStatus && newStatus !== currentStatus) {
+                // 1. Mise à jour du Select
+                statusSelect.value = newStatus;
+
+                // 2. Mise à jour de la description textuelle
+                // On cherche l'option correspondante pour récupérer son data-description
+                const selectedOption = statusSelect.querySelector(`option[value="${newStatus}"]`);
+                if (selectedOption && statusDesc) {
+                    statusDesc.innerText = selectedOption.getAttribute('data-description');
+                }
+
+                // 3. Feedback visuel utilisateur
+                if (autoMsg) {
+                    autoMsg.innerText = "✨ " + reason;
+                    autoMsg.classList.remove('d-none');
+
+                    // Effet de surbrillance sur le select
+                    statusSelect.classList.add('border-success', 'text-success', 'fw-bold');
+
+                    // On retire l'effet visuel après quelques secondes
+                    setTimeout(() => {
+                        statusSelect.classList.remove('border-success', 'text-success', 'fw-bold');
+                    }, 3000);
+                }
             }
         });
     });

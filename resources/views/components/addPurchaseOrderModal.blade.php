@@ -96,14 +96,14 @@
         </div>
     </div>
 </div>
-{{--<script>--}}
-{{--    // TODO ajouter les modals avec le php--}}
-{{--    const mailCheckBox = document.getElementById('checkboxMail-{{$orderId}}');--}}
-{{--    const mailOptionsDiv = document.getElementById('mailOptionsDiv-{{$orderId}}');--}}
+<script>
+    // TODO ajouter les modals avec le php
+    const mailCheckBox = document.getElementById('checkboxMail-{{$orderId}}');
+    const mailOptionsDiv = document.getElementById('mailOptionsDiv-{{$orderId}}');
 
-{{--    mailCheckBox.addEventListener('click', (event) => {--}}
-{{--        console.debug(mailOptionsDiv.style);--}}
-{{--        mailOptionsDiv.style = event.target.checked ? "display:block;" : "display:none;"--}}
-{{--    });--}}
+    mailCheckBox.addEventListener('click', (event) => {
+        console.debug(mailOptionsDiv.style);
+        mailOptionsDiv.style = event.target.checked ? "display:block;" : "display:none;"
+    });
 
-{{--</script>--}}
+</script>

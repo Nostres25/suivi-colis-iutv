@@ -16,7 +16,7 @@
             <div class="modal-body">
                 @if (session()->exists('supplierError-'.$supplierId))
                     <div class="alert alert-danger">
-                        {{session()->get('supplierError-'.$supplierId)}}
+                        {{session('supplierError-'.$supplierId)}}
                     </div>
                 @endif
                 @if (session()->exists('supplierSuccess'))
@@ -128,24 +128,3 @@
         </div>
     </div>
 </div>
-
-@if($user->hasPermission(PermissionValue::GERER_FOURNISSEURS))
-{{--    <script>--}}
-{{--        let edit = {{!!$edit}};--}}
-{{--        let viewPart = document.getElementById('viewPart');--}}
-{{--        let editPart = document.getElementById('editPart');--}}
-{{--        let editButton = document.getElementById('editSupplierButton');--}}
-
-{{--        editButton.addEventListener('click', (event) => {--}}
-{{--            if (edit) {--}}
-{{--                viewPart.style="display:none";--}}
-{{--                editPart.style="display:block";--}}
-{{--                edit=!edit;--}}
-{{--            } else {--}}
-{{--                viewPart.style="display:block";--}}
-{{--                editPart.style="display:none";--}}
-{{--                edit=!edit;--}}
-{{--            }--}}
-{{--        });--}}
-{{--    </script>--}}
-@endif

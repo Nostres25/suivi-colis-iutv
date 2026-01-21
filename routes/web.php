@@ -15,7 +15,7 @@ Route::get('suppliers', [SupplierController::class, 'viewSuppliers']);
 
 Route::get('/about', [\App\Http\Controllers\AboutController::class, 'about']);
 
-// orders modals
+// orders modals get
 Route::get('/order/{id}/uploadPurchaseOrder', [OrderController::class, 'modalUploadPurchaseOrder'])
     ->name('orders.modal.uploadPurchaseOrder');
 Route::get('/order/{id}/refuse', [OrderController::class, 'modalRefuse'])
@@ -33,18 +33,24 @@ Route::get('/order/{id}/deliveredAll', [OrderController::class, 'modalDeliveredA
 Route::get('/order/{id}/viewDetails', [OrderController::class, 'modalViewDetails'])
     ->name('orders.modal.viewDetails');
 
-// orders post modals
+// orders post modals post
 
 Route::post('/order/{id}/uploadPurchaseOrder', [OrderController::class, 'actionUploadPurchaseOrder'])
     ->name('orders.uploadPurchaseOrder');
+Route::post('/order/{id}/viewDetails', [OrderController::class, 'modalViewDetails'])
+    ->name('orders.modal.viewDetails');
 
-// suppliers modals
+// Ajoutez cette route dans votre groupe de routes authentifiées
+Route::get('/order/{id}/document/{type}', [OrderController::class, 'downloadDocument'])
+    ->name('orders.download');
+
+
+// suppliers modals get
 Route::get('/supplier/{id}/viewDetails', [SupplierController::class, 'modalViewDetails'])
     ->name('suppliers.modal.viewDetails');
 
-// suppliers modals
-Route::post('/supplier/{id}/viewDetails', [SupplierController::class, 'modalViewDetails'])
-    ->name('suppliers.modal.viewDetails');
+// orders modals post
+
 
 
 
