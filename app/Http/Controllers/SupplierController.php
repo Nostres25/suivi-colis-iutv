@@ -16,8 +16,12 @@ class SupplierController extends BaseController
 {
     public function viewSuppliers(): View|Response|RedirectResponse|Redirector
     {
+        $request = request();
+
         /* @var User $user */
         $user = Auth::user();
+        $userRoles = $user->getRoles();
+        $userPermissions = Role::getPermissionsAsDict($userRoles);
 
         // 1. Initialisation de la Query
         $query = Supplier::query();
@@ -57,6 +61,16 @@ class SupplierController extends BaseController
     ) DESC
 ';
 
+        $search = $request->input('search');
+
+        if ($search) {
+            $suppliers = Supplier::where('company_name', 'LIKE', "%{$search}%")
+                ->orWhere('contact_name', 'LIKE', "%{$search}%")
+                ->orWhere('siret', 'LIKE', "%{$search}%")
+                ->paginate(10);
+        } else {
+            $suppliers = Supplier::paginate(10);
+        }
         $query->orderByRaw($sqlActivitySort);
 
         // ---------------------------------------------------------
@@ -67,7 +81,7 @@ class SupplierController extends BaseController
         return view('suppliers', [
             'user' => $user,
             'suppliers' => $suppliers,
-            'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$user->getRoles()->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}",
+            'search' => $search,
         ]);
     }
 

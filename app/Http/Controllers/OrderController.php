@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -32,13 +31,16 @@ class OrderController extends BaseController
         $user = Auth::user();
         $userRoles = $user->getRoles(); // Récupération des rôles en base de données
         $userPermissions = $user->getPermissions(); // Récupération d'un dictionnaire des permissions pour simplifier la vérification de permissions
+        $userDepartments = $userRoles->filter(fn (Role $role) => $role->isDepartment());
 
-        $userDepartments = $userRoles->filter(fn (Role $role) => $role->isDepartment()); // Filtre des rôles qui sont des départements
+        $search = $request->input('search');
 
-        // Récupération uniquement des commandes dont l'utilisateur a accès
-        $userId = $user->getId();
         // Initialisation de la requête
         $query = Order::query();
+
+        $userId = $user->getId();
+
+        // Récupération uniquement des commandes dont l'utilisateur a accès
         if (! $user->hasPermission(PermissionValue::CONSULTER_TOUTES_COMMANDES)) {
             $query->where(function (Builder $q) use ($userDepartments, $userPermissions) {
                 $userDepartments->each(function (Role $department) use ($q, $userPermissions) {
@@ -54,9 +56,8 @@ class OrderController extends BaseController
         // Définition des rôles
         $isDirecteur = $user->hasPermission(PermissionValue::SIGNER_BONS_DE_COMMANDES);
         $isFinancier = $user->hasPermission(PermissionValue::GERER_PAIEMENT_FOURNISSEURS);
-        // On identifie le responsable colis par son ID de rôle (2) car ses permissions sont assez génériques
-        $isResponsableColis = $userRoles->contains('id', 2);
-        $isDepartement = $userDepartments->isNotEmpty();
+        $isResponsableColis = $user->hasPermission(PermissionValue::GERER_COLIS_LIVRES);
+        $isDepartment = $userDepartments->isNotEmpty();
 
         if ($isDirecteur) {
             // TRI DIRECTEUR
@@ -105,7 +106,7 @@ class OrderController extends BaseController
             ELSE 3
         END");
 
-        } elseif ($isDepartement) {
+        } elseif ($isDepartment) {
             // TRI DEPARTEMENTS
             $brouillon = Status::BROUILLON->value;
 
@@ -130,6 +131,16 @@ class OrderController extends BaseController
         END";
 
             $query->orderByRaw($sqlSort, [$user->getId()]);
+            $query->orderByRaw($sqlSort, [$user->getId()]);
+        }
+
+        // 2.1 Filtre de recherche (si rempli)
+        if ($search) {
+            $query->where(function (Builder $q) use ($search) {
+                $q->where('order_num', 'LIKE', "%{$search}%")
+                    ->orWhere('title', 'LIKE', "%{$search}%")
+                    ->orWhere('status', 'LIKE', "%{$search}%");
+            });
         }
 
         // --- 3. TRI SECONDAIRE (Date) ---
@@ -137,20 +148,8 @@ class OrderController extends BaseController
         $query->orderBy('updated_at', 'asc');
 
         // --- 4. EXECUTION ---
-        $orders = $query->paginate(20);
+        $orders = $query->paginate(20)->withQueryString();
 
-        //        /* @var Paginator $orders */
-        //        $orders =
-        //            $user->hasPermission(PermissionValue::CONSULTER_TOUTES_COMMANDES)
-        //                ? Order::paginate(20)
-        //                : Order::where(function (Builder $query) use ($userDepartments, $userPermissions) {
-        //                    $userDepartments->each(function (Role $department) use ($query, $userPermissions) {
-        //                        if ($userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value]) {
-        //                            $query->orWhere('department_id', $department->getId());
-        //                        }
-        //                    });
-        //                })
-        //                    ->paginate(20);
         $suppliers = Supplier::all(['id', 'company_name', 'is_valid']); // Récupération uniquement des informations utiles à propos des fournisseurs
 
         //        /* @var Package $package */
@@ -161,6 +160,7 @@ class OrderController extends BaseController
             'orders' => $orders,
             'validSupplierNames' => $suppliers->where('is_valid', true)->map(fn (Supplier $supplier) => $supplier->getCompanyName())->values()->toArray(),
             'userDepartments' => $userDepartments,
+            'search' => $search, // Variable pour la vue
         ]);
     }
 
@@ -184,6 +184,7 @@ class OrderController extends BaseController
         $user = Auth::user();
         if (! ($user->hasPermission(PermissionValue::GERER_BONS_DE_COMMANDES) || $user->hasPermission(PermissionValue::SIGNER_BONS_DE_COMMANDES) || $user->hasRole($order->getDepartment()))) {
             session()->flash('purchaseOrderError-'.$id, "Vous n'avez pas la permission d'ajouter un bon de commande");
+
             return $this->modalUploadPurchaseOrder($id);
         }
         $nextStep = $request['nextStep'];
