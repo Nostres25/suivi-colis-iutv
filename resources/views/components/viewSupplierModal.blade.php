@@ -16,7 +16,7 @@
             <div class="modal-body">
                 @if (session()->exists('supplierError-'.$supplierId))
                     <div class="alert alert-danger">
-                        {{session('supplierError-'.$supplierId)}}
+                        {{session()->get('supplierError-'.$supplierId)}}
                     </div>
                 @endif
                 @if (session()->exists('supplierSuccess'))
