@@ -121,7 +121,7 @@ class SupplierController extends BaseController
                 if (isset($siret)) {
                     $siretLength = strlen($siret);
                     if ($siretLength > 14 || $siretLength < 14) {
-                        session()->flash('supplierError-'.$supplier->getId(), 'Le siret doit faire exactement 14 chiffres');
+                        session()->flash('supplierError-'.$supplier->getId(), 'Le siret doit faire exactement 14 chiffres et non '.$siretLength.' chiffres');
                     } else {
                         $supplier->setSiret($siret, false);
                     }

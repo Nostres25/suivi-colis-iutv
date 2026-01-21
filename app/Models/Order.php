@@ -26,16 +26,6 @@ class Order extends Model
         'status',
     ];
 
-    public const STATES = [
-        'DEVIS_SIGNE',
-        'BC_REDIGE',
-        'BC_SIGNE',
-        'BC_ENVOYE',
-        'LIVREE',
-        'PAYEE',
-        'ANNULEE',
-    ];
-
     /**
      * Retourne l'identifiant de la commande
      *
