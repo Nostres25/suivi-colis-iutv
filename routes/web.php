@@ -4,7 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
-use OneCentLin\Adminer\Http\Controllers\AdminerController;
+use App\Http\Controllers\AdminController;
+
 
 Route::get('/', [\App\Http\Controllers\OrderController::class, 'viewOrders']);
 
@@ -32,33 +33,24 @@ Route::get('/logout', function (Request $request) {
     
 });
 
-// Filament redirigie automatiquement vers /login si un 
-// utilisateur non authentifié tente d'accéder au panel.
-// Ici, c'est la connexion en local. 
-//On cherche le premier utilisateur et on le connecte de force.
 
-Route::get('/login', function () {
-    $user = User::first();
-    
-    if ($user) {
-        Auth::login($user); 
-        return redirect('/admin');
-    }
+Route::get('/login', [AdminController::class, 'login'])->name('login');
 
-    return "Erreur : Aucun utilisateur trouvé.";
-})->name('login');
 
+
+
+    // Charhe le fichier index.php du paquet adminer situé dans /vendor et
+    // ça permet d'accéder à l'interface d'administration de la base de données.
 Route::any('/adminer', function () {
-    
+   
     $adminerDir = base_path('vendor/vrana/adminer/adminer');
-    
+
     if (is_dir($adminerDir)) {
         
-        chdir($adminerDir);
-        
+        chdir($adminerDir); 
         require 'index.php';
-        return;
+        return ""; 
     }
-    
-    return "Erreur : Le paquet Composer 'vrana/adminer' n'est pas trouvé.";
-})->name('adminer');
+
+    return "Erreur : Le paquet Composer 'vrana/adminer' n'est pas trouvé. Avez-vous fait 'composer require vrana/adminer' ?";
+});

@@ -19,6 +19,9 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Navigation\NavigationItem;
 
+/**Configuration du panneau d'administration Filament
+ * C'est ici qu'on définit l'URL/admin, le thème, et les menus.
+*/
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
