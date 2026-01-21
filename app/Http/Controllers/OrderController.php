@@ -47,7 +47,8 @@ class OrderController extends BaseController
         if ($search) {
             $query->where(function (Builder $q) use ($search) {
                 $q->where('order_num', 'LIKE', "%{$search}%")
-                    ->orWhere('title', 'LIKE', "%{$search}%");
+                    ->orWhere('title', 'LIKE', "%{$search}%")
+                    ->orWhere('status', 'LIKE', "%{$search}%");
             });
         }
 
