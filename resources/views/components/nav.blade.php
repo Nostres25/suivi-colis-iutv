@@ -57,6 +57,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/about">À propos</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin">
+                        Admin
+                    </a>
+                </li>
+
             </ul>
             <div class="p-xl-2">
                 <button class="btn btn-outline-success d-xl-inline my-2 mr-sm-2 my-xl-0 me-2">
