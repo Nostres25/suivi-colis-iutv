@@ -31,6 +31,12 @@ Route::get('/logout', function (Request $request) {
 
     
 });
+
+// Filament redirigie automatiquement vers /login si un 
+// utilisateur non authentifié tente d'accéder au panel.
+// Ici, c'est la connexion en local. 
+//On cherche le premier utilisateur et on le connecte de force.
+
 Route::get('/login', function () {
     $user = User::first();
     
@@ -39,12 +45,6 @@ Route::get('/login', function () {
         return redirect('/admin');
     }
 
-
-//Route::get('/login', function () {
-   
-   // return redirect('/');
-//})->name('login');
-    
     return "Erreur : Aucun utilisateur trouvé.";
 })->name('login');
 
