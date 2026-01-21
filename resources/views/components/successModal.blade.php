@@ -22,9 +22,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('hidden.bs.modal', () => {
-        window.location.reload();
-    });
-</script>

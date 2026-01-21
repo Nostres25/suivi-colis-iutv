@@ -70,4 +70,73 @@ class SupplierController extends BaseController
             'alertMessage' => "Connecté en tant que {$user->getFullName()} avec les rôles {$user->getRoles()->map(fn (Role $role) => $role->getName())->toJson(JSON_UNESCAPED_UNICODE)}",
         ]);
     }
+
+    public function modalViewDetails(string $id)
+    {
+        $user = Auth::user();
+        $request = request();
+
+        /* @var Supplier $supplier */
+        $supplier = Supplier::where('id', $id)->first();
+        $edit = $request['edit'];
+
+        if ($request->method() === 'POST') {
+            if ($user->hasPermission(PermissionValue::NOTES_ET_COMMENTAIRES)) {
+                $note = $request['note'];
+                $supplier->setNote($note, false);
+                session()->flash('supplierSuccess', 'Note du fournisseur mise à jour !');
+            }
+
+            if ($edit && $user->hasPermission(PermissionValue::GERER_FOURNISSEURS)) {
+                $companyName = $request['companyName'];
+                $email = $request['email'];
+                $phoneNumber = $request['phoneNumber'];
+                $siret = $request['siret'];
+                $isValid = $request['isValid'];
+
+                if (isset($companyName)) {
+                    $supplier->setCompanyName($companyName, false);
+                }
+                if (isset($email)) {
+                    $supplier->setEmail($email, false);
+                }
+                if (isset($phoneNumber)) {
+                    $supplier->setPhoneNumber($phoneNumber, false);
+                }
+
+                if (isset($siret)) {
+                    $siretLength = strlen($siret);
+                    if ($siretLength > 14 || $siretLength < 14) {
+                        session()->flash('supplierError-'.$supplier->getId(), 'Le siret doit faire exactement 14 chiffres');
+                    } else {
+                        $supplier->setSiret($siret, false);
+                    }
+                }
+
+
+
+                $supplier->setValidity((bool) $isValid, false);
+
+                session()->flash('supplierSuccess', 'Fournisseur mis à jour !');
+            } else {
+                $edit = false;
+            }
+
+            if ($user->hasPermission(PermissionValue::GERER_FOURNISSEURS) || $user->hasPermission(PermissionValue::NOTES_ET_COMMENTAIRES)) {
+                $supplier->save();
+            } else {
+                session()->flash('supplierError-'.$supplier->getId(), "Vous n'avez pas la permission de modifier la moindre information concernant les fournisseurs.");
+            }
+        }
+
+        return view('components.viewSupplierModal', [
+            'user' => $user,
+            'supplier' => $supplier,
+            'supplierId' => $supplier->getId(),
+            'edit' => $edit,
+        ]);
+
+    }
+
+    public function editSupplier(Supplier $supplier) {}
 }

@@ -1,17 +1,17 @@
 <?php
 
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Cookie;
-
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [\App\Http\Controllers\OrderController::class, 'viewOrders']);
 
 Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'viewOrders']);
-Route::get('suppliers', [\App\Http\Controllers\SupplierController::class, 'viewSuppliers']);
+Route::get('suppliers', [SupplierController::class, 'viewSuppliers']);
 
 Route::get('/about', [\App\Http\Controllers\AboutController::class, 'about']);
 
@@ -33,13 +33,27 @@ Route::get('/order/{id}/deliveredAll', [OrderController::class, 'modalDeliveredA
 Route::get('/order/{id}/viewDetails', [OrderController::class, 'modalViewDetails'])
     ->name('orders.modal.viewDetails');
 
-Route::post('/orders/', [OrderController::class, 'actionUploadPurchaseOrder'])
+// orders post modals
+
+Route::post('/order/{id}/uploadPurchaseOrder', [OrderController::class, 'actionUploadPurchaseOrder'])
     ->name('orders.uploadPurchaseOrder');
+
+// suppliers modals
+Route::get('/supplier/{id}/viewDetails', [SupplierController::class, 'modalViewDetails'])
+    ->name('suppliers.modal.viewDetails');
+
+// suppliers modals
+Route::post('/supplier/{id}/viewDetails', [SupplierController::class, 'modalViewDetails'])
+    ->name('suppliers.modal.viewDetails');
+
+
 
 // Seulement pour les tests sur le serveur de l'IUT
 Route::get('/cookies', function (Request $request) {
     dd($request->cookie());
 });
+
+// logout
 
 Route::get('/logout', function (Request $request) {
 

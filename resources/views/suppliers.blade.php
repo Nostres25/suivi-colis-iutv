@@ -84,7 +84,7 @@
             </thead>
             <tbody>
             @foreach ($suppliers as $supplier)
-                <tr style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#supplierModal{{ $supplier->id }}">
+                <tr class="btn-load-modal" data-url="{{ route('suppliers.modal.viewDetails', ['id' => $supplier->getId(), 'edit' => false]) }}">
                     <td class="text-break">
                         <strong>{{ $supplier['company_name'] }}</strong><br>
                         <small>
@@ -136,52 +136,6 @@
                         </button>
                     </td>
                 </tr>
-
-                <div class="modal fade" id="supplierModal{{ $supplier->id }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title fw-bold">{{ $supplier->company_name }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row mb-3">
-                                    <div class="col-6">
-                                        <label class="text-muted small fw-bold text-uppercase">SIRET</label>
-                                        <p class="mb-0"><code>{{ $supplier->siret }}</code></p>
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="text-muted small fw-bold text-uppercase">Spécialité</label>
-                                        <p class="mb-0">{{ $supplier->speciality ?? 'N/A' }}</p>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="text-muted small fw-bold text-uppercase">Contact</label>
-                                    <p class="mb-0">{{ $supplier->contact_name }}</p>
-                                    <p class="mb-0 small text-muted">{{ $supplier->email }}</p>
-                                    <p class="mb-0 small text-muted">{{ $supplier->phone_number }}</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="text-muted small fw-bold text-uppercase">Statut</label>
-                                    <div>
-                                        @if($supplier->is_valid)
-                                            <span class="badge bg-success">Validé</span>
-                                        @else
-                                            <span class="badge bg-danger">Non validé</span>
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="bg-light p-3 rounded">
-                                    <label class="text-muted small fw-bold text-uppercase">Note</label>
-                                    <p class="mb-0 small">{{ $supplier->note ?? 'Aucune note.' }}</p>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Fermer</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             @endforeach
             </tbody>
         </table>

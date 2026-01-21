@@ -17,9 +17,8 @@
                         {{session('purchaseOrderError-'.$orderId)}}
                     </div>
                 @endif
-                <form id="addPurchaseOrder-{{$orderId}}" class="ajax-form" method="POST" enctype="multipart/form-data" action="{{route('orders.uploadPurchaseOrder')}}" autocomplete="off">
+                <form id="addPurchaseOrder-{{$orderId}}" class="ajax-form" method="POST" enctype="multipart/form-data" action="{{route('orders.uploadPurchaseOrder', $orderId)}}" autocomplete="off">
                     @csrf
-                    <input type="hidden" name="id" value="{{$orderId}}">
                     <input type="hidden" name="modalId" value="addPurchaseOrderModal-{{$orderId}}">
 
                     <label class="form-label fs-5">Sélectionnez un bon de commande :</label><br/>

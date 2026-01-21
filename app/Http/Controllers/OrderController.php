@@ -39,7 +39,7 @@ class OrderController extends BaseController
         $userId = $user->getId();
         // Initialisation de la requête
         $query = Order::query();
-        if (!$user->hasPermission(PermissionValue::CONSULTER_TOUTES_COMMANDES)) {
+        if (! $user->hasPermission(PermissionValue::CONSULTER_TOUTES_COMMANDES)) {
             $query->where(function (Builder $q) use ($userDepartments, $userPermissions) {
                 $userDepartments->each(function (Role $department) use ($q, $userPermissions) {
                     if ($userPermissions[PermissionValue::CONSULTER_COMMANDES_DEPARTMENT->value]) {
@@ -94,7 +94,7 @@ class OrderController extends BaseController
 
             $p1_Colis = implode("','", [
                 Status::COMMANDE_AVEC_REPONSE->value,
-                Status::PARTIELLEMENT_LIVRE->value
+                Status::PARTIELLEMENT_LIVRE->value,
             ]);
 
             $p2_Colis = Status::COMMANDE->value;
@@ -112,14 +112,14 @@ class OrderController extends BaseController
             $refusals = implode("','", [
                 Status::DEVIS_REFUSE->value,
                 Status::BON_DE_COMMANDE_REFUSE->value,
-                Status::COMMANDE_REFUSEE->value
+                Status::COMMANDE_REFUSEE->value,
             ]);
 
             $actionsRequises = implode("','", [
                 Status::BON_DE_COMMANDE_SIGNE->value,
                 Status::COMMANDE->value,
                 Status::COMMANDE_AVEC_REPONSE->value,
-                Status::PARTIELLEMENT_LIVRE->value
+                Status::PARTIELLEMENT_LIVRE->value,
             ]);
 
             $sqlSort = "CASE
@@ -135,7 +135,6 @@ class OrderController extends BaseController
         // --- 3. TRI SECONDAIRE (Date) ---
         // Les plus anciennes (date lointaine) en premier
         $query->orderBy('updated_at', 'asc');
-
 
         // --- 4. EXECUTION ---
         $orders = $query->paginate(20);
@@ -176,13 +175,17 @@ class OrderController extends BaseController
 
     public function actionUploadPurchaseOrder($page = 1)
     {
-
         $request = request();
         $id = $request['id'];
-
         /* @var Order $order */
         $order = Order::findOrFail($id);
 
+        // Vérification de permissions
+        $user = Auth::user();
+        if (! ($user->hasPermission(PermissionValue::GERER_BONS_DE_COMMANDES) || $user->hasPermission(PermissionValue::SIGNER_BONS_DE_COMMANDES) || $user->hasRole($order->getDepartment()))) {
+            session()->flash('purchaseOrderError-'.$id, "Vous n'avez pas la permission d'ajouter un bon de commande");
+            return $this->modalUploadPurchaseOrder($id);
+        }
         $nextStep = $request['nextStep'];
         $isSigned = $request['signed'];
 
@@ -199,8 +202,8 @@ class OrderController extends BaseController
             $order->setStatus($isSigned ? Status::BON_DE_COMMANDE_SIGNE : Status::BON_DE_COMMANDE_NON_SIGNE, false);
         }
 
-        $sucessToSave = $order->save();
-        if (! $sucessToSave) {
+        $successToSave = $order->save();
+        if (! $successToSave) {
             session()->flash('purchaseOrderError-'.$id, 'Une erreur est survenue à la sauvegarde de la commande !');
 
             return $this->modalUploadPurchaseOrder($id);

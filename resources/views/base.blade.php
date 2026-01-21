@@ -56,24 +56,48 @@
 
     document.addEventListener('DOMContentLoaded', function () {
 
-        const clickables = document.querySelectorAll('.btn-load-modal');
         const modalContainer = document.getElementById('modal-container');
 
-        // Partie Chargement du modal (GET) - Inchangé, ça fonctionne bien
-        clickables.forEach(button => {
-            button.addEventListener('click', function (event) {
-                if (event.target !== button && event.target.nodeName === "BUTTON") return;
-                const url = this.getAttribute('data-url');
+        // ============================================================
+        // 1. GESTION DE L'OUVERTURE (GET) - Via Délégation Globale
+        // ============================================================
+        // On écoute les clics sur TOUT le document (body)
+        document.body.addEventListener('click', function (e) {
+
+            // On cherche si l'élément cliqué (ou un de ses parents) est un bouton .btn-load-modal
+            // .closest() est magique : il remonte l'arbre DOM jusqu'à trouver la classe
+            const button = e.target.closest('.btn-load-modal');
+
+            // Si on a trouvé un bouton et qu'il a un data-url
+            if (button && button.getAttribute('data-url')) {
+                e.preventDefault(); // Empêche le comportement par défaut (lien ou submit)
+
+                const url = button.getAttribute('data-url');
+
+                // --- NETTOYAGE (Important si on vient d'un autre modal) ---
+                // Si un modal est déjà ouvert, on le détruit proprement avant de charger le suivant
+                // Cela évite d'avoir des conflits de fond gris (backdrop)
+                const existingModalEl = modalContainer.querySelector('.modal');
+                if (existingModalEl) {
+                    const existingInstance = bootstrap.Modal.getInstance(existingModalEl);
+                    if (existingInstance) {
+                        existingInstance.dispose();
+                    }
+                }
+                // -----------------------------------------------------------
+
                 fetch(url)
                     .then(response => response.text())
                     .then(html => {
                         modalContainer.innerHTML = html;
+
                         const modalElement = modalContainer.querySelector('.modal');
+                        // Initialisation du nouveau modal
                         const myModal = new bootstrap.Modal(modalElement);
                         myModal.show();
                     })
-                    .catch(error => console.error('Erreur:', error));
-            });
+                    .catch(error => console.error('Erreur chargement modal:', error));
+            }
         });
 
         // GESTION DU POST (Formulaire)
