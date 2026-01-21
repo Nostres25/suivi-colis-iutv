@@ -27,14 +27,19 @@ class Order extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     protected $fillable = [
-        'titre',
+        'title',
         'description',
         'cost',
         'quote_num',
+        'order_num',
         'path_quote',
         'path_purchase_order',
         'path_delivery_note',
         'status',
+        'department_id',
+        'supplier_id',
+        'author_id',
+
     ];
 
     /**
@@ -176,7 +181,8 @@ class Order extends Model
      */
     public function getLastUpdateDate(): string
     {
-        return $this->attributes[$this->getUpdatedAtColumn()];
+        $updated = $this->attributes[$this->getUpdatedAtColumn()] ?? null;
+        return $updated ? (string) $updated : '';
     }
 
     /**
@@ -186,7 +192,8 @@ class Order extends Model
      */
     public function getCreationDate(): string
     {
-        return $this->attributes[$this->getCreatedAtColumn()];
+        $created = $this->attributes[$this->getCreatedAtColumn()] ?? null;
+        return $created ? (string) $created : '';
     }
 
     /**
@@ -194,9 +201,10 @@ class Order extends Model
      *
      * @return Supplier // Fournisseur de la commande
      */
-    public function getSupplier(): Supplier
+    public function getSupplier(): ?Supplier
     {
-        return $this->supplier()->getResults();
+        return $this->supplier()->first();
+
     }
 
     /**
@@ -204,9 +212,10 @@ class Order extends Model
      *
      * @return Role // Département (rôle) de la commande
      */
-    public function getDepartment(): Role
+    public function getDepartment(): ?Role
     {
-        return $this->getAttribute('department');
+            return $this->department()->first();
+
     }
 
     /**
@@ -279,7 +288,8 @@ class Order extends Model
      */
     public function setStatus(Status $status): void
     {
-        $this->setAttribute('description', $status->value);
+        $this->setAttribute('status', $status->value);
+
     }
 
     /**

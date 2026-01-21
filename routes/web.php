@@ -1,8 +1,12 @@
 <?php
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OrderController;
+
+
 
 Route::get('/', [\App\Http\Controllers\OrderController::class, 'viewOrders']);
 
@@ -27,3 +31,9 @@ Route::get('/logout', function (Request $request) {
 
     dd($request->cookie());
 });
+
+
+Route::post('/orders', [OrderController::class, 'submitNewOrder'])->name('orders.submitNewOrder');
+Route::get('/orders', [OrderController::class, 'viewOrders'])->name('orders.index');
+
+

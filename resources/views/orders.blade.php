@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('alert')
-    <x-alert :alertMessage="$alertMessage"></x-alert>
+   
 @endsection
 
 @section('header')
