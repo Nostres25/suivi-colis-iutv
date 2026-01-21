@@ -20,21 +20,29 @@
     @use(App\Models\Order)
 
 <section>
-    <div class="row justify-content-center">
-        <div class="search-container flex-column flex-sm-row">
-            <div class="search-wrapper">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search search-icon" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                </svg>
-                <input type="text" class="form-control search-input" placeholder="Rechercher une commande...">
+    <section class="mb-4">
+    <form method="GET" action="{{ url('/orders') }}">
+        <div class="row justify-content-center">
+            <div class="search-container flex-column flex-sm-row">
+                <div class="search-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search search-icon" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                    <input type="text" name="search" class="form-control search-input" 
+                           placeholder="Rechercher une commande..." 
+                           value="{{ $search ?? '' }}">
+                </div>
+                <button type="submit" id="search-filter" class="btn btn-outline-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
+                        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z"/>
+                    </svg> Rechercher
+                </button>
+                @if(isset($search) && $search)
+                    <a href="{{ url('/orders') }}" class="btn btn-secondary ms-2">Effacer</a>
+                @endif
             </div>
-            <button id="search-filter" class="btn btn-outline-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
-                    <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z"/>
-                </svg> Filtres
-            </button>
         </div>
-    </div>
+    </form>
 </section>
 
 {{-- TODO Peut-être afficher un aperçu de ce qu'il y a dans la commande (colis) --}}
