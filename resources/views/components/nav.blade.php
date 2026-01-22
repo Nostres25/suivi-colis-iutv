@@ -45,7 +45,6 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="/orders/new">+ Ajouter une commande</a></li>
                             </ul>
                         </div>
                     </div>
