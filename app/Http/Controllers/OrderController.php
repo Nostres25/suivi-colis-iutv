@@ -161,52 +161,85 @@ class OrderController extends BaseController
         ]);
     }
 
-    public function submitNewOrder(Request $request): RedirectResponse
+    public function submitNewOrder(): RedirectResponse|Redirector
     {
-        // TODO Do something to save the new order by the post form
-        // Send a flash message
 
-        // 1) VALIDATION
-        // 1️⃣ VALIDATION
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'supplier_id' => 'required|exists:suppliers,id',
-            'order_num' => 'required|string|max:255',
-            'quote_num' => 'required|string|max:255',
-            'department_id' => 'required|exists:roles,id',
-            'description' => 'nullable|string',
-            'status' => 'required|string',
-            'cost' => 'nullable|numeric',
-            'path_quote' => 'nullable|file|mimes:pdf|max:20480',
-        ]);
+        $request = request();
+        $user = Auth::user();
+        $orderNum = $request['order_num'];
 
-        // 2️⃣ CRÉATION DE LA COMMANDE
-        $order = new Order;
+        try {
+            // 1) VALIDATION
 
-        // 3️⃣ ATTRIBUTION DES CHAMPS
-        $order->title = $validated['title'];
-        $order->order_num = $validated['order_num'];
-        $order->quote_num = $validated['quote_num'];
-        $order->description = $validated['description'] ?? null;
-        $order->status = $validated['status'];
-        $order->cost = $validated['cost'] ?? null;
-        $order->supplier_id = $validated['supplier_id'];
-        $order->department_id = $validated['department_id'];
-        $order->author_id = Auth::id();
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'supplier_name' => 'required|exists:suppliers,company_name',
+                'order_num' => 'required|string|max:255',
+                'quote_num' => 'required|string|max:255',
+                'department_name' => 'nullable|exists:roles,name',
+                'description' => 'nullable|string',
+                'status' => 'required|string',
+                'cost' => 'nullable|numeric',
+                'quote' => 'nullable|file|mimes:pdf|max:20480',
+                'purchase_order' => 'nullable|file|mimes:pdf|max:20480',
+            ]);
 
-        // 4️⃣ UPLOAD DU DEVIS
-        if ($request->hasFile('path_quote')) {
-            $order->path_quote = $request->file('path_quote')
-                ->store('quotes', 'public');
+            $userDepartment = $user->getDepartments()->first();
+            $departmentName = $request['department_name'];
+
+            $description = $request['description'];
+            $quote_num = $request['quote_num'];
+            $status = $request['status'];
+            $cost = $request['cost'];
+            $isSigned = $request['signed'];
+
+            $department = Role::where('name', $departmentName ? $departmentName : $userDepartment->getName())->firstOrFail();
+            $supplier = Supplier::where('company_name', $request['supplier_name'])->firstOrFail();
+
+            // 2 CRÉATION DE LA COMMANDE
+            $order = new Order([
+                'title' => $validated['title'],
+                'order_num' => $validated['order_num'],
+                'status' => $validated['status'],
+                'author_id' => $user->getId(),
+                'department_id' => $department->getId(),
+                'supplier_id' => $supplier->getId(),
+            ]);
+
+            // 3 ATTRIBUTION DES CHAMPS
+            if (isset($quote_num)) {
+                $order->setQuoteNumber($quote_num, false);
+            }
+
+            if (isset($description)) {
+                $order->setDescription($description, false);
+            }
+
+            $order->setStatus($status, false);
+
+            if (isset($cost)) {
+                $order->setCost($cost, false);
+            }
+
+            // 4 UPLOAD DU DEVIS
+            if ($request->hasFile('quote')) {
+                $order->uploadQuote($request, false);
+            }
+
+            // 5 UPLOAD DU DEVIS
+            if ($request->hasFile('purchase_order')) {
+                $order->uploadPurchaseOrder($request, $isSigned, false);
+            }
+
+            // 6 SAUVEGARDE
+            $order->save();
+            session()->flash('success', 'La commande N°'.$order->getOrderNumber().' a été créée avec succès.');
+
+        } catch (\Throwable $t) {
+            session()->flash('error', 'Une erreur est survenue lors de la création de la commande commande N°'.$orderNum.'.');
         }
 
-        // 5️⃣ SAUVEGARDE
-        $order->save();
-
-        // 6️⃣ REDIRECTION
-        return redirect()
-            ->route('orders.index')
-            ->with('success', "Commande '{$order->title}' créée avec succès !");
+        return redirect('orders');
     }
 
     public function actionUploadPurchaseOrder($page = 1)
@@ -331,15 +364,15 @@ class OrderController extends BaseController
                     $order->setCost($cost, false);
                 }
 
-                if (isset($quote)) {
+                if ($request->hasFile('quote')) {
                     $order->uploadQuote($request, false);
                 }
 
-                if (isset($purchaseOrder)) {
+                if ($request->hasFile('purchase_order')) {
                     $order->uploadPurchaseOrder($request, false);
                 }
 
-                if (isset($deliveryNote)) {
+                if ($request->hasFile('delivery_note')) {
                     $order->uploadDeliveryNote($request, false);
                 }
 

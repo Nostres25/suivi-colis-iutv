@@ -64,9 +64,9 @@ class Order extends Model
     /**
      * Retourne la description de la commande
      *
-     * @return string // description de la commande
+     * @return string|null // description de la commande
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->attributes['description'];
     }
@@ -87,9 +87,9 @@ class Order extends Model
     /**
      * Retourne le coût en euros total de la commande
      *
-     * @return string // coût en euros de la commande
+     * @return string|null // coût en euros de la commande
      */
-    public function getCost(): string
+    public function getCost(): ?string
     {
         return $this->attributes['cost'];
     }
@@ -111,9 +111,9 @@ class Order extends Model
     /**
      * Retourne le numéro du devis associé à la commande
      *
-     * @return string // Numero du devis de la commande
+     * @return string|null // Numero du devis de la commande
      */
-    public function getQuoteNumber(): string
+    public function getQuoteNumber(): ?string
     {
         return $this->attributes['quote_num'];
     }

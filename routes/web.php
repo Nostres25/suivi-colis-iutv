@@ -44,8 +44,10 @@ Route::get('/order/{id}/viewDetails', [OrderController::class, 'modalViewDetails
 
 Route::post('/order/{id}/uploadPurchaseOrder', [OrderController::class, 'actionUploadPurchaseOrder'])
     ->name('orders.uploadPurchaseOrder');
-Route::post('/order/{id}/viewDetails', [OrderController::class, 'modalViewDetails'])
+Route::post('/orders/{id}/viewDetails', [OrderController::class, 'modalViewDetails'])
     ->name('orders.modal.viewDetails');
+Route::post('/orders/create', [OrderController::class, 'submitNewOrder'])
+    ->name('orders.create');
 
 // Ajoutez cette route dans votre groupe de routes authentifiées
 Route::get('/order/{id}/document/{type}', [OrderController::class, 'downloadDocument'])

@@ -367,7 +367,7 @@
     //
     // // Désactiver le message d'avertissement du déchargement de la page à la fermeture des modals (event bootstrap)
     document.addEventListener('hidden.bs.modal', () => {
-        window.location.reload();
+        window.location.href = window.location.href;
     });
 
     document.addEventListener('DOMContentLoaded', () => {

@@ -14,7 +14,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-               <form id="createOrderForm" method="POST" action="{{ route('orders.submitNewOrder') }}" class="needs-validation" autocomplete="off" enctype="multipart/form-data">
+               <form id="createOrderForm" method="POST" action="{{ route('orders.create') }}" class="needs-validation ajax-form" autocomplete="off" enctype="multipart/form-data">
                 @csrf
                     <div class="mb-4">
                         <label for="order-label" class="col-form-label fs-5">Titre de la commande <span
@@ -29,7 +29,7 @@
                     <div class="mb-4">
                         <label for="supplierInput" class="col-form-label fs-5">Fournisseur <span title="champ requis"
                                                                                                  class="text-danger">*</span></label>
-                        <input type="text" id="supplierInput" name="supplier_id" class="form-select" list="supplierList"
+                        <input type="text" id="supplierInput" name="supplier_name" class="form-select" list="supplierList"
                                placeholder="Veuillez écrire ou sélectionner un fournisseur" required/>
                         <datalist id="supplierList">
                             @foreach ($validSupplierNames as $supplier)
@@ -81,7 +81,7 @@
                                 Vous êtes membre de plusieurs départements, veuillez choisir pour quel département vous
                                 créez cette commande<br/>
                             </p>
-                            <select id="departmentSelect" name="department_id" class="form-select" required>
+                            <select id="departmentSelect" name="department_name" class="form-select" required>
                                 <option>
                                     Veuillez sélectionner le département de la commande...
                                 </option>
@@ -128,7 +128,7 @@
 {{--                            (experimental)--}}
                         </dl>
                         <div id="order-input-devis">
-                            <input type="file" class="form-control mb-3" id="inputFichierDevis" name="path_quote" accept="*,.pdf,.docx,.doc">
+                            <input type="file" class="form-control mb-3" id="inputFichierDevis" name="quote" accept="*,.pdf,.docx,.doc">
                         </div>
                     </div>
                     <hr/>
@@ -165,7 +165,7 @@
                             </div>
                             <label for="inputFichierBonDeCommande" class="col-form-label fs-5">Bon de commande</label>
                             <div id="inputsBonDeCommande">
-                                <input type="file" class="form-control mb-3" id="inputFichierBonDeCommande" name="path_purchase_order">
+                                <input type="file" class="form-control mb-3" id="inputFichierBonDeCommande" name="purchase_order">
                                 <div class="mb-3 d-flex justify-content-start">
                                     <input class="form-check-input me-2" type="checkbox"
                                            id="checkboxBonDeCommandeSigne">
@@ -199,7 +199,7 @@
                     <button type="reset" class="btn btn-secondary me-1" form="createOrderForm" data-bs-dismiss="modal">
                         Annuler
                     </button>
-                    <button type="submit" form="createOrderForm" class="btn btn-primary">Valider</button>
+                    <button type="submit" form="createOrderForm" class="btn btn-primary ajax-form">Valider</button>
                 </div>
             </div>
         </div>
