@@ -14,12 +14,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="createOrderForm" class="needs-validation" autocomplete="off">
+               <form id="createOrderForm" method="POST" action="{{ route('orders.submitNewOrder') }}" class="needs-validation" autocomplete="off" enctype="multipart/form-data">
                 @csrf
                     <div class="mb-4">
                         <label for="order-label" class="col-form-label fs-5">Titre de la commande <span
                                 title="champ requis" class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="order-label" placeholder="Ex: Câblage réseau"
+                        <input type="text" class="form-control" id="order-label" name="title" placeholder="Ex: Câblage réseau"
                                maxlength="255"
                                required/>
                         <div class="invalid-feedback">
@@ -29,7 +29,7 @@
                     <div class="mb-4">
                         <label for="supplierInput" class="col-form-label fs-5">Fournisseur <span title="champ requis"
                                                                                                  class="text-danger">*</span></label>
-                        <input type="text" id="supplierInput" class="form-select" list="supplierList"
+                        <input type="text" id="supplierInput" name="supplier_id" class="form-select" list="supplierList"
                                placeholder="Veuillez écrire ou sélectionner un fournisseur" required/>
                         <datalist id="supplierList">
                             @foreach ($validSupplierNames as $supplier)
@@ -55,13 +55,21 @@
                     <div class="mb-4">
                         <label for="order-num" class="col-form-label fs-5">Numéro de la commande <span
                                 title="champ requis" class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="order-num" placeholder="Ex: 4500161828"
+                        <input type="text" class="form-control" id="order-num" name="order_num" placeholder="Ex: 4500161828"
                                maxlength="255" required>
                         <div class="invalid-feedback">
                             Le numéro de la commande est obligatoire. Veuillez renseigner le numéro de la commande
                             associé au devis ou au bon de commande (numéro en provenance de chorus).
                         </div>
                     </div>
+                    <div class="mb-4">
+                    <label for="quote-num" class="col-form-label fs-5">Numéro du devis <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="quote-num" name="quote_num"
+                        placeholder="Ex: d2509129" maxlength="255" required>
+                    <div class="invalid-feedback">
+                        Le numéro du devis est obligatoire.
+                    </div>
+                </div>
                     {{--                    TODO ne pas oublier de vérifier qu'une option est bien choisie avant de valider--}}
                     {{--                    TODO ajouter une permission "CREER_COMMANDES_POUR_TOUS" qui permet de créer une commande pour d'autres départements--}}
                     @if($userDepartments->count() > 1)
@@ -73,7 +81,7 @@
                                 Vous êtes membre de plusieurs départements, veuillez choisir pour quel département vous
                                 créez cette commande<br/>
                             </p>
-                            <select id="departmentSelect" class="form-select" required>
+                            <select id="departmentSelect" name="department_id" class="form-select" required>
                                 <option>
                                     Veuillez sélectionner le département de la commande...
                                 </option>
@@ -86,30 +94,31 @@
                     <div class="mb-4">
                         <label for="order-description" class="col-form-label fs-5">Description:</label>
                         <dl class="fw-light">Ajoutez des détails sur la commande et son contenu (facultatif).</dl>
-                        <textarea class="form-control" id="order-description"></textarea>
+                        <textarea class="form-control" id="order-description" name="description"></textarea>
                     </div>
-                    <div class="mb-4">
-                        <label class="col-form-label fs-5">Colis <span title="Au moins un colis requis"
-                                                                       class="text-danger">*</span></label>
-                        {{-- TODO probablement de trop, autant modifier la commande après l'avoir crée si la commande à une étape avancée. À la première étape de la commande, cette option ne devrait pas exister
-                        <div class="mb-3">
-                          <input class="form-check-input" type="checkbox" id="checkboxBonDeCommandeSigne">
-                          <label class="form-check-label" for="checkboxBonDeCommandeSigne">
-                            Marquer les colis comme livrés
-                          </label>
-                        </div> --}}
-                        {{-- TODO ajouter les colis progressivement quand on clique sur le bouton avec possibilité de définir : titre, cout, date_prevu_livraison et date_reception --}}
-                        <div class="newPackages"><p>à suivre</p></div>
-                        <div class="input-group mb-3">
-                            <button type="button" class="btn btn-outline-primary">+ Ajoute un colis</button>
-                        </div>
+{{--                        TODO permettre d'ajouter des colis--}}
+{{--                    <div class="mb-4">- -}}
+{{--                        <label class="col-form-label fs-5">Colis <span title="Au moins un colis requis"--}}
+{{--                                                                       class="text-danger">*</span></label>--}}
+{{--                        --}}{{-- TODO probablement de trop, autant modifier la commande après l'avoir crée si la commande à une étape avancée. À la première étape de la commande, cette option ne devrait pas exister--}}
+{{--                        <div class="mb-3">--}}
+{{--                          <input class="form-check-input" type="checkbox" id="checkboxBonDeCommandeSigne">--}}
+{{--                          <label class="form-check-label" for="checkboxBonDeCommandeSigne">--}}
+{{--                            Marquer les colis comme livrés--}}
+{{--                          </label>--}}
+{{--                        </div>--}}
+{{--                        --}}{{-- TODO ajouter les colis progressivement quand on clique sur le bouton avec possibilité de définir : titre, cout, date_prevu_livraison et date_reception --}}
+{{--                        <div class="newPackages"><p>à suivre</p></div>--}}
+{{--                        <div class="input-group mb-3">--}}
+{{--                            <button type="button" class="btn btn-outline-primary">+ Ajoute un colis</button>--}}
+{{--                        </div>--}}
 
-                        {{-- TODO ne devrait apparaîte que si on défini les colis comme livrés --}}
-                        {{-- <div class="input-group mb-3">
-                            <label class="input-group-text" for="inputFichierBonDeLivraison"><strong>Bon de livraison</strong></label>
-                            <input type="file" class="form-control" id="inputFichierBonDeLivraison">
-                        </div> --}}
-                    </div>
+{{--                        --}}{{-- TODO ne devrait apparaîte que si on défini les colis comme livrés --}}
+{{--                        <div class="input-group mb-3">--}}
+{{--                            <label class="input-group-text" for="inputFichierBonDeLivraison"><strong>Bon de livraison</strong></label>--}}
+{{--                            <input type="file" class="form-control" id="inputFichierBonDeLivraison">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                     <div class="mb-3">
                         <label for="order-input-devis" class="col-form-label fs-5">Devis:</label>
                         <dl class="fw-light">
@@ -119,7 +128,7 @@
 {{--                            (experimental)--}}
                         </dl>
                         <div id="order-input-devis">
-                            <input type="file" class="form-control mb-3" id="inputFichierDevis">
+                            <input type="file" class="form-control mb-3" id="inputFichierDevis" name="path_quote" accept="*,.pdf,.docx,.doc">
                         </div>
                     </div>
                     <hr/>
@@ -145,7 +154,7 @@
                                         qu'elle ne sera pas associée à un fournisseur valide.
                                     </p>
                                 </div>
-                                <select id="statusSelect" class="form-select">
+                                <select id="statusSelect" name="status" class="form-select">
                                     @foreach (Status::cases() as $status)
                                         <option
                                             {{ Status::getDefault() == $status ? 'selected="selected"' : '' }} title="{{$status->getDescription()}}">{{$status}}</option>
@@ -156,8 +165,7 @@
                             </div>
                             <label for="inputFichierBonDeCommande" class="col-form-label fs-5">Bon de commande</label>
                             <div id="inputsBonDeCommande">
-                                <input type="file" class="form-control mb-3" id="inputFichierBonDeCommande">
-                                {{-- TODO Devrait n'apparaîte que si on met un bon de commande (avec bootstrap : https://getbootstrap.com/docs/5.3/utilities/display/#how-it-works (classes d-none et d-block ?)) --}}
+                                <input type="file" class="form-control mb-3" id="inputFichierBonDeCommande" name="path_purchase_order">
                                 <div class="mb-3 d-flex justify-content-start">
                                     <input class="form-check-input me-2" type="checkbox"
                                            id="checkboxBonDeCommandeSigne">
@@ -170,7 +178,7 @@
                                     Coût total de la commande en euros (€)
                                 </dl>
                                 <div class="input-group w-25">
-                                    <input id="inputCost" maxlength="12" type="number" class="form-control"
+                                    <input id="inputCost" name="cost" maxlength="12" type="number" class="form-control"
                                            aria-label="Quantité en euros">
                                     <span class="input-group-text">€</span>
                                 </div>

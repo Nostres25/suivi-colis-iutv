@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\Package;
 use App\Models\Role;
 use App\Models\Supplier;
 use App\Models\User;
@@ -152,9 +151,7 @@ class OrderController extends BaseController
 
         $suppliers = Supplier::all(['id', 'company_name', 'is_valid']); // Récupération uniquement des informations utiles à propos des fournisseurs
 
-        //        /* @var Package $package */
-        //        $package = Package::where('id', 241)->first();
-
+        // TODO flash messages: redirect('urls.create')->with('success', 'URL has been added');
         return view('orders', [
             'user' => $user,
             'orders' => $orders,
@@ -164,13 +161,52 @@ class OrderController extends BaseController
         ]);
     }
 
-    public function submitNewOrder(Request $request): View
+    public function submitNewOrder(Request $request): RedirectResponse
     {
+        // TODO Do something to save the new order by the post form
+        // Send a flash message
 
-        // TODO valider les données
-        // TODO utiliser les setters pour mettre en base
+        // 1) VALIDATION
+        // 1️⃣ VALIDATION
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'supplier_id' => 'required|exists:suppliers,id',
+            'order_num' => 'required|string|max:255',
+            'quote_num' => 'required|string|max:255',
+            'department_id' => 'required|exists:roles,id',
+            'description' => 'nullable|string',
+            'status' => 'required|string',
+            'cost' => 'nullable|numeric',
+            'path_quote' => 'nullable|file|mimes:pdf|max:20480',
+        ]);
 
-        return $this->viewOrders($request);
+        // 2️⃣ CRÉATION DE LA COMMANDE
+        $order = new Order;
+
+        // 3️⃣ ATTRIBUTION DES CHAMPS
+        $order->title = $validated['title'];
+        $order->order_num = $validated['order_num'];
+        $order->quote_num = $validated['quote_num'];
+        $order->description = $validated['description'] ?? null;
+        $order->status = $validated['status'];
+        $order->cost = $validated['cost'] ?? null;
+        $order->supplier_id = $validated['supplier_id'];
+        $order->department_id = $validated['department_id'];
+        $order->author_id = Auth::id();
+
+        // 4️⃣ UPLOAD DU DEVIS
+        if ($request->hasFile('path_quote')) {
+            $order->path_quote = $request->file('path_quote')
+                ->store('quotes', 'public');
+        }
+
+        // 5️⃣ SAUVEGARDE
+        $order->save();
+
+        // 6️⃣ REDIRECTION
+        return redirect()
+            ->route('orders.index')
+            ->with('success', "Commande '{$order->title}' créée avec succès !");
     }
 
     public function actionUploadPurchaseOrder($page = 1)

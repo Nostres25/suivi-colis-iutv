@@ -62,7 +62,7 @@ abstract class BaseController extends Controller
                 - d'une erreur au niveau du CAS de l'université qui provoque le non envoie des informations de connexions sous les noms de clés habituelles. Dans cette situation, c'est aux responsables du CAS de l'université de corriger le problème<br/><br/>
                 ";
 
-                // TODO mettre une erreur en log aussi
+                report('Les informations normalement envoyées par le CAS ');
 
                 return ['success' => false, 'response' => response($response_content, 403)];
             }
@@ -82,7 +82,7 @@ abstract class BaseController extends Controller
 
                         // Rôle que l'utilisateur de test doit avoir (mettre null pour pas de rôle en particulier)
                         // Choix du rôle de l'utilisateur : Service financier, Directeur IUT, Département Info, Département SD, Département RT, Administrateur BD
-                        $roleToHave = 'Service financier';
+                        $roleToHave = 'Département Info';
 
                         // Nombre de rôles que l'utilisateur de test doit avoir
                         $roleNumber = 1;

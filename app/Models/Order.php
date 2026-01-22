@@ -16,14 +16,19 @@ class Order extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     protected $fillable = [
-        'titre',
+        'title',
         'description',
         'cost',
         'quote_num',
+        'order_num',
         'path_quote',
         'path_purchase_order',
         'path_delivery_note',
         'status',
+        'department_id',
+        'supplier_id',
+        'author_id',
+
     ];
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupplierController;
@@ -8,12 +9,18 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [\App\Http\Controllers\OrderController::class, 'viewOrders']);
+// orders get
+Route::get('/', [OrderController::class, 'viewOrders']);
+Route::get('/orders', [OrderController::class, 'viewOrders']);
+Route::get('/orders', [OrderController::class, 'viewOrders'])->name('orders.index');
 
-Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'viewOrders']);
+// orders post
+Route::post('/orders', [OrderController::class, 'submitNewOrder'])->name('orders.submitNewOrder');
+
+// suppliers get
 Route::get('suppliers', [SupplierController::class, 'viewSuppliers']);
 
-Route::get('/about', [\App\Http\Controllers\AboutController::class, 'about']);
+
 
 // orders modals get
 Route::get('/order/{id}/uploadPurchaseOrder', [OrderController::class, 'modalUploadPurchaseOrder'])
@@ -84,3 +91,8 @@ Route::get('/logout', function (Request $request) {
 // Affiche la page de profil et permet de modifier les informations de l'utilisateur
 Route::get('/account/profile', [ProfileController::class, 'show'])->name('profile.show');
 Route::post('/account/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+// Page "À propos"
+Route::get('/about', [AboutController::class, 'about']);
+
+
