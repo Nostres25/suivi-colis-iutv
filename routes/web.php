@@ -49,9 +49,11 @@ Route::get('/order/{id}/document/{type}', [OrderController::class, 'downloadDocu
 Route::get('/supplier/{id}/viewDetails', [SupplierController::class, 'modalViewDetails'])
     ->name('suppliers.modal.viewDetails');
 
-// orders modals post
 
 
+// suppliers modals post
+Route::post('/supplier/{id}/viewDetails', [SupplierController::class, 'modalViewDetails'])
+    ->name('suppliers.modal.viewDetails');
 
 
 // Seulement pour les tests sur le serveur de l'IUT
