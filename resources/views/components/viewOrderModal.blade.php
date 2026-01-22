@@ -8,7 +8,7 @@
             {{-- HEADER --}}
             <div class="modal-header">
                 @if($edit)
-                    <h5 class="modal-title fw-bold">Modifier la commande</h5>
+                    <h5 class="modal-title fw-bold d-none d-md-block">Modifier la commande</h5>
                     {{-- Modification du TITRE --}}
                     <input type="text" name="title" form="editOrderForm-{{$orderId}}" class="mb-0 ms-2 form-control fw-bold" minlength="1" maxlength="255" value="{{ $order->getTitle() }}" required placeholder="Titre de la commande"/>
                 @else
