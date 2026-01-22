@@ -260,6 +260,7 @@ class OrderController extends BaseController
 
         /* @var Order $order */
         $order = Order::where('id', $id)->first();
+        $orderId = $order->getId();
         $edit = $request['edit'];
 
         if ($request->method() === 'POST') {
@@ -295,23 +296,24 @@ class OrderController extends BaseController
                 }
 
                 if (isset($quote)) {
-                    $order->uploadQuote($quote, false);
+                    $order->uploadQuote($request, false);
                 }
 
                 if (isset($purchaseOrder)) {
-                    $order->uploadQuote($purchaseOrder, false);
+                    $order->uploadPurchaseOrder($request, false);
                 }
 
                 if (isset($deliveryNote)) {
-                    $order->uploadQuote($deliveryNote, false);
+                    $order->uploadDeliveryNote($request, false);
                 }
 
                 $order->setStatus($status, false);
 
                 $order->save();
 
-                session()->flash('supplierSuccess', 'Fournisseur mis à jour !');
+                session()->flash('orderSuccess', 'La commande a été mise à jour !');
             } else {
+                session()->flash('orderError-'.$orderId, "Vous n'avez pas la permission de modifier cette commande");
                 $edit = false;
             }
         }
@@ -319,7 +321,7 @@ class OrderController extends BaseController
         return view('components.viewOrderModal', [
             'user' => $user,
             'order' => $order,
-            'orderId' => $order->getId(),
+            'orderId' => $orderId,
             'edit' => $edit,
             'userDepartments' => $user->getDepartments(),
         ]);
@@ -348,7 +350,7 @@ class OrderController extends BaseController
             // Vérification si membre du département
             $userDepartments = $user->getRoles()->filter(fn (Role $role) => $role->isDepartment());
             if ($userDepartments->contains($order->getDepartment())) {
-                $canView = $user->hasPermission(PermissionValue::MODIFIER_COMMANDES_DEPARTEMENT);
+                $canView = $user->hasPermission(PermissionValue::CONSULTER_COMMANDES_DEPARTMENT);
             }
         }
 

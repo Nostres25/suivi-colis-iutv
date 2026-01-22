@@ -394,9 +394,9 @@ class Order extends Model
 
                 if ($path_quote) {
                     if ($save) {
-                        $this->setAttribute('$path_quote', $path_quote);
+                        $this->setAttribute('path_quote', $path_quote);
                     } else {
-                        $this->attributes['$path_quote'] = $path_quote;
+                        $this->attributes['path_quote'] = $path_quote;
                     }
 
                     return true;
@@ -498,9 +498,9 @@ class Order extends Model
 
                 if ($path_delivery_note) {
                     if ($save) {
-                        $this->setAttribute('$path_delivery_note', $path_delivery_note);
+                        $this->setAttribute('path_delivery_note', $path_delivery_note);
                     } else {
-                        $this->attributes['$path_delivery_note'] = $path_delivery_note;
+                        $this->attributes['path_delivery_note'] = $path_delivery_note;
                     }
 
                     return true;
