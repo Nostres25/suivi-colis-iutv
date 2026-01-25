@@ -60,11 +60,11 @@ sudo apt update && sudo apt upgrade
 
 #### 2. Installer l'IDE (Visual Studio Code) :
 
-> [!WARNING]
-> si vous utilisez WSL, vous pourrez vous contenter d'[installer Vscode sur votre Windows](https://code.visualstudio.com/Download). Une fois cela fait, vous pourrez sauter cette étape.
-> _Vscodium pourrait fonctionner, mais certaines extensions comme LiveShare ne seront pas installable_
+> [!NOTE]
+> Si vous utilisez WSL, vous pourrez vous contenter d'[installer Vscode sur votre Windows](https://code.visualstudio.com/Download). Une fois cela fait, vous pourrez sauter cette étape.
+> _VSCodium pourrait fonctionner, mais certaines extensions comme LiveShare ne seront pas installable_
 
-Téléchargez vscode depuis la [page d'installation](https://code.visualstudio.com/download) (.deb)  
+Téléchargez vscode depuis la [page d'installation](https://code.visualstudio.com/download) (.deb sur ubuntu ou debian)  
 Puis en exécutant le fichier installé avec la commande :
 
 ```bash
@@ -103,7 +103,7 @@ sudo mv composer.phar /usr/local/bin/composer
 
 ### II. Éditeur de code / IDE:
 
-Si vous avez suivi les étapes précédentes, vous avez installé Visual Studio Code qui est l'IDE choisi pour le projet. Cependant, il n'est pas directement adapté à php et au développement avec Laravel. C'est pour cela que nous installons des extensions pour bénéficier de certaines fonctionnalités pratiques qui nous feront gagner du temps dans le développement.
+Si vous avez suivi les étapes précédentes, vous avez installé Visual Studio Code qui est l'IDE choisi **en premier lieu** pour le projet. Cependant, il n'est pas directement adapté à php et au développement avec Laravel. C'est pour cela que nous installons des extensions pour bénéficier de certaines fonctionnalités pratiques qui nous feront gagner du temps dans le développement.
 
 #### **Visual Studio Code**
 
@@ -121,7 +121,7 @@ Avec les extensions suivantes :
 -   **Conventional commits** (pour des commits à la norme)
 
 > [!NOTE]
-> Certaines extensions vscode affichent une erreur en bas à droite de l'écran. Ne faites pas attention, cliquez sur "Ne plus afficher", l'extension fonctionne quand même pour certaines fonctionnalités.
+> Certaines extensions vscode affichent une erreur en bas à droite de l'écran. Ne faites pas attention, cliquez sur "Ne plus afficher", l'extension fonctionne quand même pour certaines fonctionnalités.  
 > Toutefois, à cause de l'efficacité minime des extensions vscode pour du développement laravel. Je vous invite à utiliser PHPStorm qui est certes payant, mais **[gratuit](https://www.jetbrains.com/fr-fr/phpstorm/buy/?section=commercial&billing=yearly&special-offers=students) pour les étudiants, les enseignants** et les projets opens-source 
 
 > [!WARNING]
@@ -135,6 +135,14 @@ Avec les extensions suivantes :
 > 6.  **Live Share** : ça risque d'être très utile, notamment pour demander de l'aide à quelqu'un mais au pire, vous l'installez uniquement lorsque vous en avez besoin et lorsque vous ne l'utilisez plus, vous le désinstallez.
 >
 > Et pour le reste, elles sont toutes très pratique pour coder dans de bonnes conditions, sans ralentissement, sans être perdu, etc. Si votre pc est encore lent, vous pouvez en désinstaller encore quelques-unes, du moins utile au plus utile (Laravel Goto View en premier et Laravel ainsi que PHP Intelephense en dernier). Mais sans ces autres extensions le développement risque d'être compliqué.
+
+#### **PHPStorm**
+Cet IDE de Intellij est beaucoup plus adapté que VSCode pour du développement PHP. Aucune extension supplémentaire n'est requise pour un fonctionnement. Toutefois, le plugin "Laravel" peut être utile pour quelques fonctionnalités comme une autocomplétion un peu plus poussée 
+> [!NOTE]
+> Il s'agit d'un logiciel payant, mais il est possible de se procurer facilement une [license gratuite](https://www.jetbrains.com/fr-fr/phpstorm/buy/?section=commercial&billing=yearly&special-offers=students) :
+> - Pour les étudiants ;
+> - Pour les enseignants ;
+> - Pour les projets opensource.
 
 > ✅ Maintenant que l'IDE est configuré, lisez la prochaine partie pour importer le code du projet depuis github.
 
@@ -151,11 +159,13 @@ Pour en savoir plus sur le fonctionnement de git et de github, et notamment comp
 ##### Utiliser git sur Windows:
 
 > [!NOTE]
-> Si vous utilisez WSL, cela ne vous concerne pas. Vous utiliserez git comme sur Linux avec le terminal WSL
+> Si vous utilisez WSL, vous pouvez utiliser cette méthode ou utiliser git depuis le WSL, selon une utilisation standard sur linux donc.
+> Cette méthode est peut-être meilleure pour ne pas avoir de problème avec la création d'un token d'accès personnel pour se connecter avec git.
 
 Je vous conseille d'utiliser l'invite de commandes git, disponible avec un clique droit sur un dossier, en appuyant sur "Plus d'options" si vous êtes sur windows 11 et en cliquant sur "**Git Bash Here**". Cet invite de commandes permet d'utiliser [la commande `git`](https://git-scm.com/docs/git) pour interagir avec git et github. Mais il apporte aussi d'autres commandes comme `cd` pour changer de dossier et [`nano`](https://nano-editor.org/dist/v2.2/nano.html) pour modifier un fichier directement dans le terminal et autre (un peu comme sur linux).
 
 Pour exécuter des commandes git, vous devrez tout le temps passer par cet invite de commande git (Git bash) **et dans le bon dossier**.
+Mais l'invite de commande windows fonctionne également pour utiliser git en principe.
 
 ##### Utiliser git sur Linux
 
@@ -167,7 +177,7 @@ Aucune idée. Bon courage ! :) _ça doit être proche de linux je suppose ?_
 
 #### Clonage
 
-1. Pour cela, placez-vous dans le dossier dans lequel vous souhaitez placer le projet, et ouvrez l'invite de commandes. (l'invite de commandes git ou "Git bash" sur windows)
+1. Pour cela, placez-vous dans le dossier dans lequel vous souhaitez placer le projet, et ouvrez l'invite de commandes. (l'invite de commandes ou "Git bash" sur windows)
 
 > [!NOTE]
 > Vous pouvez utiliser la commande `cd` dans l'invite de commande pour vous déplacer de dossier
@@ -200,15 +210,18 @@ composer install
 
 > [!NOTE]
 >
-> -   Cette commande est à exécuter de nouveau pour installer les nouveaux modules utilisés et les mises à jour des modules.
+> -   Cette commande est à exécuter de nouveau pour installer les nouveaux modules utilisés et les mises à jour des modules reférencés dans le fichier `composer.json`.
 > -   Cela peut prendre du temps. Sachez que pour les prochaines exécutions, cela sera plus rapide, car seuls les paquets avec du changement seront installés
-> -   Une fois la commande exécutée, il se peut que le fichier `composer.lock` soit modifié
+
+> [!NOTE]
+> À ne pas confondre avec `composer update` qui va mettre à jour si possible ou installer les modules si besoin selon le contenu de `composer.json`.
+> `composer install` ne met pas à jour les paquets.
 
 > ✅ Si tout s'est bien passé, les modules sont désormais installés. Dès à présent, il reste à la suite la configuration des variables d'environnement, la mise en place de la base de donnée et la création de la clé de chiffrement à faire pour que l'application fonctionne correctement. Et pour accessoirement commencer le développement.
 
 ### V. Définition des variables d'environnement
 
-Ouvrez le dossier du projet (suivi-colis-iutv) avec visual studio code et vous verrez un fichier `.env.example`.
+Ouvrez le dossier du projet (suivi-colis-iutv) avec votre IDE (VSCode ou autre) et vous verrez un fichier `.env.example`.
 
 1. **Copiez** le fichier `.env.example` **et appelez sa copie `.env`** (ce fichier est ignoré par git et ne sera jamais commit sur le dépôt distant grâce à sa définition dans le fichier `.gitignore`)
 2. Dans `.env`, changez la valeur de `DB_PASSWORD` si vous le souhaitez pour y mettre votre propre mot de passe.
@@ -245,17 +258,17 @@ Si tout a fonctionné, vous pouvez sortir de la base de données en entrant `EXI
 5. Enfin, il ne reste plus qu'à préparer la base de données `suivi_colis_iutv` grâce aux migrations et aux seeders, de sorte que l'application puisse se lancer. Pour cela, rendez-vous dans le dossier du projet et exécutez :
 
 ```bash
-php artisan migrate --seeder
+php artisan migrate --seed
 ```
 
 > [!NOTE]
 > Les migrations dans Laravel sont des fichiers de classe qui contiennent des instructions pour créer, modifier ou supprimer des tables, des colonnes, des index et d'autres éléments de la base de données. Chaque migration correspond à une étape spécifique dans l'évolution de la structure de la base de données. La commande `php artisan migrate` va créer, modifier ou supprimer les tables en fonctions des migrations présentes.
 > Les seeders permettent le remplissage automatique de données par défaut comme des données de test, mais pas seulement (ce projet a des données par défaut également en production pour les rôles et les permissions)
 > 
-> -   À chaque changement aux niveau des migrations ou des seeder, il faut exécuter la commande suivante :
+> -   À chaque changement au niveau des migrations ou des seeder, il faut exécuter la commande suivante :
 >
 > ```bash
-> php artisan migrate:fresh --seeder
+> php artisan migrate:fresh --seed
 > ```
 >
 > -   Si vous supprimez une migration ou que vous modifiez une migration existante, veuillez exécuter :
@@ -301,7 +314,6 @@ Cette application utilise la page de connexion de l'université Sorbonne Paris N
 Pour la manière dont l'application utilise cette page de connexion, aussi appellée CAS pour **C**entral **A**uthentication **S**ervice :
 - La redirection vers le CAS est à la charge du serveur web Apache2 de l'application grâce au module Apache `mod_auth_cas`
 - Les utilisateurs redirigés sur le site sont identifiés par la valeur du login à la clé `REMOTE_USER` des informations retournées par le CAS 
-- À cause de cette contrainte technique, les utilisateurs n'ont pas la possibilité de se déconnecter, c'est Apache2 qui définit le temps d'expiration de la connexion et qui redirigera une nouvelle fois automatiquement l'utilisateur vers le CAS
 - L'authentification par le CAS de l'université Sorbonne Paris Nord ne fonctionnera que si l'application est hébergé sur un serveur de l'université.
 - Le CAS doit retourner vers la racine du site ("/")
 
