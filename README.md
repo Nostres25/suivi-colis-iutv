@@ -271,11 +271,18 @@ php artisan migrate --seed
 > php artisan migrate:fresh --seed
 > ```
 >
-> -   Si vous supprimez une migration ou que vous modifiez une migration existante, veuillez exécuter :
+> -   Si vous supprimez une migration ou que vous modifiez une migration existante, veuillez exécuter la commande ci-dessous
 >
 > ```bash
 > composer dump-autoload
 > ```
+>   Cette cmmmande est aussu la solution à l’erreur suivante :
+>   ```bash
+>   Script Illuminate\Fundation\ComposerScripts::prePackageUninstall handling the pre-package-uninstall event terminated with an exception
+
+In ProcessDriver.php :
+Concurrent process failed with exit code [1]
+>   ```
 >
 > -   Une fois l'application en production, ne modifiez jamais une migration ! Préférez en créer une nouvelle migration avec la nouvelle structure des tables concernées. Ceci permet de garder une rétrocompatibilité des données suite aux changements structuraux.
 
