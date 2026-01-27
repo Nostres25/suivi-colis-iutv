@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use Intervention\Image\Laravel\Facades\Image;  // Nouveau namespace v3
 use Illuminate\Support\Facades\Log;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ImagePreprocessor
 {
@@ -18,14 +19,12 @@ class ImagePreprocessor
     public function prepareForOcr(string $imagePath): string
     {
         try {
-            $image = Image::read($imagePath);
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($imagePath);
 
             // Redimensionner si trop petit
             if ($image->width() < 1500) {
-                $image->resize(2000, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
+                $image = $image->scale(width: 2000);
             }
 
             // Convertir en niveaux de gris
@@ -66,7 +65,8 @@ class ImagePreprocessor
                 $rotation = (int) $matches[1];
 
                 if ($rotation !== 0) {
-                    $image = Image::read($imagePath);
+                    $manager = new ImageManager(new Driver());
+                    $image = $manager->read($imagePath);
                     $image->rotate(-$rotation);
                     $image->save($imagePath);
 
@@ -106,10 +106,25 @@ class ImagePreprocessor
     /**
      * Nettoie les fichiers temporaires
      */
-    public function cleanup(string $filePath): void
-    {
-        if (file_exists($filePath) && strpos($filePath, 'ocr-temp') !== false) {
-            @unlink($filePath);
-        }
+public function cleanup(string $filePath): void
+{
+    if (!file_exists($filePath)) {
+        return;
     }
+
+    $tempDir = realpath(config('ocr.temp_storage_path'));
+    $realFile = realpath($filePath);
+
+    // Si realpath échoue, on ne prend pas de risque
+    if ($tempDir === false || $realFile === false) {
+        return;
+    }
+
+    // On supprime uniquement si le fichier est dans le dossier temporaire OCR
+    $tempDir = rtrim($tempDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+    if (str_starts_with($realFile, $tempDir)) {
+        @unlink($realFile);
+    }
+}
 }
